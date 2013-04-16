@@ -30,17 +30,10 @@ public class Shravan1 extends AskFast
 
     private ArrayList<String> cSampleAnswers = new ArrayList<String>(
         Arrays.asList( "Yup", "Nope" ) );
-    private ArrayList<String> cSampleQuestions = new ArrayList<String>(
+    private ArrayList<String> cSampleResponses = new ArrayList<String>(
         Arrays.asList( "Thanks for making time!",
             "We will miss you!",
             "Something went wrong in this conversation.." ) );
-
-    @GET
-    @Path( "/dummy/{dummystring}" )
-    public Response dummyTest( @PathParam( "dummystring" ) String dummy )
-    {
-        return Response.ok( dummy ).build();
-    }
 
     @GET
     @Produces( "text/plain" )
@@ -49,8 +42,9 @@ public class Shravan1 extends AskFast
         @QueryParam( "responder" ) String responder )
     {
         ask( "Are you coming to my bday party at Rotterdam?", null );
-        addAnswer( cSampleAnswers.get( 0 ), "?question_no=10" );
-        addAnswer( cSampleAnswers.get( 1 ), "?question_no=11" );
+        addAnswer( cSampleAnswers.get( 0 ), getUrl() + "/questions/10" );
+        addAnswer( cSampleAnswers.get( 1 ), getUrl() + "/questions/11" );
+        addAnswer( "Appointment", getUrl() + "/questions/12" );
         return endDialog();
     }
 
@@ -69,17 +63,20 @@ public class Shravan1 extends AskFast
     {
         if ( question_no.equals( "10" ) )
         {
-            say( cSampleQuestions.get( 0 ) );
+            return say( cSampleResponses.get( 0 ) );
         }
         else if ( question_no.equals( "11" ) )
         {
-            say( cSampleQuestions.get( 1 ) );
+            return say( cSampleResponses.get( 1 ) );
+        }
+        else if ( question_no.equals( "12" ) )
+        {
+            return say( "Transferring you to Appointment agent" );
         }
         else
         {
-            say( cSampleQuestions.get( 2 ) );
+            return say( cSampleResponses.get( 2 ) );
         }
-        return endDialog();
     }
 
     @Path( "/answers/{answer_no}" )
@@ -104,20 +101,24 @@ public class Shravan1 extends AskFast
         if ( answerId.equals( "1" ) )
         {
             ask( "Are you coming to my bday party?", null );
-            addAnswer( "Yup", "?id=1" );
-            addAnswer( "Nope", "?id=2" );
+            addAnswer( "Yup", getUrl() + "/questions/10" );
+            addAnswer( "Nope", getUrl() + "/questions/11" );
         }
         else if ( answerId.equals( "10" ) )
         {
-            say( cSampleQuestions.get( 0 ) );
+            say( cSampleResponses.get( 0 ) );
         }
         else if ( answerId.equals( "11" ) )
         {
-            say( cSampleQuestions.get( 1 ) );
+            say( cSampleResponses.get( 1 ) );
+        }
+        else if ( answerId.equals( "12" ) )
+        {
+            return redirect( DialogSettings.HOST + "/questionanswer" );
         }
         else if ( answerId.equals( "3" ) )
         {
-            say( cSampleQuestions.get( 2 ) );
+            say( cSampleResponses.get( 2 ) );
         }
 
         Logger log = Logger.getLogger( Shravan1.class.getName() );

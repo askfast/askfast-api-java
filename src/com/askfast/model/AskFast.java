@@ -20,13 +20,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class AskFast
 {
-    private String baseUrl = null;
     protected HashMap<String, Question> responses = new HashMap<String, Question>();
     private Question cQuestion;
+    private String baseURL;
 
-    public AskFast( String baseURL )
+    private String getBaseURL()
     {
-        setBaseUrl( baseURL );
+        return baseURL;
+    }
+
+    private void setBaseURL( String baseURL )
+    {
+        this.baseURL = baseURL;
+    }
+
+    public AskFast( String url )
+    {
+        setBaseURL( url );
         if ( cQuestion == null )
         {
             cQuestion = new Question( "1", "text://", null );
@@ -38,13 +48,12 @@ public class AskFast
     {
         cQuestion = new Question( UUID.randomUUID().toString(), value,
             Question.QUESTION_TYPE_COMMENT );
-        return Response.ok( cQuestion ).build();
+        return endDialog();
     }
 
     @SuppressWarnings( "deprecation" )
     public Response ask( String askText, String next )
     {
-        cQuestion.setBase_url( getBaseUrl() );
         cQuestion.setQuestion_text( askText );
         cQuestion.setType( Question.QUESTION_TYPE_CLOSED );
         if ( next != null )
@@ -68,8 +77,8 @@ public class AskFast
             tAllAnswers = new ArrayList<Answer>();
         }
 
-        Answer answer = new Answer( answerText, getQueryParamForId( next,
-            "question_no" ) );
+        Answer answer = new Answer( answerText, next );
+        //        getQueryParamForId( next, "question_no" ) );
         tAllAnswers.add( answer );
         cQuestion.setAnswers( tAllAnswers );
 
@@ -84,11 +93,6 @@ public class AskFast
         node.put( "url", next );
         return Response.ok( node.toString() ).build();
     }
-
-    //    public Response getQuestionText()
-    //    {
-    //        return Response.ok( cQuestion.getQuestion_text() ).build();
-    //    }
 
     public Response getAnswerText( String answerId )
     {
@@ -116,34 +120,34 @@ public class AskFast
 
     public Response endDialog()
     {
+        String questionBuiltString = QuestionBuilder.build( cQuestion,
+            getBaseURL(),
+            null );
+        return Response.ok( questionBuiltString ).build();
         //        ObjectMapper mapper = new ObjectMapper();
         //        try
-        {
-            //String writeValueAsString = mapper.writeValueAsString( cQuestion );
-            String writeValueAsString = QuestionBuilder.build( cQuestion,
-                getBaseUrl(),
-                null );
-            return Response.ok( writeValueAsString ).build();
-        }
-
+        //        {
+        //            String questionAsString = mapper.writeValueAsString( cQuestion );
+        //            return Response.ok( questionAsString ).build();
+        //        }
         //        catch ( JsonGenerationException e )
         //        {
-        //            e.printStackTrace();
-        //            return Response.status( Status.INTERNAL_SERVER_ERROR ).build);
+        //            return Response.status( Status.INTERNAL_SERVER_ERROR )
+        //                .entity( e )
+        //                .build();
         //        }
         //        catch ( JsonMappingException e )
         //        {
-        //            e.printStackTrace();
-        //            return Response.status( Status.INTERNAL_SERVER_ERROR ).build();
+        //            return Response.status( Status.INTERNAL_SERVER_ERROR )
+        //                .entity( e )
+        //                .build();
         //        }
         //        catch ( IOException e )
         //        {
-        //            e.printStackTrace();
-        //            return Response.status( Status.INTERNAL_SERVER_ERROR ).build();
+        //            return Response.status( Status.INTERNAL_SERVER_ERROR )
+        //                .entity( e )
+        //                .build();
         //        }
-
-        //        String result = QuestionBuilder.build( cQuestion, getBaseUrl(), null );
-        //        return Response.ok( result ).build();
     }
 
     private Answer getAnswerFromAnswerText( String answer_text )
@@ -165,16 +169,6 @@ public class AskFast
             }
         }
         return result;
-    }
-
-    private void setBaseUrl( String baseUrl )
-    {
-        this.baseUrl = baseUrl;
-    }
-
-    private String getBaseUrl()
-    {
-        return baseUrl;
     }
 
     public static String getQueryParamForId( String url, String Id )

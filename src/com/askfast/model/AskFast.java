@@ -17,6 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
+/**
+ * A stateless implementation of the dialog handler
+ * 
+ * @author Shravan
+ * 
+ */
 public class AskFast
 {
     private Question cQuestion;
@@ -41,6 +47,12 @@ public class AskFast
         }
     }
 
+    /**
+     * creates a response based on the value. Also ends the dialog
+     * 
+     * @param value
+     * @return
+     */
     public Response say( String value )
     {
         cQuestion = new Question( UUID.randomUUID().toString(), value,
@@ -48,6 +60,13 @@ public class AskFast
         return endDialog();
     }
 
+    /**
+     * asks a question
+     * 
+     * @param askText
+     * @param next
+     * @return
+     */
     public Response ask( String askText, String next )
     {
         cQuestion.setQuestion_text( askText );
@@ -60,6 +79,13 @@ public class AskFast
         return Response.ok().build();
     }
 
+    /**
+     * adds an answer corresponding to a question asked
+     * 
+     * @param answerText
+     * @param next
+     * @return
+     */
     public Response addAnswer( String answerText, String next )
     {
         if ( cQuestion == null || next == null )
@@ -79,6 +105,17 @@ public class AskFast
         return Response.ok( tAllAnswers ).build();
     }
 
+    /**
+     * redirect the control to a new agent
+     * 
+     * @param redirectText
+     *            : can be the text directly or a HTTP based url which contains
+     *            the text
+     * @param next
+     *            : the URL where the question for the redirection agent is
+     *            available
+     * @return
+     */
     public Response redirect( String redirectText, String next )
     {
         ObjectMapper om = new ObjectMapper();
@@ -120,6 +157,11 @@ public class AskFast
         }
     }
 
+    /**
+     * ends a dialog
+     * 
+     * @return
+     */
     @SuppressWarnings( "deprecation" )
     public Response endDialog()
     {

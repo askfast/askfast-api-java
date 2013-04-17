@@ -43,7 +43,6 @@ public class AskFast
 
     public Response say( String value )
     {
-        //        return Response.ok( value ).build();
         cQuestion = new Question( UUID.randomUUID().toString(), value,
             Question.QUESTION_TYPE_COMMENT );
         return endDialog();
@@ -74,7 +73,6 @@ public class AskFast
         }
 
         Answer answer = new Answer( answerText, next );
-        //        getQueryParamForId( next, "question_no" ) );
         tAllAnswers.add( answer );
         cQuestion.setAnswers( tAllAnswers );
 
@@ -129,67 +127,5 @@ public class AskFast
             getBaseURL(),
             null );
         return Response.ok( questionBuiltString ).build();
-        //        ObjectMapper mapper = new ObjectMapper();
-        //        try
-        //        {
-        //            String questionAsString = mapper.writeValueAsString( cQuestion );
-        //            return Response.ok( questionAsString ).build();
-        //        }
-        //        catch ( JsonGenerationException e )
-        //        {
-        //            return Response.status( Status.INTERNAL_SERVER_ERROR )
-        //                .entity( e )
-        //                .build();
-        //        }
-        //        catch ( JsonMappingException e )
-        //        {
-        //            return Response.status( Status.INTERNAL_SERVER_ERROR )
-        //                .entity( e )
-        //                .build();
-        //        }
-        //        catch ( IOException e )
-        //        {
-        //            return Response.status( Status.INTERNAL_SERVER_ERROR )
-        //                .entity( e )
-        //                .build();
-        //        }
     }
-
-    private Answer getAnswerFromAnswerText( String answer_text )
-    {
-        if ( cQuestion == null || cQuestion.getAnswers() == null )
-        {
-            return null;
-        }
-
-        Iterator<Answer> answerIterator = cQuestion.getAnswers().iterator();
-        Answer result = null;
-        while ( answerIterator.hasNext() )
-        {
-            Answer answer = answerIterator.next();
-            if ( answer.getAnswer_text().equals( answer_text ) )
-            {
-                result = answer;
-                break;
-            }
-        }
-        return result;
-    }
-
-    public static String getQueryParamForId( String url, String Id )
-    {
-        String[] splitBasedOnSlash = url.split( "/" );
-        String queryString = splitBasedOnSlash[splitBasedOnSlash.length - 1];
-        queryString = queryString.replace( "?", "" );
-        String[] queryParams = queryString.split( "&" );
-        for ( String queryParam : queryParams )
-        {
-            if ( queryParam.trim().startsWith( Id ) )
-            {
-                return queryParam.trim().substring( Id.length() + 1 ).trim();
-            }
-        }
-        return null;
-    }
-
 }

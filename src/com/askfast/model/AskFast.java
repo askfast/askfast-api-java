@@ -4,7 +4,6 @@ package com.askfast.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -20,7 +19,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class AskFast
 {
-    protected HashMap<String, Question> responses = new HashMap<String, Question>();
     private Question cQuestion;
     private String baseURL;
 
@@ -43,15 +41,14 @@ public class AskFast
         }
     }
 
-    @SuppressWarnings( "deprecation" )
     public Response say( String value )
     {
+        //        return Response.ok( value ).build();
         cQuestion = new Question( UUID.randomUUID().toString(), value,
             Question.QUESTION_TYPE_COMMENT );
         return endDialog();
     }
 
-    @SuppressWarnings( "deprecation" )
     public Response ask( String askText, String next )
     {
         cQuestion.setQuestion_text( askText );
@@ -64,7 +61,6 @@ public class AskFast
         return Response.ok().build();
     }
 
-    @SuppressWarnings( "deprecation" )
     public Response addAnswer( String answerText, String next )
     {
         if ( cQuestion == null || next == null )
@@ -85,12 +81,20 @@ public class AskFast
         return Response.ok( tAllAnswers ).build();
     }
 
-    public Response redirect( String next )
+    public Response redirect( String redirectText, String next )
     {
         ObjectMapper om = new ObjectMapper();
         ObjectNode node = om.createObjectNode();
         node.put( "type", Question.QUESTION_TYPE_REFERRAL );
         node.put( "url", next );
+        if ( redirectText.contains( "http" ) || redirectText.contains( "https" ) )
+        {
+            node.put( "question_text", redirectText );
+        }
+        else
+        {
+            node.put( "question_text", "text://" + redirectText );
+        }
         return Response.ok( node.toString() ).build();
     }
 
@@ -118,6 +122,7 @@ public class AskFast
         }
     }
 
+    @SuppressWarnings( "deprecation" )
     public Response endDialog()
     {
         String questionBuiltString = QuestionBuilder.build( cQuestion,

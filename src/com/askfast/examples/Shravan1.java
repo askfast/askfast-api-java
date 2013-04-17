@@ -4,8 +4,6 @@ package com.askfast.examples;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,13 +19,8 @@ import com.askfast.model.AskFast;
 
 
 @Path( "/shravan1" )
-public class Shravan1 extends AskFast
+public class Shravan1
 {
-    public Shravan1()
-    {
-        super( getUrl() );
-    }
-
     private ArrayList<String> cSampleAnswers = new ArrayList<String>(
         Arrays.asList( "Yup", "Nope" ) );
     private ArrayList<String> cSampleResponses = new ArrayList<String>(
@@ -41,11 +34,12 @@ public class Shravan1 extends AskFast
         @QueryParam( "preferred_medium" ) String preferred_medium,
         @QueryParam( "responder" ) String responder )
     {
-        ask( "Are you coming to my bday party at Rotterdam?", null );
-        addAnswer( cSampleAnswers.get( 0 ), getUrl() + "/questions/10" );
-        addAnswer( cSampleAnswers.get( 1 ), getUrl() + "/questions/11" );
-        addAnswer( "Appointment", getUrl() + "/questions/12" );
-        return endDialog();
+        AskFast askFast = new AskFast( getUrl() );
+        askFast.ask( "Are you coming to my bday party at Rotterdam?", null );
+        askFast.addAnswer( cSampleAnswers.get( 0 ), getUrl() + "/questions/10" );
+        askFast.addAnswer( cSampleAnswers.get( 1 ), getUrl() + "/questions/11" );
+        askFast.addAnswer( "Appointment", getUrl() + "/questions/12" );
+        return askFast.endDialog();
     }
 
     protected static String getUrl()
@@ -61,32 +55,24 @@ public class Shravan1 extends AskFast
         @PathParam( "question_no" ) String question_no,
         @QueryParam( "preferred_medium" ) String prefered_mimeType )
     {
+        String result = null;
         if ( question_no.equals( "10" ) )
         {
-            return say( cSampleResponses.get( 0 ) );
+            result = cSampleResponses.get( 0 );
         }
         else if ( question_no.equals( "11" ) )
         {
-            return say( cSampleResponses.get( 1 ) );
+            result = cSampleResponses.get( 1 );
         }
         else if ( question_no.equals( "12" ) )
         {
-            return say( "Transferring you to Appointment agent" );
+            result = "Transferring you to Appointment agent";
         }
         else
         {
-            return say( cSampleResponses.get( 2 ) );
+            result = cSampleResponses.get( 2 );
         }
-    }
-
-    @Path( "/answers/{answer_no}" )
-    @GET
-    @Produces( "text/plain" )
-    @Consumes( "*/*" )
-    public Response getAnswerText( @PathParam( "answer_no" ) String answer_no,
-        @QueryParam( "preferred_medium" ) String prefered_mimeType )
-    {
-        return getAnswerText( answer_no );
+        return Response.ok( result ).build();
     }
 
     @Path( "/questions/{id}" )
@@ -98,33 +84,30 @@ public class Shravan1 extends AskFast
         @QueryParam( "preferred_medium" ) String preferred_medium,
         @QueryParam( "responder" ) String responder )
     {
+        AskFast askFast = new AskFast( getUrl() );
         if ( answerId.equals( "1" ) )
         {
-            ask( "Are you coming to my bday party?", null );
-            addAnswer( "Yup", getUrl() + "/questions/10" );
-            addAnswer( "Nope", getUrl() + "/questions/11" );
+            askFast.ask( "Are you coming to my bday party at Rotterdam?", null );
+            askFast.addAnswer( "Yup", getUrl() + "/questions/10" );
+            askFast.addAnswer( "Nope", getUrl() + "/questions/11" );
         }
         else if ( answerId.equals( "10" ) )
         {
-            say( cSampleResponses.get( 0 ) );
+            return askFast.say( cSampleResponses.get( 0 ) );
         }
         else if ( answerId.equals( "11" ) )
         {
-            say( cSampleResponses.get( 1 ) );
+            return askFast.say( cSampleResponses.get( 1 ) );
         }
         else if ( answerId.equals( "12" ) )
         {
-            return redirect( DialogSettings.HOST + "/questionanswer" );
+            return askFast.redirect( getUrl() + "/questions/" + answerId,
+                DialogSettings.HOST + "/questionanswer" );
         }
         else if ( answerId.equals( "3" ) )
         {
-            say( cSampleResponses.get( 2 ) );
+            return askFast.say( cSampleResponses.get( 2 ) );
         }
-
-        Logger log = Logger.getLogger( Shravan1.class.getName() );
-        log.setLevel( Level.INFO );
-        Response endDialog = endDialog();
-        log.info( "ending dialog " + endDialog.getEntity().toString() );
-        return endDialog;
+        return askFast.endDialog();
     }
 }

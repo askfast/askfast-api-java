@@ -5,7 +5,6 @@ package com.askfast.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.UUID;
 
 import javax.ws.rs.core.Response;
@@ -104,27 +103,6 @@ public class AskFast
     }
 
     /**
-     * asks a question
-     * 
-     * @param askText
-     * @param next
-     * @return
-     */
-    //    public Response askOpenQuestion( String askText, String next )
-    //    {
-    //        cQuestion = new Question();
-    //        cQuestion.setQuestion_id( UUID.randomUUID().toString() );
-    //        cQuestion.setQuestion_text( askText );
-    //        cQuestion.setType( Question.QUESTION_TYPE_OPEN );
-    //        if ( next != null )
-    //        {
-    //            cQuestion.setAnswers( new ArrayList<Answer>(
-    //                Arrays.asList( new Answer( "", next ) ) ) );
-    //        }
-    //        return Response.ok().build();
-    //    }
-
-    /**
      * adds an answer corresponding to a question asked
      * 
      * @param answerText
@@ -176,30 +154,6 @@ public class AskFast
             node.put( "question_text", "text://" + redirectText );
         }
         return Response.ok( node.toString() ).build();
-    }
-
-    public Response getAnswerText( String answerId )
-    {
-        Iterator<Answer> answerIterator = cQuestion.getAnswers().iterator();
-        String result = null;
-        while ( answerIterator.hasNext() )
-        {
-            Answer answer = answerIterator.next();
-            if ( answer.getAnswer_id().equals( answerId ) )
-            {
-                result = answer.getAnswer_text();
-                break;
-            }
-        }
-
-        if ( result != null )
-        {
-            return Response.ok( result ).build();
-        }
-        else
-        {
-            return Response.status( Status.NOT_ACCEPTABLE ).build();
-        }
     }
 
     /**

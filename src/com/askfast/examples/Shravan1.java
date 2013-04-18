@@ -4,6 +4,8 @@ package com.askfast.examples;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,6 +29,8 @@ public class Shravan1
         Arrays.asList( "Thanks for making time!",
             "We will miss you!",
             "Something went wrong in this conversation.." ) );
+
+    static final Logger log = Logger.getLogger( Shravan1.class.getName() );
 
     @GET
     @Produces( "text/plain" )
@@ -84,6 +88,9 @@ public class Shravan1
         @QueryParam( "preferred_medium" ) String preferred_medium,
         @QueryParam( "responder" ) String responder )
     {
+        log.setLevel( Level.WARNING );
+        log.info( "answer entered is: " + answer_json );
+
         AskFast askFast = new AskFast( getUrl() );
         if ( answerId.equals( "1" ) )
         {

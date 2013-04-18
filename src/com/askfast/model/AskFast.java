@@ -2,6 +2,7 @@
 package com.askfast.model;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -12,7 +13,10 @@ import javax.ws.rs.core.Response.Status;
 
 import com.askcs.dialog.sdk.QuestionBuilder;
 import com.askcs.dialog.sdk.model.Answer;
+import com.askcs.dialog.sdk.model.AnswerPost;
 import com.askcs.dialog.sdk.model.Question;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -36,6 +40,11 @@ public class AskFast
     private void setBaseURL( String baseURL )
     {
         this.baseURL = baseURL;
+    }
+
+    public enum AskType
+    {
+        OPEN, CLOSED, COMMENT, REFERRAL;
     }
 
     public AskFast( String url )
@@ -74,7 +83,28 @@ public class AskFast
         if ( next != null )
         {
             cQuestion.setAnswers( new ArrayList<Answer>(
-                Arrays.asList( new Answer( null, next ) ) ) );
+                Arrays.asList( new Answer( "", next ) ) ) );
+        }
+        return Response.ok().build();
+    }
+
+    /**
+     * asks a question
+     * 
+     * @param askText
+     * @param next
+     * @return
+     */
+    public Response askOpenQuestion( String askText, String next )
+    {
+        cQuestion = new Question();
+        cQuestion.setQuestion_id( UUID.randomUUID().toString() );
+        cQuestion.setQuestion_text( askText );
+        cQuestion.setType( Question.QUESTION_TYPE_OPEN );
+        if ( next != null )
+        {
+            cQuestion.setAnswers( new ArrayList<Answer>(
+                Arrays.asList( new Answer( "", next ) ) ) );
         }
         return Response.ok().build();
     }
@@ -169,5 +199,29 @@ public class AskFast
             getBaseURL(),
             null );
         return Response.ok( questionBuiltString ).build();
+    }
+
+    public String getAnswerTextForOpenQuestion( String answer_json )
+    {
+        AnswerPost answer;
+        try
+        {
+            answer = new ObjectMapper().readValue( answer_json,
+                AnswerPost.class );
+            return answer.getAnswer_text();
+        }
+        catch ( JsonParseException e )
+        {
+            e.printStackTrace();
+        }
+        catch ( JsonMappingException e )
+        {
+            e.printStackTrace();
+        }
+        catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

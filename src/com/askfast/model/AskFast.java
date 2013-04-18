@@ -44,7 +44,22 @@ public class AskFast
 
     public enum AskType
     {
-        OPEN, CLOSED, COMMENT, REFERRAL;
+        OPEN( Question.QUESTION_TYPE_OPEN ),
+        CLOSED( Question.QUESTION_TYPE_CLOSED ),
+        COMMENT( Question.QUESTION_TYPE_COMMENT ),
+        REFERRAL( Question.QUESTION_TYPE_REFERRAL );
+
+        private String fieldName;
+
+        private AskType( String name )
+        {
+            this.fieldName = name;
+        }
+
+        public String getFieldName()
+        {
+            return fieldName;
+        }
     }
 
     public AskFast( String url )
@@ -65,7 +80,7 @@ public class AskFast
     public Response say( String value )
     {
         cQuestion = new Question( UUID.randomUUID().toString(), value,
-            Question.QUESTION_TYPE_COMMENT );
+            AskType.COMMENT.getFieldName() );
         return endDialog();
     }
 
@@ -76,10 +91,10 @@ public class AskFast
      * @param next
      * @return
      */
-    public Response ask( String askText, String next )
+    public Response ask( String askText, AskType askType, String next )
     {
         cQuestion.setQuestion_text( askText );
-        cQuestion.setType( Question.QUESTION_TYPE_CLOSED );
+        cQuestion.setType( askType.getFieldName() );
         if ( next != null )
         {
             cQuestion.setAnswers( new ArrayList<Answer>(
@@ -95,19 +110,19 @@ public class AskFast
      * @param next
      * @return
      */
-    public Response askOpenQuestion( String askText, String next )
-    {
-        cQuestion = new Question();
-        cQuestion.setQuestion_id( UUID.randomUUID().toString() );
-        cQuestion.setQuestion_text( askText );
-        cQuestion.setType( Question.QUESTION_TYPE_OPEN );
-        if ( next != null )
-        {
-            cQuestion.setAnswers( new ArrayList<Answer>(
-                Arrays.asList( new Answer( "", next ) ) ) );
-        }
-        return Response.ok().build();
-    }
+    //    public Response askOpenQuestion( String askText, String next )
+    //    {
+    //        cQuestion = new Question();
+    //        cQuestion.setQuestion_id( UUID.randomUUID().toString() );
+    //        cQuestion.setQuestion_text( askText );
+    //        cQuestion.setType( Question.QUESTION_TYPE_OPEN );
+    //        if ( next != null )
+    //        {
+    //            cQuestion.setAnswers( new ArrayList<Answer>(
+    //                Arrays.asList( new Answer( "", next ) ) ) );
+    //        }
+    //        return Response.ok().build();
+    //    }
 
     /**
      * adds an answer corresponding to a question asked
@@ -150,7 +165,7 @@ public class AskFast
     {
         ObjectMapper om = new ObjectMapper();
         ObjectNode node = om.createObjectNode();
-        node.put( "type", Question.QUESTION_TYPE_REFERRAL );
+        node.put( "type", AskType.REFERRAL.getFieldName() );
         node.put( "url", next );
         if ( redirectText.contains( "http" ) || redirectText.contains( "https" ) )
         {

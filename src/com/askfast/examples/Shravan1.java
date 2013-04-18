@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 
 import com.askfast.config.DialogSettings;
 import com.askfast.model.AskFast;
+import com.askfast.model.AskFast.AskType;
 
 
 @Path( "/shravan1" )
@@ -39,7 +40,9 @@ public class Shravan1
         @QueryParam( "responder" ) String responder )
     {
         AskFast askFast = new AskFast( getUrl() );
-        askFast.ask( "Are you coming to my bday party at Rotterdam?", null );
+        askFast.ask( "Are you coming to my bday party at Rotterdam?",
+            AskType.CLOSED,
+            null );
         askFast.addAnswer( cSampleAnswers.get( 0 ), getUrl() + "/questions/10" );
         askFast.addAnswer( cSampleAnswers.get( 1 ), getUrl() + "/questions/11" );
         askFast.addAnswer( "Appointment", getUrl() + "/questions/12" );
@@ -94,7 +97,9 @@ public class Shravan1
         AskFast askFast = new AskFast( getUrl() );
         if ( answerId.equals( "1" ) )
         {
-            askFast.ask( "Are you coming to my bday party at Rotterdam?", null );
+            askFast.ask( "Are you coming to my bday party at Rotterdam?",
+                AskType.CLOSED,
+                null );
             askFast.addAnswer( "Yup", getUrl() + "/questions/10" );
             askFast.addAnswer( "Nope", getUrl() + "/questions/11" );
         }

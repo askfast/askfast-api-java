@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import com.askfast.config.DialogSettings;
 import com.askfast.model.AskFast;
+import com.askfast.model.AskFast.AskType;
 
 
 @SuppressWarnings( "serial" )
@@ -63,7 +64,9 @@ public class ExampleServlet extends HttpServlet
         cAskFast = new AskFast( getUrl() );
         if ( answerId.equals( "1" ) )
         {
-            cAskFast.ask( "Are you coming to my bday party?", null );
+            cAskFast.ask( "Are you coming to my bday party?",
+                AskType.CLOSED,
+                null );
             cAskFast.addAnswer( cSampleAnswers.get( 0 ), getUrl()
             + "?question_id=10" );
             cAskFast.addAnswer( cSampleAnswers.get( 1 ), getUrl()
@@ -91,7 +94,7 @@ public class ExampleServlet extends HttpServlet
 
     public Response firstQuestion()
     {
-        cAskFast.ask( "Any plans for the day?", null );
+        cAskFast.ask( "Any plans for the day?", AskType.CLOSED, null );
         cAskFast.addAnswer( cSampleAnswers.get( 0 ), getUrl()
         + "?question_id=10" );
         cAskFast.addAnswer( cSampleAnswers.get( 1 ), getUrl()

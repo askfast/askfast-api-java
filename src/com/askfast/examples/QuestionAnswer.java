@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import com.askfast.config.DialogSettings;
 import com.askfast.model.AskFast;
+import com.askfast.model.AskFast.AskType;
 
 
 @Path( "questionanswer" )
@@ -39,7 +40,7 @@ public class QuestionAnswer
         @QueryParam( "responder" ) String responder )
     {
         AskFast askFast = new AskFast( getUrl() );
-        askFast.ask( "Are you free for the meeting", null );
+        askFast.ask( "Are you free for the meeting", AskType.CLOSED, null );
         askFast.addAnswer( cSampleAnswers.get( 0 ), getUrl() + "/questions/10" );
         askFast.addAnswer( cSampleAnswers.get( 1 ), getUrl() + "/questions/11" );
         return askFast.endDialog();
@@ -81,7 +82,7 @@ public class QuestionAnswer
         AskFast askFast = new AskFast( getUrl() );
         if ( answerId.equals( "1" ) )
         {
-            askFast.ask( "Are you free for the meeting", null );
+            askFast.ask( "Are you free for the meeting", AskType.CLOSED, null );
             askFast.addAnswer( cSampleAnswers.get( 0 ), getUrl()
             + "/questions/10" );
             askFast.addAnswer( cSampleAnswers.get( 1 ), getUrl()

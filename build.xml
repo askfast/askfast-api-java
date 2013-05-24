@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PROJECT>
+<project name="askfast-api" default="makejar" basedir=".">
+	<!-- the version number of must be updated here (according to changelog.txt) -->
+	<property name="package" value="askfast-api"/>
+	<property name="version" value="1.0.1"/>
+	
+  <target name="makejar" description="Create a jar library">
+    <property name="localbin" location="bin" />
+    <property name="localversions" location="${localbin}/versions" />
+    
+    <!-- create jar and overwrite old one -->
+    <jar destfile="${localbin}/${package}-temp.jar" >
+    	<fileset dir="build/classes/" >
+        <exclude name="**/resources/**" /> 
+    	</fileset>
+    	<fileset dir="src/" />
+    </jar>
+  	<move file="${localbin}/${package}-temp.jar" tofile="${localbin}/${package}.jar" />
+  	<copy file="${localbin}/${package}.jar" tofile="${localversions}/${package}-${version}.jar" />
+  	
+  </target>
+</project>

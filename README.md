@@ -22,7 +22,7 @@ You can install this library in any Java application or application server. The 
 	* jackson-annotations-2.0.0.jar
 	* jackson-core-2.0.0.jar
 	* jackson-databind-2.0.0.jar
-	* servlet-api-2.5.jar
+	* javax.servlet-api-3.0.1.jar
 
 All libraries have been included in the [lib/](https://github.com/askfast/askfast-api-java/tree/master/lib) folder.
 

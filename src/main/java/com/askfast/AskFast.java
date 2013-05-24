@@ -1,7 +1,6 @@
 package com.askfast;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.askfast.model.Answer;
 import com.askfast.model.Question;
+import com.askfast.util.HttpUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * A stateless implementation of the dialog handler
@@ -20,26 +22,27 @@ import com.askfast.model.Question;
  */
 public class AskFast
 {
+	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
 	private Question question = null;
+	
 	private String baseURL = null;
-
-	public void setBaseURL(String baseURL)
-	{
-		this.baseURL = baseURL;
-	}
+	private String privateKey = null;
+	private String pubKey = null;
 	
 	public AskFast(HttpServletRequest req) {
-		try {
-			this.baseURL = getHost(req);
-		} catch(Exception e) {
-		}
-		if (question == null)
-			question = new Question();
+		this(getHost(req));
 	}
 
 	public AskFast(String url)
 	{
-		setBaseURL(url);
+		this(url, null, null);
+	}
+	
+	public AskFast(String url, String privateKey, String publicKey) {
+		this.baseURL = url;
+		this.privateKey = privateKey;
+		this.pubKey = publicKey;
+		
 		if (question == null)
 			question = new Question();
 	}
@@ -130,6 +133,31 @@ public class AskFast
 		return question.toJSON();
 	}
 	
+	public String outBoundCall(String fromAddress, String toAddress, String url) throws Exception {
+		
+		if(privateKey==null || pubKey==null) {
+			throw new Exception("Public or Private key isn't set");
+		}
+		
+		url = formatURL(url);
+		
+		ObjectMapper om = new ObjectMapper();
+		ObjectNode body = om.createObjectNode();
+		body.put("method", "outboundCall");
+		
+		ObjectNode params = om.createObjectNode();
+		params.put("adapterID", fromAddress);
+		params.put("address", toAddress);
+		params.put("url", url);
+		
+		params.put("privateKey", privateKey);
+		params.put("publicKey", pubKey);
+		body.put("params", params);
+		
+		String res = HttpUtil.post(ASKFAST_JSONRPC, body.toString());
+		return res;
+	}
+	
 	public void render(HttpServletResponse response) throws IOException {
 		
 		String json = render();
@@ -140,6 +168,8 @@ public class AskFast
 		response.getWriter().flush();
 		response.getWriter().close();
 	}
+	
+	// Private functions
 	
 	private String formatText(String text) {
 		if(text==null)
@@ -167,14 +197,26 @@ public class AskFast
 		return url;
 	}
 	
-	private String getHost(HttpServletRequest req) throws MalformedURLException {
+	private static String getHost(HttpServletRequest req) {
 		int port = req.getServerPort();
 		if (req.getScheme().equals("http") && port == 80) {
 		    port = -1;
 		} else if (req.getScheme().equals("https") && port == 443) {
 		    port = -1;
 		}
-		URL serverURL = new URL(req.getScheme(), req.getServerName(), port, "");
-		return serverURL.toString();
+		String url = null;
+		try {
+			URL serverURL = new URL(req.getScheme(), req.getServerName(), port, "");
+			url = serverURL.toString();
+		} catch(Exception e) {
+		}
+		return url;
+	}
+	
+	// Getters and setters
+	
+	public void setBaseURL(String baseURL)
+	{
+		this.baseURL = baseURL;
 	}
 }

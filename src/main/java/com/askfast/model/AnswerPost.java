@@ -1,9 +1,6 @@
 package com.askfast.model;
 
-import java.io.Serializable;
-
-public class AnswerPost implements Serializable {
-	private static final long serialVersionUID = -5739888017486408094L;
+public class AnswerPost {
 	
 	String dialog_id;
 	String question_id;

@@ -1,5 +1,11 @@
 package com.askfast.model;
 
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class AnswerPost {
 	
 	String dialog_id;
@@ -8,13 +14,29 @@ public class AnswerPost {
 	String answer_text;
 	String responder;
 
-	public AnswerPost(){}
-	public AnswerPost(String dialog_id,String question_id,String answer_id,String answer_text,String responder){
-		this.dialog_id = dialog_id;
-		this.question_id = question_id;
-		this.answer_id = answer_id;
-		this.answer_text = answer_text;
-		this.responder = responder;
+	private AnswerPost(){}
+		
+	public static AnswerPost createInstance(HttpServletRequest req) {
+		AnswerPost ap = null;
+		try {
+			InputStream is = req.getInputStream();
+			ObjectMapper om = new ObjectMapper();
+			ap = om.readValue(is, AnswerPost.class);
+		} catch(Exception e) {
+		}
+		
+		return ap;
+	}
+	
+	public static AnswerPost createInstance(String json) {
+		AnswerPost ap = null;
+		try {
+			ObjectMapper om = new ObjectMapper();
+			ap = om.readValue(json, AnswerPost.class);
+		} catch(Exception e) {
+		}
+		
+		return ap;
 	}
 	public String getDialog_id() {
 		return dialog_id;
@@ -46,5 +68,16 @@ public class AnswerPost {
 	}
 	public void setResponder(String responder) {
 		this.responder = responder;
+	}
+	
+	public String toJSON() {
+		String json = null;
+		try {
+			ObjectMapper om = new ObjectMapper();
+			json = om.writeValueAsString(this);
+		} catch(Exception e){
+		}
+		
+		return json;
 	}
 }

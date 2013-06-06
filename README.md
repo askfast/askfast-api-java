@@ -7,11 +7,11 @@ Overview
 --------
 
 This is library to help you create dialogs which interact with the AskFast system. You can download the latest pre-build version here
-[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api.jar?raw=true)
+[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api-java.jar?raw=true)
 
 ------------
 
-Current version is 1.0.1
+Current version is 0.1.0
 
 
 Requirements

@@ -29,6 +29,10 @@ public class AskFast
 	private String privateKey = null;
 	private String pubKey = null;
 	
+	public AskFast() {
+		this(null, null, null);
+	}
+	
 	public AskFast(HttpServletRequest req) {
 		this(getHost(req));
 	}
@@ -67,11 +71,22 @@ public class AskFast
 		if(next!=null)
 			question.addAnswer(new Answer(null, next));
 	}
+	
+	/**
+	 * asks a question
+	 * 
+	 * @param ask
+	 * @return
+	 */
+	public void ask(String ask)
+	{
+		ask(ask, null);
+	}
 
 	/**
 	 * asks a question
 	 * 
-	 * @param askText
+	 * @param ask
 	 * @param next
 	 * @return
 	 */
@@ -175,7 +190,7 @@ public class AskFast
 		if(text==null)
 			return null;
 		
-		if(text.startsWith("/") && baseURL!=null) {
+		if(text.endsWith(".wav") && baseURL!=null) {
 			text = baseURL + text;
 		}
 		
@@ -190,7 +205,7 @@ public class AskFast
 		if(url==null)
 			return null;
 		
-		if(url.startsWith("/") && baseURL!=null) {
+		if((!url.startsWith("http") && !url.startsWith("https")) && baseURL!=null) {
 			url = baseURL + url;
 		}
 		

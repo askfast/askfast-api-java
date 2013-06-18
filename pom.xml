@@ -9,6 +9,7 @@
   <properties>
 		<jackson.version>2.0.0</jackson.version>
 		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
   </properties>
   
   <dependencies>
@@ -22,5 +23,24 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax.servlet-api.version}</version>
 		</dependency>
-	</dependencies>
+  </dependencies>
+
+  <build>
+  	<plugins>
+			<!-- Make compiler UTF-8/ISO-8859-1 aware, set JVM to 1.6+ -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+					<compilerArguments>
+						<verbose />
+					</compilerArguments>
+				</configuration>
+			</plugin>
+	</plugins>
+  </build>
 </project>

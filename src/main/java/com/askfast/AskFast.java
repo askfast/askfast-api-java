@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,9 +32,10 @@ public class AskFast
 	private String baseURL = null;
 	private String privateKey = null;
 	private String pubKey = null;
+	private Map<String, String> params = null;
 	
 	public AskFast() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 	
 	public AskFast(HttpServletRequest req) {
@@ -39,13 +44,17 @@ public class AskFast
 
 	public AskFast(String url)
 	{
-		this(url, null, null);
+		this(url, null, null, null);
 	}
 	
-	public AskFast(String url, String privateKey, String publicKey) {
+	public AskFast(String url, String privateKey, String publicKey, Map<String, String> params) {
 		this.baseURL = url;
 		this.privateKey = privateKey;
 		this.pubKey = publicKey;
+		this.params = params;
+		
+		if(this.params == null) 
+			this.params = new HashMap<String, String>();
 		
 		if (question == null)
 			question = new Question();
@@ -207,6 +216,24 @@ public class AskFast
 		
 		if((!url.startsWith("http") && !url.startsWith("https")) && baseURL!=null) {
 			url = baseURL + url;
+		}
+		
+		url = addQueryString(url);
+		
+		return url;
+	}
+	
+	private String addQueryString(String url) {
+		if(this.params.size()>0) {
+			String query = "?";
+			if(url.contains("?"))
+				query = "&";
+			Iterator<Entry<String, String>> it = this.params.entrySet().iterator();
+			while(it.hasNext()) {
+				Entry<String, String> param = it.next();
+				query += param.getKey() + "=" + param.getValue()+"&";
+			}
+			return url + query.substring(0,query.length()-1);
 		}
 		
 		return url;

@@ -1,6 +1,7 @@
 package com.askfast;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -199,8 +200,15 @@ public class AskFast
 		if(text==null)
 			return null;
 		
-		if(text.endsWith(".wav") && baseURL!=null) {
+		if((!text.startsWith("http") && !text.startsWith("https")) && text.endsWith(".wav") && baseURL!=null) {
 			text = baseURL + text;
+			try {
+				URL url = new URL(text);
+				URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+				text = uri.toString();
+			} catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		
 		if(!text.endsWith(".wav")) {

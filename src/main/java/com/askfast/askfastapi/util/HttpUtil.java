@@ -1,4 +1,4 @@
-package com.askfast.util;
+package com.askfast.askfastapi.util;
 
 /**
  * @file HttpUtil.java

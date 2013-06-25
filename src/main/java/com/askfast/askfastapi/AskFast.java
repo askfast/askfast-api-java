@@ -1,4 +1,4 @@
-package com.askfast;
+package com.askfast.askfastapi;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,9 +13,9 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.askfast.model.Answer;
-import com.askfast.model.Question;
-import com.askfast.util.HttpUtil;
+import com.askfast.askfastapi.model.Answer;
+import com.askfast.askfastapi.model.Question;
+import com.askfast.askfastapi.util.HttpUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

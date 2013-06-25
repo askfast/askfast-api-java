@@ -1,16 +1,23 @@
-package com.askfast;
+package com.askfast.askfastapi;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.askfast.model.Answer;
-import com.askfast.model.Question;
+import com.askfast.askfastapi.model.Answer;
+import com.askfast.askfastapi.model.Question;
+import com.askfast.askfastapi.util.HttpUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * A stateless implementation of the dialog handler
@@ -20,26 +27,36 @@ import com.askfast.model.Question;
  */
 public class AskFast
 {
+	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
 	private Question question = null;
+	
 	private String baseURL = null;
-
-	public void setBaseURL(String baseURL)
-	{
-		this.baseURL = baseURL;
+	private String privateKey = null;
+	private String pubKey = null;
+	private Map<String, String> params = null;
+	
+	public AskFast() {
+		this(null, null, null, null);
 	}
 	
 	public AskFast(HttpServletRequest req) {
-		try {
-			this.baseURL = getHost(req);
-		} catch(Exception e) {
-		}
-		if (question == null)
-			question = new Question();
+		this(getHost(req));
 	}
 
 	public AskFast(String url)
 	{
-		setBaseURL(url);
+		this(url, null, null, null);
+	}
+	
+	public AskFast(String url, String privateKey, String publicKey, Map<String, String> params) {
+		this.baseURL = url;
+		this.privateKey = privateKey;
+		this.pubKey = publicKey;
+		this.params = params;
+		
+		if(this.params == null) 
+			this.params = new HashMap<String, String>();
+		
 		if (question == null)
 			question = new Question();
 	}
@@ -64,11 +81,22 @@ public class AskFast
 		if(next!=null)
 			question.addAnswer(new Answer(null, next));
 	}
+	
+	/**
+	 * asks a question
+	 * 
+	 * @param ask
+	 * @return
+	 */
+	public void ask(String ask)
+	{
+		ask(ask, null);
+	}
 
 	/**
 	 * asks a question
 	 * 
-	 * @param askText
+	 * @param ask
 	 * @param next
 	 * @return
 	 */
@@ -130,6 +158,31 @@ public class AskFast
 		return question.toJSON();
 	}
 	
+	public String outBoundCall(String fromAddress, String toAddress, String url) throws Exception {
+		
+		if(privateKey==null || pubKey==null) {
+			throw new Exception("Public or Private key isn't set");
+		}
+		
+		url = formatURL(url);
+		
+		ObjectMapper om = new ObjectMapper();
+		ObjectNode body = om.createObjectNode();
+		body.put("method", "outboundCall");
+		
+		ObjectNode params = om.createObjectNode();
+		params.put("adapterID", fromAddress);
+		params.put("address", toAddress);
+		params.put("url", url);
+		
+		params.put("privateKey", privateKey);
+		params.put("publicKey", pubKey);
+		body.put("params", params);
+		
+		String res = HttpUtil.post(ASKFAST_JSONRPC, body.toString());
+		return res;
+	}
+	
 	public void render(HttpServletResponse response) throws IOException {
 		
 		String json = render();
@@ -141,12 +194,21 @@ public class AskFast
 		response.getWriter().close();
 	}
 	
+	// Private functions
+	
 	private String formatText(String text) {
 		if(text==null)
 			return null;
 		
-		if(text.startsWith("/") && baseURL!=null) {
+		if((!text.startsWith("http") && !text.startsWith("https")) && text.endsWith(".wav") && baseURL!=null) {
 			text = baseURL + text;
+			try {
+				URL url = new URL(text);
+				URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+				text = uri.toString();
+			} catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		
 		if(!text.endsWith(".wav")) {
@@ -160,21 +222,51 @@ public class AskFast
 		if(url==null)
 			return null;
 		
-		if(url.startsWith("/") && baseURL!=null) {
+		if((!url.startsWith("http") && !url.startsWith("https")) && baseURL!=null) {
 			url = baseURL + url;
+		}
+		
+		url = addQueryString(url);
+		
+		return url;
+	}
+	
+	private String addQueryString(String url) {
+		if(this.params.size()>0) {
+			String query = "?";
+			if(url.contains("?"))
+				query = "&";
+			Iterator<Entry<String, String>> it = this.params.entrySet().iterator();
+			while(it.hasNext()) {
+				Entry<String, String> param = it.next();
+				query += param.getKey() + "=" + param.getValue()+"&";
+			}
+			return url + query.substring(0,query.length()-1);
 		}
 		
 		return url;
 	}
 	
-	private String getHost(HttpServletRequest req) throws MalformedURLException {
+	private static String getHost(HttpServletRequest req) {
 		int port = req.getServerPort();
 		if (req.getScheme().equals("http") && port == 80) {
 		    port = -1;
 		} else if (req.getScheme().equals("https") && port == 443) {
 		    port = -1;
 		}
-		URL serverURL = new URL(req.getScheme(), req.getServerName(), port, "");
-		return serverURL.toString();
+		String url = null;
+		try {
+			URL serverURL = new URL(req.getScheme(), req.getServerName(), port, "");
+			url = serverURL.toString();
+		} catch(Exception e) {
+		}
+		return url;
+	}
+	
+	// Getters and setters
+	
+	public void setBaseURL(String baseURL)
+	{
+		this.baseURL = baseURL;
 	}
 }

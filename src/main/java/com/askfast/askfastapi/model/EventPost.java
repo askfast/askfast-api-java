@@ -1,10 +1,6 @@
-package com.askfast.model;
+package com.askfast.askfastapi.model;
 
-import java.io.Serializable;
-
-public class EventPost implements Serializable {
-
-	private static final long serialVersionUID = -388855545127069511L;
+public class EventPost {
 	
 	private String responder;
 	private String question_id;

@@ -1,4 +1,4 @@
-package com.askfast.model;
+package com.askfast.askfastapi.model;
 
 public class EventCallback {
 

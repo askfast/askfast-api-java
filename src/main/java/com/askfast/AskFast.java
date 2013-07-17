@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.askfast.model.Answer;
 import com.askfast.model.Question;
 import com.askfast.util.HttpUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -22,7 +27,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class AskFast
 {
-	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
+    private static final Logger log = Logger.getLogger( AskFast.class.getName() );
+    
+//	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
+    private static final String ASKFAST_JSONRPC = "http://dialog-handler.appspot.com/rpc";
+    
 	private Question question = null;
 	
 	private String baseURL = null;
@@ -51,8 +60,14 @@ public class AskFast
 			question = new Question();
 	}
 
+        @JsonIgnore
+        public String getQuestionId()
+        {
+            return question.getQuestion_id();
+        }
+        
 	/**
-	 * creates a response based on the value. Also ends the dialog
+	 * creates a response based on the value
 	 * 
 	 * @param value
 	 * @return
@@ -80,7 +95,12 @@ public class AskFast
 	 */
 	public void ask(String ask)
 	{
-		ask(ask, null);
+	    ask(ask, "");
+	}
+	
+	public void askByVoice(String ask, String next)
+	{
+	    ask( ask, next, Question.QUESTION_TYPE_VOICE_RECORDING );
 	}
 
 	/**
@@ -92,15 +112,13 @@ public class AskFast
 	 */
 	public void ask(String ask, String next)
 	{
-		ask = formatText(ask);
-		next = formatURL(next);
-		
-		question.setQuestion_text(ask);
-		question.setType(Question.QUESTION_TYPE_OPEN);
-		if (next != null)
-		{
-			question.setAnswers(new ArrayList<Answer>(Arrays.asList(new Answer("", next))));
-		}
+	    ask( ask, next, Question.QUESTION_TYPE_OPEN );
+	}
+	
+	public void ask(String ask, AskFast askFast)
+	{
+	    ask( ask, null, Question.QUESTION_TYPE_OPEN );
+	    question.addAnswer( new Answer( "", askFast.question.getQuestion_id() ) );
 	}
 
 	/**
@@ -113,10 +131,22 @@ public class AskFast
 	public void addAnswer(String answer, String next)
 	{
 		question.setType(Question.QUESTION_TYPE_CLOSED);
-		
 		answer = formatText(answer);
 		next = formatURL(next);
 		question.addAnswer(new Answer(answer, next));
+	}
+	
+	/**
+	 * adds an answer by linking the questionid of the askFast parameter as the callbackURL. <br>
+	 * Typically used with a Dialog Object (collection of questions are linked to eachother )
+	 * @param answer
+	 * @param askFast this is linked to the callback of the answer
+	 */
+	public void addAnswer(String answer, AskFast askFast)
+	{
+	    question.setType(Question.QUESTION_TYPE_CLOSED);
+            answer = formatText(answer);
+            question.addAnswer( new Answer( answer, askFast.question.getQuestion_id() ) );
 	}
 
 	/**
@@ -148,30 +178,58 @@ public class AskFast
 		return question.toJSON();
 	}
 	
-	public String outBoundCall(String fromAddress, String toAddress, String url) throws Exception {
-		
-		if(privateKey==null || pubKey==null) {
-			throw new Exception("Public or Private key isn't set");
-		}
-		
-		url = formatURL(url);
-		
-		ObjectMapper om = new ObjectMapper();
-		ObjectNode body = om.createObjectNode();
-		body.put("method", "outboundCall");
-		
-		ObjectNode params = om.createObjectNode();
-		params.put("adapterID", fromAddress);
-		params.put("address", toAddress);
-		params.put("url", url);
-		
-		params.put("privateKey", privateKey);
-		params.put("publicKey", pubKey);
-		body.put("params", params);
-		
-		String res = HttpUtil.post(ASKFAST_JSONRPC, body.toString());
-		return res;
-	}
+	public String outBoundCall( String fromAddress, String toAddress, String url ) throws Exception
+        {
+            return outBoundCall( fromAddress, Arrays.asList( toAddress), url );
+        }
+	
+	public String outBoundCall( String fromAddress, Collection<String> toAddressList, String url ) throws Exception
+        {
+	    Map<String, String> toAddressMap = new HashMap<String, String>();
+	    for ( String toAddress : toAddressList )
+            {
+                toAddressMap.put( toAddress, "" );
+            }
+	    return outBoundCall( fromAddress, toAddressMap, url );
+        }
+	
+        public String outBoundCall( String fromAddress, Map<String, String> toAddressNameMap, String url ) throws Exception
+        {
+    
+            if ( privateKey == null || pubKey == null )
+            {
+                throw new Exception( "Public or Private key isn't set" );
+            }
+    
+            log.info( String.format( "request received to initiate outbound call. From: %s To: %s using URL: %s",
+                                     fromAddress, toAddressNameMap, url ) );
+            url = formatURL( url );
+    
+            ObjectMapper om = new ObjectMapper();
+            ObjectNode body = om.createObjectNode();
+            body.put( "method", "outboundCallWithMap" );
+    
+            ObjectNode params = om.createObjectNode();
+            params.put( "adapterID", fromAddress );
+            params.putPOJO( "addressMap", om.writeValueAsString( toAddressNameMap ) );
+            params.put( "url", url );
+    
+            params.put( "privateKey", privateKey );
+            params.put( "publicKey", pubKey );
+            body.put( "params", params );
+    
+            log.info( String.format( "request initiated for outbound call at: %s with payload: %s",
+                                     ASKFAST_JSONRPC, body.toString() ) );
+            String res = HttpUtil.post( ASKFAST_JSONRPC, body.toString() );
+            
+            log.info( String.format( "outbound call response recieved: %s", res ) );
+            return res;
+        }
+        
+        public void addEvent(String eventType, String callbackURL)
+        {
+            question.addEvent_callbacks(eventType, callbackURL);
+        }
 	
 	public void render(HttpServletResponse response) throws IOException {
 		
@@ -190,7 +248,7 @@ public class AskFast
 		if(text==null)
 			return null;
 		
-		if(text.endsWith(".wav") && baseURL!=null) {
+		if(text.endsWith(".wav") && baseURL!=null && !text.startsWith( "http" ) && !text.startsWith( "https" )) {
 			text = baseURL + text;
 		}
 		
@@ -202,7 +260,7 @@ public class AskFast
 	}
 	
 	private String formatURL(String url) {
-		if(url==null)
+		if(url==null || url.isEmpty())
 			return null;
 		
 		if((!url.startsWith("http") && !url.startsWith("https")) && baseURL!=null) {
@@ -229,9 +287,21 @@ public class AskFast
 	}
 	
 	// Getters and setters
-	
 	public void setBaseURL(String baseURL)
 	{
 		this.baseURL = baseURL;
 	}
+	
+        private void ask( String ask, String next, String askType )
+        {
+            ask = formatText( ask );
+            next = formatURL( next );
+    
+            question.setQuestion_text( ask );
+            question.setType( askType );
+            if ( next != null )
+            {
+                question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( "", next ) ) ) );
+            }
+        }
 }

@@ -1,6 +1,8 @@
 package com.askfast.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,7 +12,10 @@ public class Question {
 	public static final String QUESTION_TYPE_OPEN = "open";
 	public static final String QUESTION_TYPE_COMMENT = "comment";
 	public static final String QUESTION_TYPE_REFERRAL = "referral";
+	public static final String QUESTION_TYPE_VOICE_RECORDING = "openaudio";
 	
+    private Collection<MediaHint> media_Hints;
+
 	private String question_id = "";
 	private String question_text = "";
 	private String type = "";
@@ -20,7 +25,7 @@ public class Question {
 	ArrayList<EventCallback> event_callbacks;
 	
 	public Question() {
-		this("", "", "");
+		this(UUID.randomUUID().toString(), "", "");
 	}
 	
 	public Question(String id, String text, String type) {
@@ -95,4 +100,40 @@ public class Question {
 		
 		return json;
 	}
+	
+	public static Question fromJson(String json)
+	{
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    Question question = null;
+	    try
+            {
+                question = objectMapper.readValue( json, Question.class );
+            }
+            catch ( Exception e )
+            {
+                e.printStackTrace();
+            }
+	    return question;
+	}
+
+        public Collection<MediaHint> getMedia_Hints()
+        {
+            return media_Hints;
+        }
+    
+        public void setMedia_Hints( Collection<MediaHint> media_Hints )
+        {
+            this.media_Hints = media_Hints;
+        }
+
+        public void addMedia_Hint( MediaHint mediaHint )
+        {
+            media_Hints = media_Hints == null ? new ArrayList<MediaHint>() : media_Hints;
+            media_Hints.add( mediaHint );
+        }
+
+        public void addEvent_callbacks( String eventType, String callbackURL )
+        {
+            event_callbacks.add( new EventCallback( eventType, callbackURL ) );
+        }
 }

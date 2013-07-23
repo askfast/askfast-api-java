@@ -1,35 +1,42 @@
 package com.askfast.model;
 
-public class EventCallback {
+import com.askfast.model.EventPost.EventType;
+
+public class EventCallback extends ModelBase {
 
 	public static final String EVENT_TYPE_TIMEOUT = "timeout";
 	public static final String EVENT_TYPE_EXCEPTION = "exception";
 	public static final String EVENT_TYPE_HANGUP = "hangup";
 	
-	private String event;
+	private EventType event;
 	private String callback;
 	
 	public EventCallback() {
 		this(null, null);
 	}
-	public EventCallback(String event, String callback) {
+	public EventCallback(EventType event, String callback) {
 		
 		this.event = event;
 		this.callback = callback;
 	}
 	
-	public String getEvent() { 
+	public EventType getEvent() { 
 		return this.event; 
 	}
 	public String getCallback() { 
 		return this.callback; 
 	}
 	
-	public void setEvent(String event_type) { 
+	public void setEvent(EventType event_type) { 
 		this.event = event_type; 
 	}
 	
 	public void setCallback(String callback) { 
 		this.callback = callback; 
 	}
+	
+        public static EventCallback fromJSON( String json )
+        {
+            return fromJSON( json, EventCallback.class );
+        }
 }

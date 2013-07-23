@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AnswerPost {
+public class AnswerPost extends ModelBase{
 	
 	String dialog_id;
 	String question_id;
@@ -28,16 +28,6 @@ public class AnswerPost {
 		return ap;
 	}
 	
-	public static AnswerPost createInstance(String json) {
-		AnswerPost ap = null;
-		try {
-			ObjectMapper om = new ObjectMapper();
-			ap = om.readValue(json, AnswerPost.class);
-		} catch(Exception e) {
-		}
-		
-		return ap;
-	}
 	public String getDialog_id() {
 		return dialog_id;
 	}
@@ -70,14 +60,8 @@ public class AnswerPost {
 		this.responder = responder;
 	}
 	
-	public String toJSON() {
-		String json = null;
-		try {
-			ObjectMapper om = new ObjectMapper();
-			json = om.writeValueAsString(this);
-		} catch(Exception e){
-		}
-		
-		return json;
-	}
+        public static AnswerPost fromJSON( String json )
+        {
+            return fromJSON( json, AnswerPost.class );
+        }
 }

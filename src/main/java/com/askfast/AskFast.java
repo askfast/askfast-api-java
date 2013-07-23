@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.askfast.model.Answer;
+import com.askfast.model.EventPost.EventType;
 import com.askfast.model.Question;
 import com.askfast.util.HttpUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -226,7 +227,7 @@ public class AskFast
             return res;
         }
         
-        public void addEvent(String eventType, String callbackURL)
+        public void addEvent(EventType eventType, String callbackURL)
         {
             question.addEvent_callbacks(eventType, callbackURL);
         }

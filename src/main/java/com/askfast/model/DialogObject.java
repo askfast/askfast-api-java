@@ -8,9 +8,8 @@ import java.util.logging.Logger;
 import com.askfast.AskFast;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DialogObject
+public class DialogObject extends ModelBase
 {
     private static final Logger log = Logger.getLogger(DialogObject.class.getSimpleName());
     String dialog_id;
@@ -72,35 +71,10 @@ public class DialogObject
         addQuestion( question );
     }
     
-    public String toJSON()
-    {
-        ObjectMapper om = new ObjectMapper();
-        String json = "{}";
-        try
-        {
-            json = om.writeValueAsString( this );
-        }
-        catch ( Exception e )
-        {
-        }
-
-        return json;
-    }
-    
     public static DialogObject fromJSON(String json_string)
     {
-        DialogObject dialogObject = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        try
-        {
-            dialogObject = objectMapper.readValue( json_string, DialogObject.class );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-        }
-        return dialogObject;
-     }
+        return fromJSON( json_string, DialogObject.class );
+    }
 }
 
 

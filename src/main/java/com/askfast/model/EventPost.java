@@ -1,11 +1,16 @@
 package com.askfast.model;
 
-public class EventPost {
+public class EventPost extends ModelBase{
 	
 	private String responder;
 	private String question_id;
 	private String event;
 	private String message;
+	
+	public enum EventType
+	{
+	    delivered, read, answered, timeout, hangup, cancelled, exception;
+	}
 	
 	public EventPost(){}
 	public EventPost(String responder, String question_id, String event, String message) {
@@ -39,5 +44,10 @@ public class EventPost {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+	public static EventPost fromJson(String json)
+	{
+	    return fromJSON( json, EventPost.class );
 	}
 }

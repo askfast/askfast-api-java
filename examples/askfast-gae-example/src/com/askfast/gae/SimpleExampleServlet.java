@@ -17,23 +17,25 @@ import com.askfast.AskFast;
 public class SimpleExampleServlet extends HttpServlet
 {
 	private ArrayList<String> cSampleAnswers = new ArrayList<String>(Arrays.asList("Yup", "Nope"));
-	private ArrayList<String> cSampleResponses = new ArrayList<String>(
-																		Arrays.asList(	"Thanks for your accepting!",
-																						"Thanks for your reply!",
-																						"Something went wrong in this conversation.."));
+        private ArrayList<String> cSampleResponses = new ArrayList<String>(
+            Arrays.asList( "Thanks for your accepting!", "Thanks for your reply!",
+                           "Something went wrong in this conversation.." ) );
 	AskFast cAskFast;
 	static final Logger log = Logger.getLogger(SimpleExampleServlet.class.getName());
 
 	
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-	{
-		cAskFast = new AskFast(req);
-		firstQuestion();
-		try {
-			cAskFast.render(resp);
-		} catch (Exception e){
-		}
-	}
+        public void doGet( HttpServletRequest req, HttpServletResponse resp )
+        {
+            cAskFast = new AskFast( req );
+            firstQuestion();
+            try
+            {
+                cAskFast.render( resp );
+            }
+            catch ( Exception e )
+            {
+            }
+        }
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
@@ -84,7 +86,8 @@ public class SimpleExampleServlet extends HttpServlet
 		cAskFast.addAnswer(cSampleAnswers.get(1), getServletPath() + "?question_id=11");
 	}
 	
-	public String getServletPath() {
-		return "/simple_example";
-	}
+        public String getServletPath()
+        {
+            return "/simple_example";
+        }
 }

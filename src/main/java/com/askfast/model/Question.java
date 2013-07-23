@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.askfast.model.EventPost.EventType;
 
-public class Question {
+public class Question extends ModelBase{
 	
 	public static final String QUESTION_TYPE_CLOSED = "closed";
 	public static final String QUESTION_TYPE_OPEN = "open";
@@ -78,9 +78,14 @@ public class Question {
 		this.type = type;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+        public void setUrl( String url )
+        {
+            if( !url.startsWith( "http" ) && !url.startsWith( "tel:" ))
+            {
+                url = "tel:" + url;
+            }
+            this.url = url;
+        }
 	
 	public void setAnswers(ArrayList<Answer> answers) {
 		this.answers = answers;
@@ -90,30 +95,9 @@ public class Question {
 		this.event_callbacks = event_callbacks;
 	}
 	
-	public String toJSON() {
-		ObjectMapper om = new ObjectMapper();
-		String json = "{}";
-		try {
-			json = om.writeValueAsString(this);
-		} catch(Exception e){
-		}
-		
-		return json;
-	}
-	
 	public static Question fromJson(String json)
 	{
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    Question question = null;
-	    try
-            {
-                question = objectMapper.readValue( json, Question.class );
-            }
-            catch ( Exception e )
-            {
-                e.printStackTrace();
-            }
-	    return question;
+	    return fromJSON( json, Question.class );
 	}
 
         public Collection<MediaHint> getMedia_Hints()
@@ -132,7 +116,7 @@ public class Question {
             media_Hints.add( mediaHint );
         }
 
-        public void addEvent_callbacks( String eventType, String callbackURL )
+        public void addEvent_callbacks( EventType eventType, String callbackURL )
         {
             event_callbacks.add( new EventCallback( eventType, callbackURL ) );
         }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.askfast.askfastapi.model.Answer;
+import com.askfast.askfastapi.model.EventCallback;
 import com.askfast.askfastapi.model.Question;
 import com.askfast.askfastapi.util.HttpUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -129,6 +130,13 @@ public class AskFast
 		question.addAnswer(new Answer(answer, next));
 	}
 
+	
+	public void addEvent(String event,String callback){
+		question.setType(Question.QUESTION_TYPE_CLOSED);
+		callback = formatURL(callback);
+		question.addEventCallback(new EventCallback(event, callback));
+	}
+	
 	/**
 	 * redirect the control to a new agent
 	 * 

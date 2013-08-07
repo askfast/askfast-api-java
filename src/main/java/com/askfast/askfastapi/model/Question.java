@@ -35,7 +35,10 @@ public class Question {
 	public void addAnswer(Answer answer) {
 		this.answers.add(answer);
 	}
-
+	
+	public void addEventCallback(EventCallback ec){
+		this.event_callbacks.add(ec);
+	}
 	// Getters/Setters:
 	public String getQuestion_id() {
 		return this.question_id;

@@ -132,7 +132,6 @@ public class AskFast
 
 	
 	public void addEvent(String event,String callback){
-		question.setType(Question.QUESTION_TYPE_CLOSED);
 		callback = formatURL(callback);
 		question.addEventCallback(new EventCallback(event, callback));
 	}

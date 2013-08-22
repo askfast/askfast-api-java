@@ -276,4 +276,10 @@ public class AskFast
 	{
 		this.baseURL = baseURL;
 	}
+	
+	public Map<String, String> getParams()
+	{
+		return this.params;
+	}
+
 }

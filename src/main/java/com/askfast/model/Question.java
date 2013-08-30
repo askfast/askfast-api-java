@@ -17,9 +17,9 @@ public class Question extends ModelBase{
     private Collection<MediaHint> media_Hints;
 
 	private String question_id = "";
-	private String question_text = "";
-	private String type = "";
-	private String url = "";
+	private String question_text = null;
+	private String type = null;
+	private String url = null;
 	
 	ArrayList<Answer> answers;
 	ArrayList<EventCallback> event_callbacks;

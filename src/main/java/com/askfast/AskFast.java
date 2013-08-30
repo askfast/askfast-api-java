@@ -179,22 +179,22 @@ public class AskFast
 		return question.toJSON();
 	}
 	
-	public String outBoundCall( String fromAddress, String toAddress, String url ) throws Exception
+	public String outBoundCall( String fromAddress, String senderName, String toAddress, String url ) throws Exception
         {
-            return outBoundCall( fromAddress, Arrays.asList( toAddress), url );
+            return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress), url );
         }
 	
-	public String outBoundCall( String fromAddress, Collection<String> toAddressList, String url ) throws Exception
+	public String outBoundCall( String fromAddress, String senderName, Collection<String> toAddressList, String url ) throws Exception
         {
 	    Map<String, String> toAddressMap = new HashMap<String, String>();
 	    for ( String toAddress : toAddressList )
             {
                 toAddressMap.put( toAddress, "" );
             }
-	    return outBoundCall( fromAddress, toAddressMap, url );
+	    return outBoundCall( fromAddress, senderName, toAddressMap, url );
         }
 	
-        public String outBoundCall( String fromAddress, Map<String, String> toAddressNameMap, String url ) throws Exception
+        public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String url ) throws Exception
         {
     
             if ( privateKey == null || pubKey == null )
@@ -214,9 +214,10 @@ public class AskFast
             params.put( "adapterID", fromAddress );
             params.putPOJO( "addressMap", om.writeValueAsString( toAddressNameMap ) );
             params.put( "url", url );
-    
+            params.put( "senderName", senderName);
             params.put( "privateKey", privateKey );
             params.put( "publicKey", pubKey );
+
             body.put( "params", params );
     
             log.info( String.format( "request initiated for outbound call at: %s with payload: %s",
@@ -260,16 +261,17 @@ public class AskFast
 		return text;
 	}
 	
-	private String formatURL(String url) {
-		if(url==null || url.isEmpty())
-			return null;
-		
-		if((!url.startsWith("http") && !url.startsWith("https")) && baseURL!=null) {
-			url = baseURL + url;
-		}
-		
-		return url;
-	}
+        private String formatURL( String url )
+        {
+            if ( url == null || url.isEmpty() )
+                return null;
+    
+            if ( ( !url.startsWith( "http" ) && !url.startsWith( "https" ) ) && baseURL != null )
+            {
+                url = baseURL + url;
+            }
+            return url;
+        }
 	
 	private static String getHost(HttpServletRequest req) {
 		int port = req.getServerPort();

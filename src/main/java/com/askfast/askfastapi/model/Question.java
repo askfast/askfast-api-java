@@ -1,10 +1,13 @@
-package com.askfast.model;
+
+package com.askfast.askfastapi.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-import com.askfast.model.EventPost.EventType;
+import com.askfast.askfastapi.model.EventPost.EventType;
+import com.askfast.model.MediaHint;
+import com.askfast.model.ModelBase;
 
 public class Question extends ModelBase{
 	
@@ -119,5 +122,10 @@ public class Question extends ModelBase{
         public void addEvent_callbacks( EventType eventType, String callbackURL )
         {
             event_callbacks.add( new EventCallback( eventType, callbackURL ) );
+        }
+
+        public void addEventCallback( EventCallback eventCallback )
+        {
+            event_callbacks.add( eventCallback );
         }
 }

@@ -1,4 +1,4 @@
-package com.askfast;
+package com.askfast.askfastapi;
 
 import java.io.IOException;
 import java.net.URL;
@@ -6,16 +6,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.askfast.model.Answer;
-import com.askfast.model.EventPost.EventType;
-import com.askfast.model.Question;
-import com.askfast.util.HttpUtil;
+import com.askfast.askfastapi.model.Answer;
+import com.askfast.askfastapi.model.EventPost.EventType;
+import com.askfast.askfastapi.model.Question;
+import com.askfast.askfastapi.util.HttpUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,6 +40,7 @@ public class AskFast
 	private String baseURL = null;
 	private String privateKey = null;
 	private String pubKey = null;
+	private Map<String, String> params = null;
 	
 	public AskFast() {
 		this(null, null, null);
@@ -230,9 +233,10 @@ public class AskFast
         
         public void addEvent(EventType eventType, String callbackURL)
         {
+            callbackURL = formatURL(callbackURL);
             question.addEvent_callbacks(eventType, callbackURL);
         }
-	
+        
 	public void render(HttpServletResponse response) throws IOException {
 		
 		String json = render();
@@ -261,17 +265,34 @@ public class AskFast
 		return text;
 	}
 	
-        private String formatURL( String url )
-        {
-            if ( url == null || url.isEmpty() )
-                return null;
-    
-            if ( ( !url.startsWith( "http" ) && !url.startsWith( "https" ) ) && baseURL != null )
-            {
-                url = baseURL + url;
-            }
-            return url;
-        }
+	private String formatURL(String url) {
+		if(url==null)
+			return null;
+		
+		if((!url.startsWith("http") && !url.startsWith("https")) && baseURL!=null) {
+			url = baseURL + url;
+		}
+		
+		url = addQueryString(url);
+		
+		return url;
+	}
+	
+	private String addQueryString(String url) {
+		if(this.params.size()>0) {
+			String query = "?";
+			if(url.contains("?"))
+				query = "&";
+			Iterator<Entry<String, String>> it = this.params.entrySet().iterator();
+			while(it.hasNext()) {
+				Entry<String, String> param = it.next();
+				query += param.getKey() + "=" + param.getValue()+"&";
+			}
+			return url + query.substring(0,query.length()-1);
+		}
+		
+		return url;
+	}
 	
 	private static String getHost(HttpServletRequest req) {
 		int port = req.getServerPort();

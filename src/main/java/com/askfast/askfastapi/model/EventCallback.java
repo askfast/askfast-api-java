@@ -1,6 +1,7 @@
-package com.askfast.model;
+package com.askfast.askfastapi.model;
 
-import com.askfast.model.EventPost.EventType;
+import com.askfast.askfastapi.model.EventPost.EventType;
+import com.askfast.model.ModelBase;
 
 public class EventCallback extends ModelBase {
 

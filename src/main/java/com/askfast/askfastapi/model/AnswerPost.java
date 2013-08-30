@@ -1,12 +1,14 @@
-package com.askfast.model;
+package com.askfast.askfastapi.model;
 
 import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.askfast.model.ModelBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AnswerPost extends ModelBase{
+public class AnswerPost extends ModelBase
+{
 	
 	String dialog_id;
 	String question_id;

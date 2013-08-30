@@ -1,17 +1,55 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.askfast</groupId>
+	
+	<groupId>com.askfast.askfastapi</groupId>
 	<artifactId>askfast-api-java</artifactId>
-	<version>0.2.0-SNAPSHOT</version>
+	<version>0.2.0</version>
+	
 	<name>AskFast Library</name>
 	<description>AskFast Library to use the AskFast system</description>
+  
+  	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+		<license>
+			<name>The MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>  
+  
+  	<scm>
+		<connection>scm:git:git@github.com:askfast/askfast-api-java.git</connection>
+		<url>scm:git:git@github.com:askfast/askfast-api-java.git</url>
+		<developerConnection>scm:git:git@github.com:askfast/askfast-api-java.git</developerConnection>
+	</scm>
 
+	<organization>
+		<name>AskFast BV</name>
+		<url>http://www.ask-fast.com/</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Sven Stam</name>
+			<id>sven</id>
+			<email>sven@ask-fast.com</email>
+			<organization>AskFast BV, the Netherlands</organization>
+			<url>http://www.ask-fast.com/</url>
+			<timezone>1</timezone>
+		</developer>
+	</developers>
+  
 	<properties>
 		<jackson.version>2.0.0</jackson.version>
 		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 	</properties>
-
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -24,4 +62,29 @@
 			<version>${javax.servlet-api.version}</version>
 		</dependency>
 	</dependencies>
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	
+	<build>
+		<plugins>
+		<!-- Make compiler UTF-8/ISO-8859-1 aware, set JVM to 1.6+ -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+					<compilerArguments>
+						<verbose />
+					</compilerArguments>
+				</configuration>
+			</plugin>
+	</plugins>
+	 </build>
 </project>

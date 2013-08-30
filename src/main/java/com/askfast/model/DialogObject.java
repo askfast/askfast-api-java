@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import com.askfast.AskFast;
+import com.askfast.askfastapi.AskFast;
+import com.askfast.askfastapi.model.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

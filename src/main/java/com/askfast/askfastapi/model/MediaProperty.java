@@ -1,31 +1,31 @@
-package com.askfast.model;
-
+package com.askfast.askfastapi.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class MediaHint
+public class MediaProperty
 {
-    public enum MediaHintKey
+    public enum MediaPropertyKey
     {
         RedirectTimeOut( "timeout" ), AnswerInput( "answer_input" ), Length( "length" );
 
+        @SuppressWarnings("unused")
         private String name;
 
-        private MediaHintKey( String name )
+        private MediaPropertyKey( String name )
         {
             this.name = name;
         }
     }
-
+    
     public enum MediumType
     {
         Broadsoft, GTalk, Skype, SMS;
     }
 
     private MediumType medium;
-    private Map<MediaHintKey, String> hints;
+    private Map<MediaPropertyKey, String> properties;
 
     public MediumType getMedium()
     {
@@ -37,15 +37,14 @@ public class MediaHint
         this.medium = medium;
     }
 
-    public Map<MediaHintKey, String> getHints()
+    public Map<MediaPropertyKey, String> getProperties()
     {
-        return hints;
+        return properties;
     }
 
-    public void addHint( MediaHintKey key, String value )
+    public void addProperty( MediaPropertyKey key, String value )
     {
-        hints = hints != null ? hints : new HashMap<MediaHintKey, String>();
-        hints.put( key, value );
+        properties = properties != null ? properties : new HashMap<MediaPropertyKey, String>();
+        properties.put( key, value );
     }
 }
-

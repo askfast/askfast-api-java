@@ -40,7 +40,7 @@ public class AskFast
 	private String baseURL = null;
 	private String privateKey = null;
 	private String pubKey = null;
-	private Map<String, String> params = null;
+	private Map<String, String> params = new HashMap<String, String>();
 	
 	public AskFast() {
 		this(null, null, null);
@@ -249,25 +249,31 @@ public class AskFast
 	}
 	
 	// Private functions
-	
-	private String formatText(String text) {
-		if(text==null)
-			return null;
-		
-		if(text.endsWith(".wav") && baseURL!=null && !text.startsWith( "http" ) && !text.startsWith( "https" )) {
-			text = baseURL + text;
-		}
-		
-		if(!text.endsWith(".wav")) {
-			text = "text://"+text;
-		}
-		
-		return text;
-	}
+        private String formatText( String text )
+        {
+            if ( text == null )
+                return null;
+    
+            if ( !text.startsWith( "http" ) && !text.startsWith( "https" ) )
+            {
+                if ( text.endsWith( ".wav" ) )
+                {
+                    if ( baseURL != null )
+                    {
+                        text = baseURL + text;
+                    }
+                }
+                else
+                {
+                    text = "text://" + text;
+                }
+            }
+            return text;
+        }
 	
 	private String formatURL(String url) {
-		if(url==null)
-			return null;
+		if(url==null || url.isEmpty())
+			return url;
 		
 		if((!url.startsWith("http") && !url.startsWith("https")) && baseURL!=null) {
 			url = baseURL + url;
@@ -310,7 +316,6 @@ public class AskFast
 		return url;
 	}
 	
-	// Getters and setters
 	public void setBaseURL(String baseURL)
 	{
 		this.baseURL = baseURL;
@@ -323,7 +328,7 @@ public class AskFast
     
             question.setQuestion_text( ask );
             question.setType( askType );
-            if ( next != null )
+            if ( next != null && !next.isEmpty())
             {
                 question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( "", next ) ) ) );
             }

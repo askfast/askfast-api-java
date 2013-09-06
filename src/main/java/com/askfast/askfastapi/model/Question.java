@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.UUID;
 
 import com.askfast.askfastapi.model.EventPost.EventType;
-import com.askfast.model.MediaHint;
 import com.askfast.model.ModelBase;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Question extends ModelBase{
 	
@@ -17,7 +17,7 @@ public class Question extends ModelBase{
 	public static final String QUESTION_TYPE_REFERRAL = "referral";
 	public static final String QUESTION_TYPE_VOICE_RECORDING = "openaudio";
 	
-    private Collection<MediaHint> media_Hints;
+        private Collection<MediaProperty> mediaProperties;
 
 	private String question_id = "";
 	private String question_text = null;
@@ -103,20 +103,22 @@ public class Question extends ModelBase{
 	    return fromJSON( json, Question.class );
 	}
 
-        public Collection<MediaHint> getMedia_Hints()
+	@JsonProperty("mediaProperties")
+        public Collection<MediaProperty> getMediaProperties()
         {
-            return media_Hints;
+            return mediaProperties;
         }
-    
-        public void setMedia_Hints( Collection<MediaHint> media_Hints )
+	
+        @JsonProperty("mediaProperties")    
+        public void setMediaProperties( Collection<MediaProperty> media_Hints )
         {
-            this.media_Hints = media_Hints;
+            this.mediaProperties = media_Hints;
         }
 
-        public void addMedia_Hint( MediaHint mediaHint )
+        public void addMediaProperties( MediaProperty mediaProperty )
         {
-            media_Hints = media_Hints == null ? new ArrayList<MediaHint>() : media_Hints;
-            media_Hints.add( mediaHint );
+            mediaProperties = mediaProperties == null ? new ArrayList<MediaProperty>() : mediaProperties;
+            mediaProperties.add( mediaProperty );
         }
 
         public void addEvent_callbacks( EventType eventType, String callbackURL )

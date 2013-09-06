@@ -248,28 +248,32 @@ public class AskFast
 		response.getWriter().close();
 	}
 	
+	public Map<String, String> getParams() {
+		return params;
+	}
+	
 	// Private functions
-        private String formatText( String text )
+    private String formatText( String text )
+    {
+        if ( text == null )
+            return null;
+
+        if ( !text.startsWith( "http" ) && !text.startsWith( "https" ) )
         {
-            if ( text == null )
-                return null;
-    
-            if ( !text.startsWith( "http" ) && !text.startsWith( "https" ) )
+            if ( text.endsWith( ".wav" ) )
             {
-                if ( text.endsWith( ".wav" ) )
+                if ( baseURL != null )
                 {
-                    if ( baseURL != null )
-                    {
-                        text = baseURL + text;
-                    }
-                }
-                else
-                {
-                    text = "text://" + text;
+                    text = baseURL + text;
                 }
             }
-            return text;
+            else
+            {
+                text = "text://" + text;
+            }
         }
+        return text;
+    }
 	
 	private String formatURL(String url) {
 		if(url==null || url.isEmpty())
@@ -321,16 +325,16 @@ public class AskFast
 		this.baseURL = baseURL;
 	}
 	
-        private void ask( String ask, String next, String askType )
+    private void ask( String ask, String next, String askType )
+    {
+        ask = formatText( ask );
+        next = formatURL( next );
+
+        question.setQuestion_text( ask );
+        question.setType( askType );
+        if ( next != null && !next.isEmpty())
         {
-            ask = formatText( ask );
-            next = formatURL( next );
-    
-            question.setQuestion_text( ask );
-            question.setType( askType );
-            if ( next != null && !next.isEmpty())
-            {
-                question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( "", next ) ) ) );
-            }
+            question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( "", next ) ) ) );
         }
+    }
 }

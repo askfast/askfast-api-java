@@ -43,7 +43,7 @@ public class AskFast
 	private Map<String, String> params = new HashMap<String, String>();
 	
 	public AskFast() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 	
 	public AskFast(HttpServletRequest req) {
@@ -52,17 +52,23 @@ public class AskFast
 
 	public AskFast(String url)
 	{
-		this(url, null, null);
+		this(url, null, null, null);
 	}
 	
-	public AskFast(String url, String privateKey, String publicKey) {
+	public AskFast(String url, String privateKey, String publicKey, Map<String, String> params ) {
 		this.baseURL = url;
 		this.privateKey = privateKey;
 		this.pubKey = publicKey;
+		this.params = params;
+		
+		if ( this.params == null ) {
+		  this.params = new HashMap<String, String>();
+		}
 		
 		if (question == null)
 			question = new Question();
 	}
+	
 
         @JsonIgnore
         public String getQuestionId()
@@ -182,6 +188,10 @@ public class AskFast
 		return question.toJSON();
 	}
 	
+	public String outBoundCall( String fromAddress, String toAddress, String url ) throws Exception {
+	  return this.outBoundCall( fromAddress, null, toAddress, url );
+  }
+
 	public String outBoundCall( String fromAddress, String senderName, String toAddress, String url ) throws Exception
         {
             return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress), url );

@@ -45,7 +45,7 @@
 	</developers>
   
 	<properties>
-		<jackson.version>2.0.0</jackson.version>
+		<jackson.version>2.2.3</jackson.version>
 		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 	</properties>

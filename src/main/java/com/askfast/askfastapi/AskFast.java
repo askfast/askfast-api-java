@@ -32,8 +32,7 @@ public class AskFast
 {
     private static final Logger log = Logger.getLogger( AskFast.class.getName() );
     
-//	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
-    private static final String ASKFAST_JSONRPC = "http://dialog-handler.appspot.com/rpc";
+	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
     
 	private Question question = null;
 	

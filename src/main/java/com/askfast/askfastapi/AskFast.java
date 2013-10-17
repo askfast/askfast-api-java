@@ -192,59 +192,59 @@ public class AskFast
   }
 
 	public String outBoundCall( String fromAddress, String senderName, String toAddress, String url ) throws Exception
-        {
-            return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress), url );
-        }
+    {
+        return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress), url );
+    }
 	
 	public String outBoundCall( String fromAddress, String senderName, Collection<String> toAddressList, String url ) throws Exception
-        {
+    {
 	    Map<String, String> toAddressMap = new HashMap<String, String>();
-	    for ( String toAddress : toAddressList )
-            {
-                toAddressMap.put( toAddress, "" );
-            }
-	    return outBoundCall( fromAddress, senderName, toAddressMap, url );
+        for ( String toAddress : toAddressList )
+        {
+            toAddressMap.put( toAddress, "" );
         }
+        return outBoundCall( fromAddress, senderName, toAddressMap, url );
+    }
 	
-        public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String url ) throws Exception
-        {
-    
-            if ( privateKey == null || pubKey == null )
-            {
-                throw new Exception( "Public or Private key isn't set" );
-            }
-    
-            log.info( String.format( "request received to initiate outbound call. From: %s To: %s using URL: %s",
-                                     fromAddress, toAddressNameMap, url ) );
-            url = formatURL( url );
-    
-            ObjectMapper om = new ObjectMapper();
-            ObjectNode body = om.createObjectNode();
-            body.put( "method", "outboundCallWithMap" );
-    
-            ObjectNode params = om.createObjectNode();
-            params.put( "adapterID", fromAddress );
-            params.putPOJO( "addressMap", om.writeValueAsString( toAddressNameMap ) );
-            params.put( "url", url );
-            params.put( "senderName", senderName);
-            params.put( "privateKey", privateKey );
-            params.put( "publicKey", pubKey );
+    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String url ) throws Exception
+    {
 
-            body.put( "params", params );
-    
-            log.info( String.format( "request initiated for outbound call at: %s with payload: %s",
-                                     ASKFAST_JSONRPC, body.toString() ) );
-            String res = HttpUtil.post( ASKFAST_JSONRPC, body.toString() );
-            
-            log.info( String.format( "outbound call response recieved: %s", res ) );
-            return res;
-        }
-        
-        public void addEvent(EventType eventType, String callbackURL)
+        if ( privateKey == null || pubKey == null )
         {
-            callbackURL = formatURL(callbackURL);
-            question.addEvent_callbacks(eventType, callbackURL);
+            throw new Exception( "Public or Private key isn't set" );
         }
+
+        log.info( String.format( "request received to initiate outbound call. From: %s To: %s using URL: %s",
+                                 fromAddress, toAddressNameMap, url ) );
+        url = formatURL( url );
+
+        ObjectMapper om = new ObjectMapper();
+        ObjectNode body = om.createObjectNode();
+        body.put( "method", "outboundCallWithMap" );
+
+        ObjectNode params = om.createObjectNode();
+        params.put( "adapterID", fromAddress );
+        params.putPOJO( "addressMap", om.writeValueAsString( toAddressNameMap ) );
+        params.put( "url", url );
+        params.put( "senderName", senderName);
+        params.put( "privateKey", privateKey );
+        params.put( "publicKey", pubKey );
+
+        body.put( "params", params );
+
+        log.info( String.format( "request initiated for outbound call at: %s with payload: %s",
+                                 ASKFAST_JSONRPC, body.toString() ) );
+        String res = HttpUtil.post( ASKFAST_JSONRPC, body.toString() );
+        
+        log.info( String.format( "outbound call response recieved: %s", res ) );
+        return res;
+    }
+        
+    public void addEvent(EventType eventType, String callbackURL)
+    {
+        callbackURL = formatURL(callbackURL);
+        question.addEvent_callbacks(eventType, callbackURL);
+    }
         
 	public void render(HttpServletResponse response) throws IOException {
 		

@@ -187,26 +187,26 @@ public class AskFast
 		return question.toJSON();
 	}
 	
-	public String outBoundCall( String fromAddress, String toAddress, String url ) throws Exception {
-	  return this.outBoundCall( fromAddress, null, toAddress, url );
+	public String outBoundCall( String fromAddress, String toAddress, String subject, String url ) throws Exception {
+	  return this.outBoundCall( fromAddress, null, toAddress, subject, url );
   }
 
-	public String outBoundCall( String fromAddress, String senderName, String toAddress, String url ) throws Exception
+	public String outBoundCall( String fromAddress, String senderName, String toAddress, String subject, String url ) throws Exception
     {
-        return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress), url );
+        return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress), subject, url );
     }
 	
-	public String outBoundCall( String fromAddress, String senderName, Collection<String> toAddressList, String url ) throws Exception
+	public String outBoundCall( String fromAddress, String senderName, Collection<String> toAddressList, String subject, String url ) throws Exception
     {
 	    Map<String, String> toAddressMap = new HashMap<String, String>();
         for ( String toAddress : toAddressList )
         {
             toAddressMap.put( toAddress, "" );
         }
-        return outBoundCall( fromAddress, senderName, toAddressMap, url );
+        return outBoundCall( fromAddress, senderName, toAddressMap, subject, url );
     }
 	
-    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String url ) throws Exception
+    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String subject, String url ) throws Exception
     {
 
         if ( privateKey == null || pubKey == null )
@@ -229,6 +229,7 @@ public class AskFast
         params.put( "senderName", senderName);
         params.put( "privateKey", privateKey );
         params.put( "publicKey", pubKey );
+        params.put( "subject", subject );
 
         body.put( "params", params );
 

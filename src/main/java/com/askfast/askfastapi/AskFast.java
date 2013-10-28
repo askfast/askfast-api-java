@@ -187,15 +187,45 @@ public class AskFast
 		return question.toJSON();
 	}
 	
-	public String outBoundCall( String fromAddress, String toAddress, String subject, String url ) throws Exception {
-	  return this.outBoundCall( fromAddress, null, toAddress, subject, url );
-  }
+	/**
+	 * overloaded method for any outboundcalls without a subject (Everything except Email)
+	 * @param fromAddress address of the sender 
+	 * @param toAddress address of the receiver
+	 * @param url GET request on this URL has the question 
+	 * @throws Exception
+	 */
+	public String outBoundCall( String fromAddress, String toAddress, String url ) throws Exception
+    {
+        return this.outBoundCall( fromAddress, null, toAddress, null, url );
+    }
+	
+	/**
+     * overloaded method for any outboundcalls with a subject (Everything including Email)
+     * @param fromAddress address of the sender 
+     * @param toAddress address of the receiver
+     * @param url GET request on this URL has the question 
+     * @throws Exception
+     */
+    public String outBoundCall( String fromAddress, String toAddress, String subject, String url ) throws Exception
+    {
+        return this.outBoundCall( fromAddress, null, toAddress, subject, url );
+    }
 
 	public String outBoundCall( String fromAddress, String senderName, String toAddress, String subject, String url ) throws Exception
     {
         return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress), subject, url );
     }
 	
+	/**
+	 * overloaded method for any broadcast outboundcalls with a subject (Everything including an Email)
+	 * @param fromAddress address of the sender
+	 * @param senderName name of the sender (userful for sending emails)
+	 * @param toAddressList collection of all recipient addresses 
+	 * @param subject subject of the email
+	 * @param url question url
+	 * @return
+	 * @throws Exception
+	 */
 	public String outBoundCall( String fromAddress, String senderName, Collection<String> toAddressList, String subject, String url ) throws Exception
     {
 	    Map<String, String> toAddressMap = new HashMap<String, String>();
@@ -206,6 +236,31 @@ public class AskFast
         return outBoundCall( fromAddress, senderName, toAddressMap, subject, url );
     }
 	
+	/**
+     * overloaded method for any broadcast outboundcalls without a subject (Everything except an Email).
+     * Makes it backward compatible
+     * @param fromAddress address of the sender 
+     * @param senderName name of the sender (userful for sending emails)
+     * @param toAddressNameMap map containing all recipient address for a Broadcast call
+     * @param url GET request on this URL has the question 
+     * @return result of this outBound
+     * @throws Exception
+     */
+	public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String url ) throws Exception
+    {
+	    return outBoundCall( fromAddress, senderName, toAddressNameMap, null, url );
+    }
+	
+	/**
+	 * overloaded method for any broadcast outboundcalls with a subject (Everything including Email)
+	 * @param fromAddress address of the sender 
+	 * @param senderName name of the sender (userful for sending emails)
+	 * @param toAddressNameMap map containing all recipient address for a Broadcast call
+	 * @param subject subject used in case this is an outbound email
+	 * @param url GET request on this URL has the question 
+	 * @return result of this outBound
+	 * @throws Exception
+	 */
     public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String subject, String url ) throws Exception
     {
 

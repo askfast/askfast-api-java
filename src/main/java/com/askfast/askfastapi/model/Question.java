@@ -17,7 +17,7 @@ public class Question extends ModelBase{
 	public static final String QUESTION_TYPE_REFERRAL = "referral";
 	public static final String QUESTION_TYPE_VOICE_RECORDING = "openaudio";
 	
-        private Collection<MediaProperty> mediaProperties;
+	private Collection<MediaProperty> media_properties;
 
 	private String question_id = "";
 	private String question_text = null;
@@ -103,31 +103,31 @@ public class Question extends ModelBase{
 	    return fromJSON( json, Question.class );
 	}
 
-	@JsonProperty("mediaProperties")
-        public Collection<MediaProperty> getMediaProperties()
-        {
-            return mediaProperties;
-        }
-	
-        @JsonProperty("mediaProperties")    
-        public void setMediaProperties( Collection<MediaProperty> media_Hints )
-        {
-            this.mediaProperties = media_Hints;
-        }
+	@JsonProperty("media_properties")
+    public Collection<MediaProperty> getMediaProperties()
+    {
+        return media_properties;
+    }
 
-        public void addMediaProperties( MediaProperty mediaProperty )
-        {
-            mediaProperties = mediaProperties == null ? new ArrayList<MediaProperty>() : mediaProperties;
-            mediaProperties.add( mediaProperty );
-        }
+    @JsonProperty("media_properties")
+    public void setMediaProperties( Collection<MediaProperty> media_Hints )
+    {
+        this.media_properties = media_Hints;
+    }
 
-        public void addEvent_callbacks( EventType eventType, String callbackURL )
-        {
-            event_callbacks.add( new EventCallback( eventType, callbackURL ) );
-        }
+    public void addMediaProperties( MediaProperty mediaProperty )
+    {
+        media_properties = media_properties == null ? new ArrayList<MediaProperty>() : media_properties;
+        media_properties.add( mediaProperty );
+    }
 
-        public void addEventCallback( EventCallback eventCallback )
-        {
-            event_callbacks.add( eventCallback );
-        }
+    public void addEvent_callbacks( EventType eventType, String callbackURL )
+    {
+        event_callbacks.add( new EventCallback( eventType, callbackURL ) );
+    }
+
+    public void addEventCallback( EventCallback eventCallback )
+    {
+        event_callbacks.add( eventCallback );
+    }
 }

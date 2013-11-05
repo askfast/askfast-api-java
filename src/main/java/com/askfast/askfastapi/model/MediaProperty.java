@@ -1,31 +1,41 @@
 package com.askfast.askfastapi.model;
 
+
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 
 public class MediaProperty
 {
     public enum MediaPropertyKey
     {
-        RedirectTimeOut( "timeout" ), AnswerInput( "answer_input" ), Length( "length" );
+        TIMEOUT, ANSWER_INPUT, LENGTH, TYPE;
+        
+        @JsonCreator
+        public static MediaPropertyKey fromJson(String name) {
+            return valueOf(name.toUpperCase());
+        }
+    }
 
-        @SuppressWarnings("unused")
-        private String name;
-
-        private MediaPropertyKey( String name )
-        {
-            this.name = name;
+    public enum MediumType
+    {
+        BROADSOFT, GTALK, SKYPE, SMS;
+        
+        @JsonCreator
+        public static MediumType fromJson(String name) {
+            return valueOf(name.toUpperCase());
         }
     }
     
-    public enum MediumType
-    {
-        Broadsoft, GTalk, Skype, SMS;
-    }
-
     private MediumType medium;
     private Map<MediaPropertyKey, String> properties;
+    
+    public MediaProperty() {
+        properties = new HashMap<MediaPropertyKey, String>();
+    }
+    
 
     public MediumType getMedium()
     {
@@ -44,7 +54,6 @@ public class MediaProperty
 
     public void addProperty( MediaPropertyKey key, String value )
     {
-        properties = properties != null ? properties : new HashMap<MediaPropertyKey, String>();
         properties.put( key, value );
     }
 }

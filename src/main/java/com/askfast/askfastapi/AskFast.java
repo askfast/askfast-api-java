@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.askfast.askfastapi.model.Answer;
 import com.askfast.askfastapi.model.EventPost.EventType;
+import com.askfast.askfastapi.model.MediaProperty;
+import com.askfast.askfastapi.model.MediaProperty.MediaPropertyKey;
+import com.askfast.askfastapi.model.MediaProperty.MediumType;
 import com.askfast.askfastapi.model.Question;
 import com.askfast.askfastapi.util.HttpUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,7 +36,6 @@ public class AskFast
     private static final Logger log = Logger.getLogger( AskFast.class.getName() );
     
 	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
-    
 	private Question question = null;
 	
 	private String baseURL = null;
@@ -300,6 +302,14 @@ public class AskFast
     {
         callbackURL = formatURL(callbackURL);
         question.addEvent_callbacks(eventType, callbackURL);
+    }
+    
+    public void addMediaProperty( MediumType mediumType, MediaPropertyKey propertyKey, String value )
+    {
+        MediaProperty mediaProperty = new MediaProperty();
+        mediaProperty.setMedium( mediumType );
+        mediaProperty.addProperty( propertyKey, value );
+        question.addMediaProperties( mediaProperty );
     }
         
 	public void render(HttpServletResponse response) throws IOException {

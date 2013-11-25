@@ -159,6 +159,28 @@ public class AskFast
             answer = formatText(answer);
             question.addAnswer( new Answer( answer, askFast.question.getQuestion_id() ) );
 	}
+	
+	/**
+	 * redirect the control to a new agent
+	 * 
+	 * @return
+	 */
+	public void redirect(String to)
+	{
+		redirect(to, null, null);
+	}
+	
+	/**
+	 * redirect the control to a new agent
+	 * 
+	 * @param redirectText
+	 *            : can be the text directly or a HTTP based url which contains the text
+	 * @return
+	 */
+	public void redirect(String to, String redirectText)
+	{
+		redirect(to, redirectText, null);
+	}
 
 	/**
 	 * redirect the control to a new agent

@@ -3,7 +3,6 @@ package com.askfast.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import com.askfast.askfastapi.AskFast;
 import com.askfast.askfastapi.model.Question;
@@ -12,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DialogObject extends ModelBase
 {
-    private static final Logger log = Logger.getLogger(DialogObject.class.getSimpleName());
+//    private static final Logger log = Logger.getLogger(DialogObject.class.getSimpleName());
     String dialog_id;
     String firstQuestionId;
     Map<String, Question> questions;

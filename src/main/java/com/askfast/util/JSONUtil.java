@@ -1,13 +1,11 @@
 package com.askfast.util;
 
-import java.util.logging.Logger;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONUtil
 {
-    private static final Logger log = Logger.getLogger( JSONUtil.class.getName() );
+//    private static final Logger log = Logger.getLogger( JSONUtil.class.getName() );
 
     public static <T> T deserialize( String jsonString, Class<T> DeserializeClass )
     throws Exception

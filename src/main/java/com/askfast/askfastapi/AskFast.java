@@ -43,7 +43,7 @@ public class AskFast {
 	
 	// private static final String ASKFAST_JSONRPC =
 	// "http://ask-charlotte.appspot.com/rpc";
-	private static final String	ASKFAST_JSONRPC		= "http://localhost:8888/rpc";
+	private static final String	ASKFAST_JSONRPC		= "http://localhost:8082/dialoghandler/rpc";
 	private static final String	ASKFAST_KEYSERVER	= "http://localhost:8080/oauth";
 	
 	private Question			question			= null;
@@ -389,6 +389,22 @@ public class AskFast {
 		return null;
 	}
 	
+	public String getAccountID() {
+		return accountID;
+	}
+
+	public void setAccountID(String accountID) {
+		this.accountID = accountID;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
 	public void addEvent(EventType eventType, String callbackURL) {
 		callbackURL = formatURL(callbackURL);
 		question.addEvent_callbacks(eventType, callbackURL);

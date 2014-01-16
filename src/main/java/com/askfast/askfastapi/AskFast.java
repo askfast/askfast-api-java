@@ -27,15 +27,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * A stateless implementation of the dialog handler
- * 
  * @author Shravan
- * 
  */
 public class AskFast
 {
     private static final Logger log = Logger.getLogger( AskFast.class.getName() );
     
 	private static final String ASKFAST_JSONRPC = "http://ask-charlotte.appspot.com/rpc";
+	
 	private Question question = null;
 	
 	private String baseURL = null;
@@ -69,13 +68,18 @@ public class AskFast
 		if (question == null)
 			question = new Question();
 	}
-	
 
-        @JsonIgnore
-        public String getQuestionId()
-        {
-            return question.getQuestion_id();
-        }
+    @JsonIgnore
+    public Question getQuestion()
+    {
+        return question;
+    }
+
+    @JsonIgnore
+    public String getQuestionId()
+    {
+        return question.getQuestion_id();
+    }
         
 	/**
 	 * creates a response based on the value
@@ -115,20 +119,31 @@ public class AskFast
 	}
 
 	/**
-	 * asks a question
-	 * 
+	 * asks an open question with text as in field: ask and an answer with callback as in field: next
 	 * @param ask
 	 * @param next
 	 * @return
 	 */
 	public void ask(String ask, String next)
 	{
-	    ask( ask, next, Question.QUESTION_TYPE_OPEN );
+	    ask( ask, null, next );
 	}
+	
+	/**
+     * asks an open question with text as in field: ask and an answer with callback as in field: next
+     * and text as in field: answerText
+     * @param ask
+     * @param next
+     * @return
+     */
+    public void ask(String ask, String answerText, String next)
+    {
+        ask( ask, answerText, next, Question.QUESTION_TYPE_OPEN );
+    }
 	
 	public void ask(String ask, AskFast askFast)
 	{
-	    ask( ask, null, Question.QUESTION_TYPE_OPEN );
+	    ask( ask, null, null );
 	    question.addAnswer( new Answer( "", askFast.question.getQuestion_id() ) );
 	}
 
@@ -276,16 +291,34 @@ public class AskFast
     }
 	
 	/**
-	 * overloaded method for any broadcast outboundcalls with a subject (Everything including Email)
-	 * @param fromAddress address of the sender 
-	 * @param senderName name of the sender (userful for sending emails)
-	 * @param toAddressNameMap map containing all recipient address for a Broadcast call
-	 * @param subject subject used in case this is an outbound email
-	 * @param url GET request on this URL has the question 
-	 * @return result of this outBound
-	 * @throws Exception
-	 */
-    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String subject, String url ) throws Exception
+     * overloaded method for any broadcast outboundcalls with a subject
+     * @param fromAddress address of the sender 
+     * @param senderName name of the sender (userful for sending emails)
+     * @param toAddressNameMap map containing all recipient address for a Broadcast call
+     * @param subject subject used in case this is an outbound email
+     * @param url GET request on this URL has the question 
+     * @return result of this outBound
+     * @throws Exception
+     */
+    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap,
+        String subject, String url ) throws Exception
+    {
+        return outBoundCall( fromAddress, senderName, toAddressNameMap, null, null, subject, url );
+    }
+    
+    /**
+     * overloaded method for any broadcast outboundcalls with a subject, cc and bcc list (Everything including Email)
+     * @param fromAddress address of the sender 
+     * @param senderName name of the sender (userful for sending emails)
+     * @param toAddressNameMap map containing all recipient address for a Broadcast call
+     * @param subject subject used in case this is an outbound email
+     * @param url GET request on this URL has the question 
+     * @return result of this outBound
+     * @throws Exception
+     */
+    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap,
+        Map<String, String> ccAddressNameMap, Map<String, String> bccAddressNameMap, String subject, String url )
+    throws Exception
     {
 
         if ( privateKey == null || pubKey == null )
@@ -293,8 +326,9 @@ public class AskFast
             throw new Exception( "Public or Private key isn't set" );
         }
 
-        log.info( String.format( "request received to initiate outbound call. From: %s To: %s using URL: %s",
-                                 fromAddress, toAddressNameMap, url ) );
+        log.info( String.format(
+            "request received to initiate outbound call. From: %s To: %s Cc: %s and Bcc: %s using URL: %s",
+            fromAddress, toAddressNameMap, ccAddressNameMap, bccAddressNameMap, url ) );
         url = formatURL( url );
 
         ObjectMapper om = new ObjectMapper();
@@ -304,18 +338,26 @@ public class AskFast
         ObjectNode params = om.createObjectNode();
         params.put( "adapterID", fromAddress );
         params.putPOJO( "addressMap", om.writeValueAsString( toAddressNameMap ) );
+        if(ccAddressNameMap != null && !ccAddressNameMap.isEmpty())
+        {
+            params.putPOJO( "addressCcMap", om.writeValueAsString( ccAddressNameMap ) );
+        }
+        if(bccAddressNameMap != null && !bccAddressNameMap.isEmpty())
+        {
+            params.putPOJO( "addressBccMap", om.writeValueAsString( bccAddressNameMap ) );
+        }
         params.put( "url", url );
-        params.put( "senderName", senderName);
+        params.put( "senderName", senderName );
         params.put( "privateKey", privateKey );
         params.put( "publicKey", pubKey );
         params.put( "subject", subject );
 
         body.put( "params", params );
 
-        log.info( String.format( "request initiated for outbound call at: %s with payload: %s",
-                                 ASKFAST_JSONRPC, body.toString() ) );
+        log.info( String.format( "request initiated for outbound call at: %s with payload: %s", ASKFAST_JSONRPC,
+            body.toString() ) );
         String res = HttpUtil.post( ASKFAST_JSONRPC, body.toString() );
-        
+
         log.info( String.format( "outbound call response recieved: %s", res ) );
         return res;
     }
@@ -364,7 +406,7 @@ public class AskFast
                     text = baseURL + text;
                 }
             }
-            else
+            else if(!text.startsWith( "dtmfKey://" ))
             {
                 text = "text://" + text;
             }
@@ -422,16 +464,16 @@ public class AskFast
 		this.baseURL = baseURL;
 	}
 	
-    private void ask( String ask, String next, String askType )
+    private void ask( String ask, String answerText, String answerCallback, String askType )
     {
         ask = formatText( ask );
-        next = formatURL( next );
-
+        answerCallback = formatURL( answerCallback );
+        answerText = answerText != null ? answerText : "";
         question.setQuestion_text( ask );
         question.setType( askType );
-        if ( next != null && !next.isEmpty())
+        if ( answerCallback != null && !answerCallback.isEmpty() )
         {
-            question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( "", next ) ) ) );
+            question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( answerText, answerCallback ) ) ) );
         }
     }
 }

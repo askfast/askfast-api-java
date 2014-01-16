@@ -3,10 +3,14 @@ package com.askfast.askfastapi.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 import com.askfast.askfastapi.model.EventPost.EventType;
+import com.askfast.askfastapi.model.MediaProperty.MediaPropertyKey;
+import com.askfast.askfastapi.model.MediaProperty.MediumType;
 import com.askfast.model.ModelBase;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Question extends ModelBase{
@@ -18,7 +22,7 @@ public class Question extends ModelBase{
 	public static final String QUESTION_TYPE_VOICE_RECORDING = "openaudio";
 	
 	private Collection<MediaProperty> media_properties;
-
+	private String preferred_language = "nl";
 	private String question_id = "";
 	private String question_text = null;
 	private String type = null;
@@ -80,15 +84,25 @@ public class Question extends ModelBase{
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+    public String getPreferred_language()
+    {
+        return preferred_language;
+    }
 
-        public void setUrl( String url )
+    public void setPreferred_language( String preferred_language )
+    {
+        this.preferred_language = preferred_language;
+    }
+
+    public void setUrl( String url )
+    {
+        if ( !url.startsWith( "http" ) && !url.startsWith( "tel:" ) )
         {
-            if( !url.startsWith( "http" ) && !url.startsWith( "tel:" ))
-            {
-                url = "tel:" + url;
-            }
-            this.url = url;
+            url = "tel:" + url;
         }
+        this.url = url;
+    }
 	
 	public void setAnswers(ArrayList<Answer> answers) {
 		this.answers = answers;
@@ -118,16 +132,61 @@ public class Question extends ModelBase{
     public void addMediaProperties( MediaProperty mediaProperty )
     {
         media_properties = media_properties == null ? new ArrayList<MediaProperty>() : media_properties;
-        media_properties.add( mediaProperty );
+        boolean propertyUpdated = false;
+        for ( MediaProperty property : media_properties )
+        {
+            if(property.getMedium().equals( mediaProperty.getMedium() ))
+            {
+                property.getProperties().putAll( mediaProperty.getProperties() );
+                propertyUpdated = true;
+            }
+        }
+        if(!propertyUpdated)
+        {
+            media_properties.add( mediaProperty );
+        }
+    }
+    
+    @JsonIgnore
+    public Map<MediaPropertyKey, String> getMediaPropertyByType( MediumType type )
+    {
+
+        if ( this.media_properties != null )
+        {
+            for ( MediaProperty mediaProperties : this.media_properties )
+            {
+                if ( mediaProperties.getMedium().equals( type ) )
+                {
+                    return mediaProperties.getProperties();
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getMediaPropertyValue( MediumType type, MediaPropertyKey key )
+    {
+
+        Map<MediaPropertyKey, String> properties = getMediaPropertyByType( type );
+        if ( properties != null )
+        {
+            if ( properties.containsKey( key ) )
+            {
+                return properties.get( key );
+            }
+        }
+        return null;
     }
 
     public void addEvent_callbacks( EventType eventType, String callbackURL )
     {
+        event_callbacks = event_callbacks != null ? event_callbacks : new ArrayList<EventCallback>();
         event_callbacks.add( new EventCallback( eventType, callbackURL ) );
     }
 
     public void addEventCallback( EventCallback eventCallback )
     {
+        event_callbacks = event_callbacks != null ? event_callbacks : new ArrayList<EventCallback>();
         event_callbacks.add( eventCallback );
     }
 }

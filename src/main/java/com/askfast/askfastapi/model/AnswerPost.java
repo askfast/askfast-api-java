@@ -1,6 +1,8 @@
 package com.askfast.askfastapi.model;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +17,7 @@ public class AnswerPost extends ModelBase
 	String answer_id;
 	String answer_text;
 	String responder;
+	Map<String, Object> extras;  
 
 	private AnswerPost(){}
 		
@@ -62,8 +65,19 @@ public class AnswerPost extends ModelBase
 		this.responder = responder;
 	}
 	
-        public static AnswerPost fromJSON( String json )
-        {
-            return fromJSON( json, AnswerPost.class );
-        }
+    public static AnswerPost fromJSON( String json )
+    {
+        return fromJSON( json, AnswerPost.class );
+    }
+
+    public Map<String, Object> getExtras()
+    {
+        extras = extras != null ? extras : new HashMap<String, Object>();
+        return extras;
+    }
+
+    public void setExtras( Map<String, Object> extras )
+    {
+        this.extras = extras;
+    }
 }

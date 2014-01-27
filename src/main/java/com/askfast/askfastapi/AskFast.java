@@ -384,7 +384,7 @@ public class AskFast {
 		params.put("accountID", accountID);
 		params.put("bearerToken", accessToken);
         params.put( "subject", subject );
-        
+        body.put( "params" , params);
         log.info( String.format( "request initiated for outbound call at: %s with payload: %s", ASKFAST_JSONRPC,
                 body.toString() ) );
         String res = HttpUtil.post( ASKFAST_JSONRPC, body.toString() );

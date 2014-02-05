@@ -45,7 +45,7 @@ public class AskFast {
 	//private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/key/oauth";
 	
 	private static final String	ASKFAST_JSONRPC		= "http://keyserver.ask-fast.com/dialoghandler/agents/dialog";
-	private static final String	ASKFAST_KEYSERVER	= "http://keyserver.ask-fast.com/key/oauth";
+	private static final String	ASKFAST_KEYSERVER	= "http://keyserver.ask-fast.com/keyserver/oauth";
 	
 	private Question			question			= null;
 	

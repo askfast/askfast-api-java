@@ -17,25 +17,23 @@ public class AskFastRestClient {
 
 	private static final String	ASKFAST_REST_API	= "http://api.ask-fast.com/startDialog";
 	private static final String	ASKFAST_KEYSERVER	= "http://keyserver.ask-fast.com/keyserver/oauth";
-	//private static final String	ASKFAST_REST_API	= "http://localhost:8084/rest";
-	//private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/keyserver/oauth";
+//	private static final String	ASKFAST_REST_API	= "http://localhost:8084/rest";
+//	private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/keyserver/oauth";
 	
 	private String accountId = null;
-	private String accessGrant = null;
 	private String refreshToken = null;
 	private String accessToken = null;
 	
-	public AskFastRestClient(String accountId, String accessGrant) {
-		this(accountId, accessGrant, null);
+	public AskFastRestClient(String accountId) {
+		this(accountId, null);
 	}
 	
-	public AskFastRestClient(String accountId, String accessGrant, String resfreshToken) {
-		this(accountId, accessGrant, resfreshToken, null);
+	public AskFastRestClient(String accountId, String resfreshToken) {
+		this(accountId, resfreshToken, null);
 	}
 	
-	public AskFastRestClient(String accountId, String accessGrant, String resfreshToken, String accessToken) {
+	public AskFastRestClient(String accountId, String resfreshToken, String accessToken) {
 		this.accountId = accountId;
-		this.accessGrant = accessGrant;
 		this.refreshToken = resfreshToken;
 		this.accessToken = accessToken;
 	}	
@@ -68,10 +66,8 @@ public class AskFastRestClient {
 	public String getAccessToken() throws Exception {
 		if(accessToken!=null) {
 			return accessToken;
-		} else if(refreshToken!=null) {
-			return refreshAccessToken();
 		} else {
-			return obtainAccessToken();
+			return refreshAccessToken();
 		}		
 	}
 	
@@ -82,6 +78,10 @@ public class AskFastRestClient {
 	private String refreshAccessToken() throws Exception {
 		if (accountId == null) {
 			throw new Exception("AccountID isn't set.");
+		}
+		
+		if (refreshToken == null) {
+			throw new Exception("Refresh Token isn't set.");
 		}
 		
 		// First resfresh accessToken from Keyserver
@@ -97,34 +97,6 @@ public class AskFastRestClient {
 				.accessToken(request);
 		if (response.getAccessToken() != null) {
 			accessToken = response.getAccessToken();
-		}
-		return accessToken;
-	}
-	
-	private String obtainAccessToken() throws Exception {
-		if (accountId == null) {
-			throw new Exception("AccountID isn't set.");
-		}
-		
-		if (accessGrant == null) {
-			throw new Exception("Access Grant isn't set.");
-		}
-				
-		// First obtaining accessToken from Keyserver
-		OAuthClientRequest request = OAuthClientRequest
-				.tokenLocation(ASKFAST_KEYSERVER)
-				.setGrantType(GrantType.AUTHORIZATION_CODE)
-				.setClientId(accountId).setClientSecret("blabla")
-				.setRedirectURI("http://www.example.com/redirect")
-				.setCode(accessGrant).buildQueryMessage();
-		
-		// create OAuth client that uses custom http client under the hood
-		OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-		OAuthJSONAccessTokenResponse response = oAuthClient
-				.accessToken(request);
-		if (response.getAccessToken() != null) {
-			accessToken = response.getAccessToken();
-			refreshToken = response.getRefreshToken();
 		}
 		return accessToken;
 	}

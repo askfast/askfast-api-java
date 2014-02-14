@@ -41,8 +41,8 @@ public class AskFast {
 	
 	// private static final String ASKFAST_JSONRPC =
 	// "http://ask-charlotte.appspot.com/rpc";
-	//private static final String	ASKFAST_JSONRPC		= "http://localhost:8082/dialoghandler/rpc";
-	//private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/key/oauth";
+//	private static final String	ASKFAST_JSONRPC		= "http://localhost:8082/dialoghandler/agents/dialog";
+//	private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/keyserver/oauth";
 	
 	private static final String	ASKFAST_JSONRPC		= "http://keyserver.ask-fast.com/dialoghandler/agents/dialog";
 	private static final String	ASKFAST_KEYSERVER	= "http://keyserver.ask-fast.com/keyserver/oauth";
@@ -51,7 +51,8 @@ public class AskFast {
 	
 	private String				baseURL				= null;
 	private String				accountID			= null;
-	private String				accessToken			= null;
+	private String				bearerToken 		= null;
+	private String				refreshToken		= null;
 	private Map<String, String>	params				= new HashMap<String, String>();
 	
 	public AskFast() {
@@ -66,11 +67,11 @@ public class AskFast {
 		this(url, null, null, null);
 	}
 	
-	public AskFast(String url, String accountID, String accessToken,
+	public AskFast(String url, String accountID, String refreshToken,
 			Map<String, String> params) {
 		this.baseURL = url;
 		this.accountID = accountID;
-		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
 		this.params = params;
 		
 		if (this.params == null) {
@@ -354,8 +355,8 @@ public class AskFast {
     throws Exception
     {
 
-    	if (accountID == null || accessToken == null) {
-			throw new Exception("AccountID or AccessToken isn't set, please obtainAccessToken() first!");
+    	if (accountID == null || bearerToken == null) {
+			throw new Exception("AccountID or BearerToken isn't set, please obtainAccessToken() first!");
 		}
 
         log.info( String.format(
@@ -382,7 +383,7 @@ public class AskFast {
         params.put( "url", url );
         params.put( "senderName", senderName );
 		params.put("accountID", accountID);
-		params.put("bearerToken", accessToken);
+		params.put("bearerToken", bearerToken);
         params.put( "subject", subject );
         body.put( "params" , params);
         log.info( String.format( "request initiated for outbound call at: %s with payload: %s", ASKFAST_JSONRPC,
@@ -416,27 +417,26 @@ public class AskFast {
 		this.accountID = accountID;
 	}
 
-	public String obtainAccessToken(String OAuthGrant)
+	public String obtainAccessToken()
 			throws Exception {
 		
-		if (accountID == null) {
-			throw new Exception("AccountID isn't set.");
+		if (accountID == null || refreshToken == null) {
+			throw new Exception("AccountID or ResfreshToken isn't set.");
 		}
 		// First obtaining accessToken from Keyserver
 		OAuthClientRequest request = OAuthClientRequest
 				.tokenLocation(ASKFAST_KEYSERVER)
-				.setGrantType(GrantType.AUTHORIZATION_CODE)
+				.setGrantType(GrantType.REFRESH_TOKEN)
 				.setClientId(accountID).setClientSecret("blabla")
-				.setRedirectURI("http://www.example.com/redirect")
-				.setCode(OAuthGrant).buildQueryMessage();
+				.setRefreshToken(refreshToken).buildQueryMessage();
 		
 		// create OAuth client that uses custom http client under the hood
 		OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 		OAuthJSONAccessTokenResponse response = oAuthClient
 				.accessToken(request);
 		if (response.getAccessToken() != null) {
-			accessToken = response.getAccessToken();
-			return accessToken;
+			bearerToken = response.getAccessToken();
+			return bearerToken;
 		}
 		return null;
 	}
@@ -445,12 +445,12 @@ public class AskFast {
 		return accountID;
 	}
 
-	public String getAccessToken() {
-		return accessToken;
+	public String getBearerToken() {
+		return bearerToken;
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+	public void setBearerToken(String bearerToken) {
+		this.bearerToken = bearerToken;
 	}
 
 	public void render(HttpServletResponse response) throws IOException {

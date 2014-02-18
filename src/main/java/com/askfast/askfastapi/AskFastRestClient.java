@@ -16,9 +16,9 @@ import retrofit.RestAdapter;
 public class AskFastRestClient {
 
 	private static final String	ASKFAST_REST_API	= "http://api.ask-fast.com";
-	private static final String	ASKFAST_KEYSERVER	= "http://keyserver.ask-fast.com/keyserver/oauth";
+	private static final String	ASKFAST_KEYSERVER	= "http://keyserver.ask-fast.com/keyserver/token";
 //	private static final String	ASKFAST_REST_API	= "http://localhost:8084/rest";
-//	private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/keyserver/oauth";
+//	private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/keyserver/token";
 	
 	private String accountId = null;
 	private String refreshToken = null;

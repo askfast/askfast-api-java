@@ -404,11 +404,7 @@ public class AskFast
             {
                 if ( baseURL != null )
                 {
-                	try {
-                		text = URLEncoder.encode(baseURL + text, "UTF-8");
-                	} catch (Exception e) {
-                		e.printStackTrace();
-                	}
+                	text = baseURL + text;
                 }
             }
             else if(!text.startsWith( "dtmfKey://" ))
@@ -416,6 +412,13 @@ public class AskFast
                 text = "text://" + text;
             }
         }
+        
+        try {
+        	text = URLEncoder.encode(text, "UTF-8");
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
+        
         return text;
     }
 	

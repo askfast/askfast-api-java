@@ -2,6 +2,7 @@ package com.askfast.askfastapi;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -487,6 +488,11 @@ public class AskFast {
             {
                 text = "text://" + text;
             }
+        }
+        try {
+        	text = URLEncoder.encode(text, "UTF-8");
+        } catch(Exception e) {
+        	e.printStackTrace();
         }
         return text;
     }

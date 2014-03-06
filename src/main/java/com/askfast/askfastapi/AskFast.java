@@ -2,6 +2,7 @@ package com.askfast.askfastapi;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -403,7 +404,11 @@ public class AskFast
             {
                 if ( baseURL != null )
                 {
-                    text = baseURL + text;
+                	try {
+                		text = URLEncoder.encode(baseURL + text, "UTF-8");
+                	} catch (Exception e) {
+                		e.printStackTrace();
+                	}
                 }
             }
             else if(!text.startsWith( "dtmfKey://" ))

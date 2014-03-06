@@ -489,11 +489,6 @@ public class AskFast {
                 text = "text://" + text;
             }
         }
-        try {
-        	text = URLEncoder.encode(text, "UTF-8");
-        } catch(Exception e) {
-        	e.printStackTrace();
-        }
         return text;
     }
 	

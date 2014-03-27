@@ -62,6 +62,7 @@ public class AskFastRestClient {
 		        }
 		    }).setEndpoint(ASKFAST_REST_API)
 		    .setConverter(new JacksonConverter())
+		    .setClient(new OkClient(new OkHttpClient()))
 			.build();
 	}
 	

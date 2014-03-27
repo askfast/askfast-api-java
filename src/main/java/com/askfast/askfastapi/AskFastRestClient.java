@@ -9,14 +9,16 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import com.askfast.model.DialogRequest;
 import com.askfast.util.AskFastRestService;
 import com.askfast.util.JacksonConverter;
+import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 
 public class AskFastRestClient {
 
 	private static final String	ASKFAST_REST_API	= "http://api.ask-fast.com";
-	private static final String	ASKFAST_KEYSERVER	= "http://keyserver.ask-fast.com/keyserver/token";
+	private static final String	ASKFAST_KEYSERVER	= "http://live.ask-fast.com/keyserver/token";
 //	private static final String	ASKFAST_REST_API	= "http://localhost:8084/rest";
 //	private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/keyserver/token";
 	

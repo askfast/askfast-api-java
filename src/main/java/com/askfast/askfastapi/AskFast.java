@@ -512,8 +512,12 @@ public class AskFast {
 			Iterator<Entry<String, String>> it = this.params.entrySet()
 					.iterator();
 			while (it.hasNext()) {
-				Entry<String, String> param = it.next();
-				query += param.getKey() + "=" + param.getValue() + "&";
+				try {
+					Entry<String, String> param = it.next();
+					query += param.getKey() + "=" + URLEncoder.encode(param.getValue(), "UTF-8") + "&";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			return url + query.substring(0, query.length() - 1);
 		}

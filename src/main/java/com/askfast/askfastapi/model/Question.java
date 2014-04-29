@@ -1,26 +1,38 @@
+
 package com.askfast.askfastapi.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.askfast.askfastapi.model.EventPost.EventType;
+import com.askfast.askfastapi.model.MediaProperty.MediaPropertyKey;
+import com.askfast.askfastapi.model.MediaProperty.MediumType;
+import com.askfast.model.ModelBase;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Question {
+public class Question extends ModelBase{
 	
 	public static final String QUESTION_TYPE_CLOSED = "closed";
 	public static final String QUESTION_TYPE_OPEN = "open";
 	public static final String QUESTION_TYPE_COMMENT = "comment";
 	public static final String QUESTION_TYPE_REFERRAL = "referral";
+	public static final String QUESTION_TYPE_VOICE_RECORDING = "openaudio";
 	
+	private Collection<MediaProperty> media_properties;
+	private String preferred_language = "nl";
 	private String question_id = "";
-	private String question_text = "";
-	private String type = "";
-	private String url = "";
+	private String question_text = null;
+	private String type = null;
+	private String url = null;
 	
 	ArrayList<Answer> answers;
 	ArrayList<EventCallback> event_callbacks;
 	
 	public Question() {
-		this("", "", "");
+		this(UUID.randomUUID().toString(), "", "");
 	}
 	
 	public Question(String id, String text, String type) {
@@ -72,10 +84,25 @@ public class Question {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+    public String getPreferred_language()
+    {
+        return preferred_language;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setPreferred_language( String preferred_language )
+    {
+        this.preferred_language = preferred_language;
+    }
+
+    public void setUrl( String url )
+    {
+        if ( !url.startsWith( "http" ) && !url.startsWith( "tel:" ) )
+        {
+            url = "tel:" + url;
+        }
+        this.url = url;
+    }
 	
 	public void setAnswers(ArrayList<Answer> answers) {
 		this.answers = answers;
@@ -85,14 +112,81 @@ public class Question {
 		this.event_callbacks = event_callbacks;
 	}
 	
-	public String toJSON() {
-		ObjectMapper om = new ObjectMapper();
-		String json = "{}";
-		try {
-			json = om.writeValueAsString(this);
-		} catch(Exception e){
-		}
-		
-		return json;
+	public static Question fromJson(String json)
+	{
+	    return fromJSON( json, Question.class );
 	}
+
+	@JsonProperty("media_properties")
+    public Collection<MediaProperty> getMediaProperties()
+    {
+        return media_properties;
+    }
+
+    @JsonProperty("media_properties")
+    public void setMediaProperties( Collection<MediaProperty> media_Hints )
+    {
+        this.media_properties = media_Hints;
+    }
+
+    public void addMediaProperties( MediaProperty mediaProperty )
+    {
+        media_properties = media_properties == null ? new ArrayList<MediaProperty>() : media_properties;
+        boolean propertyUpdated = false;
+        for ( MediaProperty property : media_properties )
+        {
+            if(property.getMedium().equals( mediaProperty.getMedium() ))
+            {
+                property.getProperties().putAll( mediaProperty.getProperties() );
+                propertyUpdated = true;
+            }
+        }
+        if(!propertyUpdated)
+        {
+            media_properties.add( mediaProperty );
+        }
+    }
+    
+    @JsonIgnore
+    public Map<MediaPropertyKey, String> getMediaPropertyByType( MediumType type )
+    {
+
+        if ( this.media_properties != null )
+        {
+            for ( MediaProperty mediaProperties : this.media_properties )
+            {
+                if ( mediaProperties.getMedium().equals( type ) )
+                {
+                    return mediaProperties.getProperties();
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getMediaPropertyValue( MediumType type, MediaPropertyKey key )
+    {
+
+        Map<MediaPropertyKey, String> properties = getMediaPropertyByType( type );
+        if ( properties != null )
+        {
+            if ( properties.containsKey( key ) )
+            {
+                return properties.get( key );
+            }
+        }
+        return null;
+    }
+
+    public void addEvent_callbacks( EventType eventType, String callbackURL )
+    {
+        event_callbacks = event_callbacks != null ? event_callbacks : new ArrayList<EventCallback>();
+        event_callbacks.add( new EventCallback( eventType, callbackURL ) );
+    }
+
+    public void addEventCallback( EventCallback eventCallback )
+    {
+        event_callbacks = event_callbacks != null ? event_callbacks : new ArrayList<EventCallback>();
+        event_callbacks.add( eventCallback );
+    }
 }

@@ -6,7 +6,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>simple_example</servlet-name>
-		<servlet-class>com.askfast.gae.SimpleExampleServlet</servlet-class>
+		<servlet-class>com.askfast.examples.SimpleExampleServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>simple_example</servlet-name>

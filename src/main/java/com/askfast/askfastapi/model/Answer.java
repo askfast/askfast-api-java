@@ -2,7 +2,9 @@ package com.askfast.askfastapi.model;
 
 import java.util.UUID;
 
-public class Answer {
+import com.askfast.model.ModelBase;
+
+public class Answer extends ModelBase {
 	
 	private String answer_id;
 	private String answer_text;
@@ -10,9 +12,11 @@ public class Answer {
 	
 	public Answer(){
 	}
+	
 	public Answer(String answer_text){
 		this(answer_text, null);
 	}
+	
 	public Answer(String answer_text, String callback){
 		
 		this.answer_id = UUID.randomUUID().toString();
@@ -43,5 +47,10 @@ public class Answer {
 	
 	public void setCallback(String callback) { 
 		this.callback = callback; 
+	}
+	
+	public static Answer fromJSON(String json)
+	{
+	    return fromJSON( json, Answer.class );
 	}
 }

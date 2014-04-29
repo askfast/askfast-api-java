@@ -1,18 +1,23 @@
 package com.askfast.askfastapi.model;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.askfast.model.ModelBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AnswerPost {
+public class AnswerPost extends ModelBase
+{
 	
 	String dialog_id;
 	String question_id;
 	String answer_id;
 	String answer_text;
 	String responder;
+	Map<String, Object> extras;  
 
 	private AnswerPost(){}
 		
@@ -28,16 +33,6 @@ public class AnswerPost {
 		return ap;
 	}
 	
-	public static AnswerPost createInstance(String json) {
-		AnswerPost ap = null;
-		try {
-			ObjectMapper om = new ObjectMapper();
-			ap = om.readValue(json, AnswerPost.class);
-		} catch(Exception e) {
-		}
-		
-		return ap;
-	}
 	public String getDialog_id() {
 		return dialog_id;
 	}
@@ -70,14 +65,19 @@ public class AnswerPost {
 		this.responder = responder;
 	}
 	
-	public String toJSON() {
-		String json = null;
-		try {
-			ObjectMapper om = new ObjectMapper();
-			json = om.writeValueAsString(this);
-		} catch(Exception e){
-		}
-		
-		return json;
-	}
+    public static AnswerPost fromJSON( String json )
+    {
+        return fromJSON( json, AnswerPost.class );
+    }
+
+    public Map<String, Object> getExtras()
+    {
+        extras = extras != null ? extras : new HashMap<String, Object>();
+        return extras;
+    }
+
+    public void setExtras( Map<String, Object> extras )
+    {
+        this.extras = extras;
+    }
 }

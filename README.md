@@ -19,6 +19,9 @@ Requirements
 
 You can install this library in any Java application or application server. The library depends primarily on jackson libraries. The following listing shows all the libraries that need to be present in an application that uses the AskFast Library:
 
+	* jettison-1.2.jar
+	* org.apache.oltu.oauth2.client-0.31.jar
+	* org.apache.oltu.oauth2.common-0.31.jar
 	* jackson-annotations-2.0.0.jar
 	* jackson-core-2.0.0.jar
 	* jackson-databind-2.0.0.jar
@@ -28,13 +31,11 @@ All libraries have been included in the [lib/](https://github.com/askfast/askfas
 
 Build
 -----
-Running the ANT will generate the jar file, which will be placed in the bin/ folder.
-
+Running MAVEN will generate the jar file, which will be placed in the target/ folder.
 
 Using the Maven artifact
 ------------------------
-Will be intergrated in the next version release.
+
 
 Examples
 --------
-TODO

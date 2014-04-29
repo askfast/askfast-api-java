@@ -36,20 +36,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * A stateless implementation of the dialog handler
  * @author Shravan
  */
-public class AskFast {
-	private static final Logger	log					= Logger.getLogger(AskFast.class
-															.getName());
+public class AskFast 
+{
+    private static final Logger log = Logger.getLogger( AskFast.class.getName() );
 	
-	// private static final String ASKFAST_JSONRPC =
-	// "http://ask-charlotte.appspot.com/rpc";
-//	private static final String	ASKFAST_JSONRPC		= "http://localhost:8082/dialoghandler/agents/dialog";
-//	private static final String	ASKFAST_KEYSERVER	= "http://localhost:8081/keyserver/token";
-	
-	private static final String	ASKFAST_JSONRPC		= "http://live.ask-fast.com/dialoghandler/agents/dialog";
-	private static final String	ASKFAST_KEYSERVER	= "http://live.ask-fast.com/keyserver/token";
+	private String	ASKFAST_JSONRPC		= "http://live.ask-fast.com/dialoghandler/agents/dialog";
+	private String	ASKFAST_KEYSERVER	= "http://live.ask-fast.com/keyserver/token";
 	
 	private Question			question			= null;
-	
 	private String				baseURL				= null;
 	private String				accountID			= null;
 	private String				bearerToken 		= null;
@@ -57,7 +51,7 @@ public class AskFast {
 	private Map<String, String>	params				= new HashMap<String, String>();
 	
 	public AskFast() {
-		this(null, null, null, null);
+		this("", null, null, null);
 	}
 	
 	public AskFast(HttpServletRequest req) {
@@ -67,6 +61,10 @@ public class AskFast {
 	public AskFast(String url) {
 		this(url, null, null, null);
 	}
+	
+    public AskFast( HttpServletRequest req, String accountID, String refreshToken, Map<String, String> params ){
+        this(getHost( req ), accountID, refreshToken, params);
+    }
 	
 	public AskFast(String url, String accountID, String refreshToken,
 			Map<String, String> params) {
@@ -356,6 +354,10 @@ public class AskFast {
     throws Exception
     {
 
+        if(bearerToken == null)
+        {
+            obtainAccessToken();
+        }
     	if (accountID == null || bearerToken == null) {
 			throw new Exception("AccountID or BearerToken isn't set, please obtainAccessToken() first!");
 		}
@@ -542,6 +544,10 @@ public class AskFast {
 		return url;
 	}
 	
+	public String getBaseURL() {
+        return baseURL;
+    }
+	
 	public void setBaseURL(String baseURL) {
 		this.baseURL = baseURL;
 	}
@@ -558,5 +564,25 @@ public class AskFast {
         {
             question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( answerText, answerCallback ) ) ) );
         }
+    }
+
+    public String getASKFAST_JSONRPC()
+    {
+        return ASKFAST_JSONRPC;
+    }
+
+    public void setASKFAST_JSONRPC( String aSKFAST_JSONRPC )
+    {
+        ASKFAST_JSONRPC = aSKFAST_JSONRPC;
+    }
+
+    public String getASKFAST_KEYSERVER()
+    {
+        return ASKFAST_KEYSERVER;
+    }
+
+    public void setASKFAST_KEYSERVER( String aSKFAST_KEYSERVER )
+    {
+        ASKFAST_KEYSERVER = aSKFAST_KEYSERVER;
     }
 }

@@ -41,6 +41,6 @@ Examples
 You can see an example of the ASK-Fast API in com.askfast.examples.SimpleExampleServlet.java
 Create a server and load the servlet: 
 * A sample question can be seen with:
-	GET: http://localhost:8080/simple_example
+	* GET: http://localhost:8080/simple_example
 * An outbound call can be initiated with:
-	GET: http://localhost:8080/simple_example?adapterId=<adapterID>&accountId=<accountId>&refreshToken=<refreshToken>&toAddress=<toAddress>
+	* GET: http://localhost:8080/simple_example?adapterId=[adapterID]&accountId=[accountId]&refreshToken=[refreshToken]&toAddress=[toAddress]

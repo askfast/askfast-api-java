@@ -121,7 +121,8 @@ public class AskFast
 	}
 	
 	public void askByVoice(String ask, String next) {
-		ask(ask, next, Question.QUESTION_TYPE_VOICE_RECORDING);
+		ask(ask, "", next);
+		addMediaProperty( MediumType.BROADSOFT, MediaPropertyKey.TYPE, Question.QUESTION_TYPE_VOICE_RECORDING );
 	}
 	
 	/**

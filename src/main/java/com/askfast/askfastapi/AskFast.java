@@ -92,8 +92,7 @@ public class AskFast
     }
     
 	/**
-	 * creates a response based on the value
-	 * 
+	 * creates a comment question if the next parameter is null. If not creates a closed question.
 	 * @param value
 	 * @return
 	 */
@@ -120,6 +119,12 @@ public class AskFast
 		ask(ask, "");
 	}
 	
+	/**
+	 * creates an open question with media property as audio. This is used to record voice notes. 
+	 * The location of the recorded audio is sent to the <i> next </i> callback argument
+	 * @param ask
+	 * @param next
+	 */
 	public void askByVoice(String ask, String next) {
 		ask(ask, "", next);
 		addMediaProperty( MediumType.BROADSOFT, MediaPropertyKey.TYPE, Question.QUESTION_TYPE_VOICE_RECORDING );

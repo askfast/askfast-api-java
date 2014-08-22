@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
-
 import com.askfast.askfastapi.model.EventPost.EventType;
 import com.askfast.askfastapi.model.MediaProperty.MediaPropertyKey;
 import com.askfast.askfastapi.model.MediaProperty.MediumType;
@@ -95,10 +94,9 @@ public class Question extends ModelBase{
         this.preferred_language = preferred_language;
     }
 
-    public void setUrl( String url )
-    {
-        if ( !url.startsWith( "http" ) && !url.startsWith( "tel:" ) )
-        {
+    public void setUrl(String url) {
+
+        if (url != null && !url.startsWith("http") && !url.startsWith("tel:")) {
             url = "tel:" + url;
         }
         this.url = url;
@@ -128,7 +126,7 @@ public class Question extends ModelBase{
     {
         this.media_properties = media_Hints;
     }
-
+    
     public void addMediaProperties( MediaProperty mediaProperty )
     {
         media_properties = media_properties == null ? new ArrayList<MediaProperty>() : media_properties;

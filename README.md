@@ -3,11 +3,13 @@ AskFast API Java
 
 Java library to interact with [AskFast](http://www.ask-fast.com).
 
+Doc for the Ask-Fast Api and this library can be found [here](http://docs.askfast.apiary.io)
+
 Overview
 --------
 
 This is library to help you create dialogs which interact with the AskFast system. You can download the latest pre-build version here
-[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api-java.jar?raw=true)
+[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api-java-1.0.0.jar?raw=true)
 
 ------------
 
@@ -19,6 +21,9 @@ Requirements
 
 You can install this library in any Java application or application server. The library depends primarily on jackson libraries. The following listing shows all the libraries that need to be present in an application that uses the AskFast Library:
 
+	* jettison-1.2.jar
+	* org.apache.oltu.oauth2.client-0.31.jar
+	* org.apache.oltu.oauth2.common-0.31.jar
 	* jackson-annotations-2.0.0.jar
 	* jackson-core-2.0.0.jar
 	* jackson-databind-2.0.0.jar
@@ -28,13 +33,16 @@ All libraries have been included in the [lib/](https://github.com/askfast/askfas
 
 Build
 -----
-Running the ANT will generate the jar file, which will be placed in the bin/ folder.
-
+Running MAVEN will generate the jar file, which will be placed in the target/ folder.
 
 Using the Maven artifact
 ------------------------
-Will be intergrated in the next version release.
 
 Examples
 --------
-TODO
+You can see an example of the ASK-Fast API in com.askfast.examples.SimpleExampleServlet.java
+Create a server and load the servlet: 
+* A sample question can be seen with:
+	* GET: http://localhost:8080/simple_example
+* An outbound call can be initiated with:
+	* GET: http://localhost:8080/simple_example?adapterId=[adapterID]&accountId=[accountId]&refreshToken=[refreshToken]&toAddress=[toAddress]

@@ -3,9 +3,7 @@ package com.askfast.askfastapi.model;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import com.askfast.model.ModelBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

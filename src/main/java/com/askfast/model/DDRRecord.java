@@ -10,7 +10,7 @@ public class DDRRecord
      */
     public enum CommunicationStatus
     {
-        DELIVERED, RECEIEVED, SENT, FINISHED, MISSED, ERROR, UNKNOWN;
+        DELIVERED, RECEIVED, SENT, FINISHED, MISSED, ERROR, UNKNOWN;
         @JsonCreator
         public static CommunicationStatus fromJson( String name )
         {

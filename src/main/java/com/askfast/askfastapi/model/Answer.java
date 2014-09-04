@@ -1,7 +1,6 @@
 package com.askfast.askfastapi.model;
 
 import java.util.UUID;
-
 import com.askfast.model.ModelBase;
 
 public class Answer extends ModelBase {

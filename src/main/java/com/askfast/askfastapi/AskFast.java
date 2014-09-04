@@ -489,7 +489,7 @@ public class AskFast
             {
                 if ( baseURL != null )
                 {
-                    text = baseURL + text;
+                	text = baseURL + text;
                 }
             }
             else if(!text.startsWith( "dtmfKey://" ))
@@ -497,6 +497,7 @@ public class AskFast
                 text = "text://" + text;
             }
         }
+        
         return text;
     }
 	

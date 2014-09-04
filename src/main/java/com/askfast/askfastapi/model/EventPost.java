@@ -1,8 +1,9 @@
 
 package com.askfast.askfastapi.model;
 
-
 import com.askfast.model.ModelBase;
+
+
 
 
 public class EventPost extends ModelBase

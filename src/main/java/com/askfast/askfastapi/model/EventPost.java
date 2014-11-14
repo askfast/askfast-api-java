@@ -17,7 +17,7 @@ public class EventPost extends ModelBase
 
     public enum EventType
     {
-        delivered, read, answered, timeout, hangup, cancelled, exception;
+        delivered, read, answered, timeout, hangup, cancelled, exception, preconnect;
     }
 
     public EventPost()

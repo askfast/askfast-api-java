@@ -48,7 +48,11 @@ public class MediaProperty
         /**
          * defines the speed at which the TTS is spoken by the TTS engine
          */
-        TSS_SPEED;
+        TSS_SPEED,
+        /**
+         * Pre-connect message. Gives opertunity to play a message before connecting the redirected call
+         */
+        USE_PRECONNECT;
         
         @JsonCreator
         public static MediaPropertyKey fromJson(String name) {

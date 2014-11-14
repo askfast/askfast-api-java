@@ -11,16 +11,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-
 import com.askfast.askfastapi.model.Answer;
 import com.askfast.askfastapi.model.EventPost.EventType;
 import com.askfast.askfastapi.model.MediaProperty;
@@ -152,6 +149,16 @@ public class AskFast
     {
         ask( ask, answerText, next, Question.QUESTION_TYPE_OPEN );
     }
+    
+    /**
+     * This this conversation
+     * @param Text or url to be played before exit
+     */
+    public void exit(String exitURL)
+    {
+        question.setType("exit");
+        question.setQuestion_text(exitURL);
+    }
 	
 	public void ask(String ask, AskFast askFast)
 	{
@@ -235,6 +242,44 @@ public class AskFast
 			question.addAnswer(new Answer(null, next));
 		}
 	}
+	
+    /**
+     * redirect the control to a new phone.
+     * 
+     * @param to
+     *            redirect the phone control to this address
+     * @param plays
+     *            this redirectText or url when the control is being redirected.
+     * @param next
+     *            the URL where the question for the redirection agent is
+     *            available
+     * @param preconnectURL
+     *            this url is used to execute a question at the callee side
+     *            before connecting him to the caller. E.g. Now the callee can
+     *            pick the phone, listen to a menu, then connect the call. This
+     *            is useful only with special calling adapters.
+     * @return
+     */
+    public void redirect(String to, String redirectText, String next, String preconnectURL) {
+
+        question.setType(Question.QUESTION_TYPE_REFERRAL);
+
+        question.setUrl(to);
+        if (redirectText != null) {
+            redirectText = formatText(redirectText);
+            question.setQuestion_text(redirectText);
+        }
+
+        if (next != null) {
+            next = formatURL(next);
+            question.addAnswer(new Answer(null, next));
+        }
+        if (preconnectURL != null && !preconnectURL.isEmpty()) {
+            question.addEvent_callbacks(EventType.preconnect, preconnectURL);
+            //add use preconnect media property
+            question.addProperty(MediumType.BROADSOFT, MediaPropertyKey.USE_PRECONNECT, "true");
+        }
+    }
 	
 	public String render() {
 		return question.toJSON();

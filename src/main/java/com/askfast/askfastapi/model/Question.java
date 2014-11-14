@@ -187,4 +187,17 @@ public class Question extends ModelBase{
         event_callbacks = event_callbacks != null ? event_callbacks : new ArrayList<EventCallback>();
         event_callbacks.add( eventCallback );
     }
+
+    /**
+     * Adds a media property for a specific medium
+     * @param broadsoft
+     * @param usePreconnect
+     * @param string
+     */
+    public void addProperty(MediumType medium, MediaPropertyKey propertyKey, String value) {
+        MediaProperty mediaProperty = new MediaProperty();
+        mediaProperty.setMedium(medium);
+        mediaProperty.addProperty(propertyKey, value);
+        this.addMediaProperties(mediaProperty);
+    }
 }

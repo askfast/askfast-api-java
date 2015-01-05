@@ -50,6 +50,12 @@ public class MediaProperty
          */
         TSS_SPEED,
         /**
+         * defines which caller id should be when redirecting a call. If this is set to true
+         * the caller id of the connected user will be used. If false the adapterid caller id will
+         * be used. (Default: false)
+         */
+        USE_EXTERNAL_CALLERID,
+        /**
          * Pre-connect message. Gives opertunity to play a message before connecting the redirected call
          */
         USE_PRECONNECT;

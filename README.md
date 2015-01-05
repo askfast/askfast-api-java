@@ -13,7 +13,7 @@ This is library to help you create dialogs which interact with the AskFast syste
 
 ------------
 
-Current version is 0.1.0
+Current version is 1.2.0
 
 
 Requirements

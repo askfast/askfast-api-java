@@ -2,10 +2,6 @@ package com.askfast.util;
 
 import java.util.List;
 import java.util.Set;
-import com.askfast.model.Adapter;
-import com.askfast.model.DDRRecord;
-import com.askfast.model.Dialog;
-import com.askfast.model.DialogRequest;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -14,6 +10,10 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import com.askfast.model.Adapter;
+import com.askfast.model.DDRRecord;
+import com.askfast.model.Dialog;
+import com.askfast.model.DialogRequest;
 
 public interface AskFastRestService {
 
@@ -53,10 +53,10 @@ public interface AskFastRestService {
 	
 	// DDR calls
 	@GET("/ddr")
-	public List<DDRRecord> getDDRRecords(@Query("adapterId") String adapterId,
-	                                     @Query("fromAddress") String fromAddress, @Query("typeId") String typeId,
-	                                     @Query("status") String status, @Query("startTime") Long startTime,
-	                                     @Query("endTime") Long endTime, @Query("offset") Integer offset, @Query("limit") Integer limit,
-	                                     @Query("shouldGenerateCosts") Boolean shouldGenerateCosts,
-	                                     @Query("shouldIncludeServiceCosts") Boolean shouldIncludeServiceCosts);
+        public List<DDRRecord> getDDRRecords(@Query("adapterId") String adapterId,
+            @Query("fromAddress") String fromAddress, @Query("typeId") String typeId, @Query("status") String status,
+            @Query("startTime") Long startTime, @Query("endTime") Long endTime,
+            @Query("sessionKeys") String delimitedSessionKeys, @Query("offset") Integer offset, @Query("limit") Integer limit,
+            @Query("shouldGenerateCosts") Boolean shouldGenerateCosts,
+            @Query("shouldIncludeServiceCosts") Boolean shouldIncludeServiceCosts);
 }

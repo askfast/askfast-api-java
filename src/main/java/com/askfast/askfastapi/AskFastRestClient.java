@@ -7,6 +7,9 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 import com.askfast.model.Adapter;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
@@ -14,13 +17,10 @@ import com.askfast.model.DialogRequest;
 import com.askfast.util.AskFastRestService;
 import com.askfast.util.JacksonConverter;
 import com.squareup.okhttp.OkHttpClient;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.client.OkClient;
 
 public class AskFastRestClient {
 
-    private static final String ASKFAST_REST_API = "http://api.ask-fast.com";
+    public static final String ASKFAST_REST_API = "http://api.ask-fast.com";
     private static final String ASKFAST_KEYSERVER = "http://live.ask-fast.com/keyserver/token";
 
     private String accountId = null;
@@ -97,13 +97,13 @@ public class AskFastRestClient {
         service.removeDialog(dialogId);
     }
     
-    public List<DDRRecord> getDDRRecords(String adapterId, String fromAddress, String typeId,
-                                             String status, Long startTime, Long endTime, 
-                                             Integer offset, Integer limit, Boolean shouldGenerateCosts,
-                                             Boolean shouldIncludeServiceCosts) {
-        
+    public List<DDRRecord> getDDRRecords(String adapterId, String fromAddress, String typeId, String status,
+        Long startTime, Long endTime, String delimitedSessionKeys, Integer offset, Integer limit,
+        Boolean shouldGenerateCosts, Boolean shouldIncludeServiceCosts) {
+
         AskFastRestService service = getRestService();
-        return service.getDDRRecords(adapterId, fromAddress, typeId, status, startTime, endTime, offset, limit, shouldGenerateCosts, shouldIncludeServiceCosts);
+        return service.getDDRRecords(adapterId, fromAddress, typeId, status, startTime, endTime, delimitedSessionKeys,
+                                     offset, limit, shouldGenerateCosts, shouldIncludeServiceCosts);
     }
 
     private RestAdapter getRestAdapter() {

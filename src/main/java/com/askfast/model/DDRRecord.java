@@ -3,6 +3,7 @@ package com.askfast.model;
 import java.util.Collection;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DDRRecord
 {   
@@ -38,10 +39,11 @@ public class DDRRecord
     
     public DDRRecord(){}
        
+    @JsonProperty("_id")
     public String getId() {
         return id;
     }
-    
+    @JsonProperty("_id")
     public void setId(String id) {
         this.id = id;
     }

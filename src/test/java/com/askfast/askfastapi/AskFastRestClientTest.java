@@ -92,17 +92,18 @@ public class AskFastRestClientTest extends TestFramework {
         LOG.info("Found "+dialogs.size()+" dialogs");
         Assert.assertTrue(dialogs.size() == 0);
     }
-    
+
     @Test
-    public void testReadingDDRRecords()
-    {
+    public void testReadingDDRRecords() {
+
         AskFastRestClient client = new AskFastRestClient(accountId, refreshToken, accessToken);
-        List<DDRRecord> ddrs = client.getDDRRecords(null,  null,  null, null, null, null, null, null, null, null);
-        
-        LOG.info("Found "+ddrs.size()+" ddrs");
+        List<DDRRecord> ddrs = client.getDDRRecords(null, null, null, null, null, null, null, null, null, null, null);
+
+        LOG.info("Found " + ddrs.size() + " ddrs");
         Assert.assertTrue(ddrs.size() > 0);
-        
-        ddrs = client.getDDRRecords(null, null,  null, null, System.currentTimeMillis(), null, null, null, null, null);
+
+        ddrs = client.getDDRRecords(null, null, null, null, System.currentTimeMillis(), null, null, null, null, null,
+                                    null);
         Assert.assertTrue(ddrs.size() == 0);
     }
 }

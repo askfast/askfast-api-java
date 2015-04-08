@@ -10,14 +10,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+
 import com.askfast.askfastapi.model.Answer;
 import com.askfast.askfastapi.model.EventPost.EventType;
 import com.askfast.askfastapi.model.MediaProperty;
@@ -421,6 +425,7 @@ public class AskFast
         
         ObjectMapper om = new ObjectMapper();
         ObjectNode body = om.createObjectNode();
+        body.put( "id", UUID.randomUUID().toString() );
         body.put("method", "outboundCallWithMap");
         
         ObjectNode params = om.createObjectNode();
@@ -439,7 +444,7 @@ public class AskFast
 		params.put("accountID", accountID);
 		params.put("bearerToken", bearerToken);
         params.put( "subject", subject );
-        body.put( "params" , params);
+        body.set( "params" , params);
         log.info( String.format( "request initiated for outbound call at: %s with payload: %s", ASKFAST_JSONRPC,
                 body.toString() ) );
         String res = HttpUtil.post( ASKFAST_JSONRPC, body.toString() );

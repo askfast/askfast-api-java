@@ -5,6 +5,12 @@ public class Dialog {
     protected String name = null;
     protected String url = null;
     protected String owner = null;
+    
+    protected boolean useBasicAuth = false;
+    protected String userName = null;
+    protected String password = null;
+    
+    protected TTSInfo ttsInfo = null;
 
     public Dialog() {
         this(null, null);
@@ -13,6 +19,8 @@ public class Dialog {
     public Dialog(String name, String url) {
         this.name = name;
         this.url = url;
+        
+        this.useBasicAuth = false;
     }
 
     public String getId() {
@@ -45,5 +53,37 @@ public class Dialog {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+    
+    public boolean isUseBasicAuth() {
+        return useBasicAuth;
+    }
+    
+    public void setUseBasicAuth( boolean useBasicAuth ) {
+        this.useBasicAuth = useBasicAuth;
+    }
+    
+    public String getUserName() {
+        return userName;
+    }
+    
+    public void setUserName( String userName ) {
+        this.userName = userName;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword( String password ) {
+        this.password = password;
+    }
+    
+    public TTSInfo getTtsInfo() {
+        return ttsInfo;
+    }
+    
+    public void setTtsInfo( TTSInfo ttsInfo ) {
+        this.ttsInfo = ttsInfo;
     }
 }

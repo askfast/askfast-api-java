@@ -2,16 +2,23 @@ package com.askfast.askfastapi;
 
 import java.util.List;
 import java.util.Set;
+
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+
 import com.askfast.model.Adapter;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
+import com.askfast.model.Language;
+import com.askfast.model.TTSInfo;
+import com.askfast.model.TTSProvider;
 
 
 public class AskFastRestClientTest extends TestFramework {
 
     @Test
+    @Ignore
     public void testBuyingAdapter()
     {
         AskFastRestClient client = new AskFastRestClient(accountId, refreshToken, accessToken);
@@ -66,13 +73,15 @@ public class AskFastRestClientTest extends TestFramework {
         Dialog dialog = client.getDialog(dialogId); 
         Assert.assertEquals(name, dialog.getName());
         Assert.assertEquals(url, dialog.getUrl());
+        Assert.assertNull( dialog.getTtsInfo() );
+        Assert.assertFalse( dialog.isUseBasicAuth() );
         
         // Check Dialog count
         dialogs = client.getDialogs();
         LOG.info("Found "+dialogs.size()+" dialogs");
         Assert.assertTrue(dialogs.size() == 1);
         
-        // Update Dialog
+        // Update Dialog the name and url
         String newName = "Test Dialog 2";
         String newUrl = "http://test.me/2";
         Dialog updatedDialog = client.updateDialog(dialogId, new Dialog(newName, newUrl));
@@ -83,6 +92,16 @@ public class AskFastRestClientTest extends TestFramework {
         dialog = client.getDialog(dialogId); 
         Assert.assertEquals(newName, dialog.getName());
         Assert.assertEquals(newUrl, dialog.getUrl());
+        
+        // Update the tss info
+        TTSInfo ttsInfo = new TTSInfo(TTSProvider.ACAPELA, Language.ENGLISH_GREATBRITAIN, "sharon8k");
+        dialog.setTtsInfo( ttsInfo );
+        updatedDialog = client.updateDialog( dialog.getId(), dialog );
+        Assert.assertNotNull( updatedDialog.getTtsInfo() );
+        Assert.assertEquals( TTSProvider.ACAPELA, updatedDialog.getTtsInfo().getProvider() );
+        Assert.assertEquals( Language.ENGLISH_GREATBRITAIN, updatedDialog.getTtsInfo().getLanguage() );
+        Assert.assertEquals( "sharon8k", updatedDialog.getTtsInfo().getVoiceUsed() );
+        Assert.assertFalse( updatedDialog.isUseBasicAuth() );
         
         // Remove dialog
         client.removeDialog(dialogId);

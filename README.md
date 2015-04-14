@@ -40,8 +40,8 @@ Using the Maven artifact
 
 ```xml
 <dependency>
-    <groupId>com.askfast</groupId>
-    <artifactId>askfastapi</artifactId>
+    <groupId>com.askfast.askfastapi</groupId>
+    <artifactId>askfast-api-java</artifactId>
     <version>1.3.1</version>
 </dependency>
 ```

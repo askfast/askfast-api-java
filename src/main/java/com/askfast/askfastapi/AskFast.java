@@ -12,16 +12,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-
 import com.askfast.askfastapi.model.Answer;
 import com.askfast.askfastapi.model.EventPost.EventType;
 import com.askfast.askfastapi.model.MediaProperty;
@@ -155,13 +152,25 @@ public class AskFast
     }
     
     /**
-     * This this conversation
+     * Ends this conversation
      * @param Text or url to be played before exit
      */
     public void exit(String exitURL)
     {
         question.setType("exit");
         question.setQuestion_text(exitURL);
+    }
+    
+    /**
+     * Sets up a conference. Either the person called is pushed to a conference,
+     * or the the number being called is pushed to a conference
+     * 
+     * @param Text
+     *            or url to be played before exit
+     */
+    public void conference(String ask, String next) {
+
+        ask(ask, null, next, Question.QUESTION_TYPE_CONFERENCE);
     }
 	
 	public void ask(String ask, AskFast askFast)

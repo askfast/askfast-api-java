@@ -3,8 +3,10 @@ package com.askfast.model;
 import java.util.Collection;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DDRRecord
 {   
     /**
@@ -36,6 +38,8 @@ public class DDRRecord
     private Map<String, Object> additionalInfo;
     private AccountType accountType;
     private Double totalCost = 0.0;
+    private String parentId;
+    private Collection<String> childIds;
     
     public DDRRecord(){}
        
@@ -173,10 +177,25 @@ public class DDRRecord
         
         return sessionKeys;
     }
-
     public void setSessionKeys(Collection<String> sessionKeys) {
     
         this.sessionKeys = sessionKeys;
+    }
+    public String getParentId() {
+
+        return parentId;
+    }
+    public void setParentId(String parentId) {
+
+        this.parentId = parentId;
+    }
+    public Collection<String> getChildIds() {
+
+        return childIds;
+    }
+    public void setChildIds(Collection<String> childIds) {
+
+        this.childIds = childIds;
     }
 }
 

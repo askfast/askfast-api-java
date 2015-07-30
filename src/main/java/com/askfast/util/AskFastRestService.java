@@ -25,7 +25,7 @@ public interface AskFastRestService {
 	// Adapter calls	
 	@GET("/adapter")
 	public Set<Adapter> getAdapters(@Query("type") String type);
-	
+
 	@POST("/adapter/{adapterId}")
         public Response buyAdapter(@Path("adapterId") String adapterId);
 	
@@ -59,4 +59,7 @@ public interface AskFastRestService {
             @Query("sessionKeys") String delimitedSessionKeys, @Query("offset") Integer offset, @Query("limit") Integer limit,
             @Query("shouldGenerateCosts") Boolean shouldGenerateCosts,
             @Query("shouldIncludeServiceCosts") Boolean shouldIncludeServiceCosts);
+
+	@PUT("/adapter/{adapterId}")
+	Adapter updateAdapter(@Path("adapterId") String adapterId, @Body Adapter adapter);
 }

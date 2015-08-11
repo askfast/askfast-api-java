@@ -1,5 +1,6 @@
 package com.askfast.askfastapi;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -15,13 +16,14 @@ import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.DialogRequest;
 import com.askfast.util.AskFastRestService;
+import com.askfast.util.JSONUtil;
 import com.askfast.util.JacksonConverter;
 import com.squareup.okhttp.OkHttpClient;
 
 public class AskFastRestClient {
 
-    public static final String ASKFAST_REST_API = "http://api.ask-fast.com";
-    public static final String ASKFAST_KEYSERVER = "http://live.ask-fast.com/keyserver/token";
+    public static final String ASKFAST_REST_API = "http://sandbox.ask-fast.com";
+    public static final String ASKFAST_KEYSERVER = "http://sandbox.ask-fast.com/keyserver/token";
 
     private String accountId = null;
     private String refreshToken = null;
@@ -97,13 +99,39 @@ public class AskFastRestClient {
         service.removeDialog(dialogId);
     }
     
-    public List<DDRRecord> getDDRRecords(String adapterId, String fromAddress, String typeId, String status,
-        Long startTime, Long endTime, String delimitedSessionKeys, Integer offset, Integer limit,
-        Boolean shouldGenerateCosts, Boolean shouldIncludeServiceCosts) {
+    /**
+     * Returns a list of {@link DDRRecord DDRRecords} based on the give parameters. 
+     * @param adapterIds
+     * @param adapterTypes
+     * @param fromAddress
+     * @param typeId
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param delimitedSessionKeys
+     * @param offset
+     * @param limit
+     * @param shouldGenerateCosts
+     * @param shouldIncludeServiceCosts
+     *
+     * @return
+     * @throws Exception
+     */
+    public List<DDRRecord> getDDRRecords(Collection<String> adapterIds, Collection<String> adapterTypes,
+        String fromAddress, String typeId, String status, Long startTime, Long endTime, String delimitedSessionKeys,
+        Integer offset, Integer limit, Boolean shouldGenerateCosts, Boolean shouldIncludeServiceCosts) throws Exception {
 
         AskFastRestService service = getRestService();
-        return service.getDDRRecords(adapterId, fromAddress, typeId, status, startTime, endTime, delimitedSessionKeys,
-                                     offset, limit, shouldGenerateCosts, shouldIncludeServiceCosts);
+        String delimitedAdapterIds = null;
+        String delimitedAdapterTypes = null;
+        if (adapterIds != null) {
+            delimitedAdapterIds = JSONUtil.serialize(adapterIds).replace("[", "").replace("]", "");
+        }
+        if (adapterTypes != null) {
+            delimitedAdapterTypes = JSONUtil.serialize(adapterTypes).replace("[", "").replace("]", "");
+        }
+        return service.getDDRRecords(delimitedAdapterIds, delimitedAdapterTypes, fromAddress, typeId, status,
+            startTime, endTime, delimitedSessionKeys, offset, limit, shouldGenerateCosts, shouldIncludeServiceCosts);
     }
 
     private RestAdapter getRestAdapter() {

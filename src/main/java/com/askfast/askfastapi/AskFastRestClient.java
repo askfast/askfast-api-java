@@ -2,18 +2,23 @@ package com.askfast.askfastapi;
 
 import java.util.List;
 import java.util.Set;
+
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
+
 import com.askfast.model.Adapter;
+import com.askfast.model.AdapterType;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.DialogRequest;
+import com.askfast.model.Result;
 import com.askfast.util.AskFastRestService;
 import com.askfast.util.JacksonConverter;
 import com.squareup.okhttp.OkHttpClient;
@@ -65,10 +70,39 @@ public class AskFastRestClient {
         this.accessToken = accessToken;
     }
 
-    public String startPhoneDialog(String fromAddress, String toAddress, String url) {
+    /**
+     * Initiate a phone call from a random call adapter.
+     * 
+     * @param toAddress
+     *          The address which will be called
+     * @param url
+     *          The url used to load the dialog. This can also be a dialogId
+     * @return
+     */
+    public Result startPhoneDialog(String toAddress, String url) {
+
+        return this.startPhoneDialog( toAddress, null, url );
+    }
+    
+    /**
+     * Initiate a phone call from a given call adapter.
+     * 
+     * @param toAddress
+     *          The address which will be called
+     * @param adapterId
+     *          The adapterId to initiate the call from
+     * @param url
+     *          The url used to load the dialog. This can also be a dialogId
+     * @return
+     */
+    public Result startPhoneDialog(String toAddress, String adapterId, String url) {
 
         AskFastRestService service = getRestService();
-        return service.startDialog(new DialogRequest(fromAddress, toAddress, url));
+        if(adapterId==null) { 
+            return service.startDialog(new DialogRequest(toAddress, AdapterType.CALL, url));
+        } else {
+            return service.startDialog(new DialogRequest(toAddress, adapterId, url));
+        }
     }
 
     /**
@@ -201,7 +235,6 @@ public class AskFastRestClient {
     /**
      * Returns a list of {@link DDRRecord DDRRecords}.
      *
-     * TODO: update this section
      *
      * @param adapterId
      *         Required.

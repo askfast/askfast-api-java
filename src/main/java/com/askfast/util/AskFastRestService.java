@@ -72,12 +72,13 @@ public interface AskFastRestService {
 	@GET("/account/{accountId}/recording")
         public List<Recording> getRecordings(@Path("accountId") String accountId);
 	
-	// DDR calls
-	@GET("/ddr")
-        public List<DDRRecord> getDDRRecords(@Query("adapterId") String adapterId,
-            @Query("fromAddress") String fromAddress, @Query("typeId") String typeId, @Query("status") String status,
-            @Query("startTime") Long startTime, @Query("endTime") Long endTime,
-            @Query("sessionKeys") String delimitedSessionKeys, @Query("offset") Integer offset, @Query("limit") Integer limit,
+        // DDR calls
+        @GET("/ddr")
+        public List<DDRRecord> getDDRRecords(@Query("adapterIds") String delimitedAdapterIds,
+            @Query("adapterTypes") String delimitedAdapterTypes, @Query("fromAddress") String fromAddress,
+            @Query("typeId") String typeId, @Query("status") String status, @Query("startTime") Long startTime,
+            @Query("endTime") Long endTime, @Query("sessionKeys") String delimitedSessionKeys,
+            @Query("offset") Integer offset, @Query("limit") Integer limit,
             @Query("shouldGenerateCosts") Boolean shouldGenerateCosts,
             @Query("shouldIncludeServiceCosts") Boolean shouldIncludeServiceCosts);
 

@@ -4,7 +4,7 @@
 
 	<groupId>com.askfast.askfastapi</groupId>
 	<artifactId>askfast-api-java</artifactId>
-	<version>1.3.1</version>
+	<version>1.3.2</version>
 
 	<name>AskFast Library</name>
 	<description>AskFast Library to use the AskFast system</description>

@@ -19,6 +19,7 @@ import com.askfast.model.AdapterType;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.DialogRequest;
+import com.askfast.model.Recording;
 import com.askfast.model.Result;
 import com.askfast.util.AskFastRestService;
 import com.askfast.util.JSONUtil;
@@ -35,12 +36,13 @@ import com.squareup.okhttp.OkHttpClient;
  */
 public class AskFastRestClient {
 
-    public static final String ASKFAST_REST_API = "http://sandbox.ask-fast.com";
-    public static final String ASKFAST_KEYSERVER = "http://sandbox.ask-fast.com/keyserver/token";
+    public static final String DEFAULT_ENDPOINT = "https://api.ask-fast.com";
+    public static final String KEYSERVER_PATH = "/keyserver/token";
 
     private String accountId = null;
     private String refreshToken = null;
     private String accessToken = null;
+    private String endpoint = null;
 
     /**
      * Creates an AskFastRestClient instance. The accessToken will be retrieved from the key server using your accountId
@@ -51,7 +53,7 @@ public class AskFastRestClient {
      * @param refreshToken
      *         Your refreshToken
      */
-    public AskFastRestClient(String accountId, String refreshToken) {
+    public AskFastRestClient(final String accountId, final String refreshToken) {
         this(accountId, refreshToken, null);
     }
 
@@ -66,10 +68,32 @@ public class AskFastRestClient {
      * @param accessToken
      *         The access token
      */
-    public AskFastRestClient(String accountId, String refreshToken, String accessToken) {
+    public AskFastRestClient(final String accountId, final String refreshToken, final String accessToken) {
+        this(accountId, refreshToken, accessToken, null);
+    }
+    
+    /**
+     * Creates an AskFastRestClient instance. Be sure the accessToken is valid, otherwise any request will fail and most
+     * likely throw an exception. The accessToken is not automatically refreshed.
+     *
+     * @param accountId
+     *         Your accountId
+     * @param refreshToken
+     *         Your refreshToken
+     * @param accessToken
+     *         The access token
+     * @param endpoint
+     *         The endpoint, the url of API endpoint you wish to use. (The default is set to: https://api.ask-fast.com)
+     */
+    public AskFastRestClient(final String accountId, final String refreshToken, final String accessToken, final String endpoint) {
         this.accountId = accountId;
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
+        this.endpoint = endpoint;
+        
+        if(endpoint==null) {
+            this.endpoint = DEFAULT_ENDPOINT;
+        }
     }
 
     /**
@@ -235,6 +259,31 @@ public class AskFastRestClient {
     }
     
     /**
+     * Get all the recordings of the current accountId
+     * @return List of recordings
+     */
+    public List<Recording> getRecordings() {
+        return getRecordings( accountId );
+    }
+    
+    /**
+     * Get all the recordings linked to the specified account.    
+     * @param accountId
+     *         The accountId to for which all the recordings are recorded.
+     * @return List of recordings
+     */
+    public List<Recording> getRecordings(String accountId) {
+        
+        if(accountId == null) {
+            throw new IllegalArgumentException( "No accountId given" );
+        }
+        
+        AskFastRestService service = getRestService();
+        return service.getRecordings( accountId );
+    }
+    
+    
+    /**
      * Returns a list of {@link DDRRecord DDRRecords} based on the give
      * parameters.
      * 
@@ -288,7 +337,7 @@ public class AskFastRestClient {
                     e.printStackTrace();
                 }
             }
-        }).setEndpoint(ASKFAST_REST_API)
+        }).setEndpoint(this.endpoint)
             .setConverter(new JacksonConverter())
             .setClient(new OkClient(new OkHttpClient())).build();
     }
@@ -347,7 +396,7 @@ public class AskFastRestClient {
         }
 
         // First resfresh accessToken from Keyserver
-        OAuthClientRequest request = OAuthClientRequest.tokenLocation(ASKFAST_KEYSERVER)
+        OAuthClientRequest request = OAuthClientRequest.tokenLocation(this.endpoint + KEYSERVER_PATH)
             .setGrantType(GrantType.REFRESH_TOKEN).setClientId(accountId).setClientSecret("blabla")
             .setRefreshToken(refreshToken).buildQueryMessage();
 

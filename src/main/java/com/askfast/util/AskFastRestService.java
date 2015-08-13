@@ -32,6 +32,9 @@ public interface AskFastRestService {
 
 	@POST("/adapter/{adapterId}")
         public Response buyAdapter(@Path("adapterId") String adapterId);
+
+        @PUT("/adapter/{adapterId}")
+        Adapter updateAdapter(@Path("adapterId") String adapterId, @Body Adapter adapter);
 	
 	@GET("/free_adapters")
 	public Set<Adapter> getFreeAdapters(@Query("adapterType") String adapterType, @Query("address") String address);
@@ -59,6 +62,9 @@ public interface AskFastRestService {
 	@GET("/tts")
         public List<TTSUser> getTTSAccounts();
 	
+	@GET("/tts/{ttsAccountId}")
+        public TTSUser getTTSAccount(@Path("ttsAccountId") String ttsAccountId);
+	
 	@POST("/tts")
         public TTSUser createTTSAccount(@Body TTSUser ttsUser);
 	
@@ -81,7 +87,4 @@ public interface AskFastRestService {
             @Query("offset") Integer offset, @Query("limit") Integer limit,
             @Query("shouldGenerateCosts") Boolean shouldGenerateCosts,
             @Query("shouldIncludeServiceCosts") Boolean shouldIncludeServiceCosts);
-
-	@PUT("/adapter/{adapterId}")
-	Adapter updateAdapter(@Path("adapterId") String adapterId, @Body Adapter adapter);
 }

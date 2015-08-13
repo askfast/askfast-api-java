@@ -30,8 +30,8 @@ import com.squareup.okhttp.OkHttpClient;
  */
 public class AskFastRestClient {
 
-    public static final String ASKFAST_REST_API = "http://sandbox.ask-fast.com";
-    public static final String ASKFAST_KEYSERVER = "http://sandbox.ask-fast.com/keyserver/token";
+    public static final String ASKFAST_REST_API = "http://api.ask-fast.com";
+    public static final String ASKFAST_KEYSERVER = "http://api.ask-fast.com/keyserver/token";
 
     private String accountId = null;
     private String refreshToken = null;

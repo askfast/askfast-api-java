@@ -2,16 +2,18 @@ package com.askfast.askfastapi;
 
 import java.util.List;
 import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import com.askfast.model.Adapter;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.Language;
+import com.askfast.model.Recording;
 import com.askfast.model.TTSInfo;
 import com.askfast.model.TTSProvider;
-
 
 public class AskFastRestClientTest extends TestFramework {
 
@@ -57,8 +59,9 @@ public class AskFastRestClientTest extends TestFramework {
         
         // Check Dialog count
         Set<Dialog> dialogs = client.getDialogs();
-        LOG.info("Found "+dialogs.size()+" dialogs");
-        Assert.assertTrue(dialogs.size() == 0);
+        int count = dialogs.size();
+        LOG.info("Found "+count+" dialogs");
+        Assert.assertTrue(count > 0);
         
         String name = "Test Dialog";
         String url = "http://test.me/";
@@ -77,7 +80,7 @@ public class AskFastRestClientTest extends TestFramework {
         // Check Dialog count
         dialogs = client.getDialogs();
         LOG.info("Found "+dialogs.size()+" dialogs");
-        Assert.assertTrue(dialogs.size() == 1);
+        Assert.assertTrue(dialogs.size() == count + 1);
         
         // Update Dialog the name and url
         String newName = "Test Dialog 2";
@@ -107,7 +110,7 @@ public class AskFastRestClientTest extends TestFramework {
         // Check Dialog count
         dialogs = client.getDialogs();
         LOG.info("Found "+dialogs.size()+" dialogs");
-        Assert.assertTrue(dialogs.size() == 0);
+        Assert.assertTrue(dialogs.size() == count);
     }
     
     @Test
@@ -125,6 +128,17 @@ public class AskFastRestClientTest extends TestFramework {
                 null, null, null);
             Assert.assertTrue(ddrs.size() == 0);
         }
+    }
+    
+    @Test
+    public void testReadingRecordings() {
+        AskFastRestClient client = new AskFastRestClient(accountId, refreshToken, accessToken);
+        List<Recording> recordings = client.getRecordings();
+        
+        int count = recordings.size();
+        LOG.info("Found " + count + " recordings");
+        
+        Assert.assertTrue(count > 0);
     }
     
     private boolean isNullOrEmpty(String text) {

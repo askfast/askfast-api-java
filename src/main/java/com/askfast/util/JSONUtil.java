@@ -1,5 +1,7 @@
 package com.askfast.util;
 
+import java.util.Collection;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,5 +30,9 @@ public class JSONUtil
             result = oMapper.writeValueAsString( objectToBeSerialized );
         }
         return result;
+    }
+    
+    public static String toCDLString(Collection<String> list) throws Exception {
+        return serialize(list).replace( "[", "" ).replace("]", "").replace( "\"", "" );
     }
 }

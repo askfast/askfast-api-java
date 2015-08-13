@@ -3,14 +3,17 @@ package com.askfast.askfastapi;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
+
 import com.askfast.model.Adapter;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
@@ -227,10 +230,10 @@ public class AskFastRestClient {
         String delimitedAdapterIds = null;
         String delimitedAdapterTypes = null;
         if (adapterIds != null) {
-            delimitedAdapterIds = JSONUtil.serialize(adapterIds).replace("[", "").replace("]", "");
+            delimitedAdapterIds = JSONUtil.toCDLString(adapterIds);
         }
         if (adapterTypes != null) {
-            delimitedAdapterTypes = JSONUtil.serialize(adapterTypes).replace("[", "").replace("]", "");
+            delimitedAdapterTypes = JSONUtil.toCDLString(adapterTypes);
         }
         return service.getDDRRecords(delimitedAdapterIds, delimitedAdapterTypes, fromAddress, typeId, status,
             startTime, endTime, delimitedSessionKeys, offset, limit, shouldGenerateCosts, shouldIncludeServiceCosts);

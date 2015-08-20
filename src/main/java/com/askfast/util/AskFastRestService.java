@@ -2,6 +2,7 @@ package com.askfast.util;
 
 import java.util.List;
 import java.util.Set;
+
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -10,17 +11,20 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
+
 import com.askfast.model.Adapter;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.DialogRequest;
+import com.askfast.model.Recording;
+import com.askfast.model.Result;
+import com.askfast.model.TTSUser;
 
 public interface AskFastRestService {
 
         // Starting a dialog
-    
 	@POST("/startDialog")
-	public String startDialog(@Body DialogRequest req);
+	public Result startDialog(@Body DialogRequest req);
 	
 	// Adapter calls	
 	@GET("/adapter")
@@ -28,6 +32,9 @@ public interface AskFastRestService {
 
 	@POST("/adapter/{adapterId}")
         public Response buyAdapter(@Path("adapterId") String adapterId);
+
+        @PUT("/adapter/{adapterId}")
+        Adapter updateAdapter(@Path("adapterId") String adapterId, @Body Adapter adapter);
 	
 	@GET("/free_adapters")
 	public Set<Adapter> getFreeAdapters(@Query("adapterType") String adapterType, @Query("address") String address);
@@ -49,7 +56,27 @@ public interface AskFastRestService {
         public Dialog updateDialog(@Path("dialogId") String dialogId, @Body Dialog dialog);
 	
 	@DELETE("/dialog/{dialogId}")
-        public Response removeDialog(@Path("dialogId") String dialogId);
+        public Response removeDialog(@Path("dialogId") String dialogId);	
+	
+	// TTS calls
+	@GET("/tts")
+        public List<TTSUser> getTTSAccounts();
+	
+	@GET("/tts/{ttsAccountId}")
+        public TTSUser getTTSAccount(@Path("ttsAccountId") String ttsAccountId);
+	
+	@POST("/tts")
+        public TTSUser createTTSAccount(@Body TTSUser ttsUser);
+	
+	@PUT("/tts/{ttsAccountId}")
+        public TTSUser updateTTSAccount(@Path("ttsAccountId") String ttsAccountId, @Body TTSUser ttsUser);
+	
+	@DELETE("/tts/{ttsAccountId}")
+        public void deleteTTSAccount(@Path("ttsAccountId") String ttsAccountId);
+	
+	// Recording calls
+	@GET("/account/{accountId}/recording")
+        public List<Recording> getRecordings(@Path("accountId") String accountId);
 	
         // DDR calls
         @GET("/ddr")
@@ -60,7 +87,4 @@ public interface AskFastRestService {
             @Query("offset") Integer offset, @Query("limit") Integer limit,
             @Query("shouldGenerateCosts") Boolean shouldGenerateCosts,
             @Query("shouldIncludeServiceCosts") Boolean shouldIncludeServiceCosts);
-
-	@PUT("/adapter/{adapterId}")
-	Adapter updateAdapter(@Path("adapterId") String adapterId, @Body Adapter adapter);
 }

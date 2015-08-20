@@ -38,50 +38,50 @@ public class AskFast
 {
     private static final Logger log = Logger.getLogger( AskFast.class.getName() );
 	
-	private String	ASKFAST_JSONRPC		= "http://live.ask-fast.com/dialoghandler/agents/dialog";
-	private String	ASKFAST_KEYSERVER	= "http://live.ask-fast.com/keyserver/token";
-	
-	private Question			question			= null;
-	private String				baseURL				= null;
-	private String				accountID			= null;
-	private String				bearerToken 		= null;
-	private String				refreshToken		= null;
-	private Map<String, String>	params				= new HashMap<String, String>();
-	
-	public AskFast() {
-		this("", null, null, null);
-	}
-	
-	public AskFast(HttpServletRequest req) {
-		this(getHost(req));
-	}
-	
-	public AskFast(String url) {
-		this(url, null, null, null);
-	}
+    private String ASKFAST_JSONRPC = "http://live.ask-fast.com/dialoghandler/agents/dialog";
+    private String ASKFAST_KEYSERVER = "http://live.ask-fast.com/keyserver/token";
+
+    private Question question = null;
+    private String baseURL = null;
+    private String accountID = null;
+    private String bearerToken = null;
+    private String refreshToken = null;
+    private Map<String, String> params = new HashMap<String, String>();
+
+    public AskFast() {
+        this( "", null, null, null );
+    }
+
+    public AskFast( HttpServletRequest req ) {
+        this( getHost( req ) );
+    }
+
+    public AskFast( String url ) {
+        this( url, null, null, null );
+    }
 	
     public AskFast( HttpServletRequest req, String accountID, String refreshToken, Map<String, String> params ){
         this(getHost( req ), accountID, refreshToken, params);
     }
 	
-	public AskFast(String url, String accountID, String refreshToken,
-			Map<String, String> params) {
-		this.baseURL = url;
-		this.accountID = accountID;
-		this.refreshToken = refreshToken;
-		this.params = params;
-		
-		if (this.params == null) {
-			this.params = new HashMap<String, String>();
-		}
-		
-		if (question == null) question = new Question();
-	}
-	
-	@JsonIgnore
-	public String getQuestionId() {
-		return question.getQuestion_id();
-	}
+    public AskFast( String url, String accountID, String refreshToken, Map<String, String> params ) {
+        this.baseURL = url;
+        this.accountID = accountID;
+        this.refreshToken = refreshToken;
+        this.params = params;
+
+        if ( this.params == null ) {
+            this.params = new HashMap<String, String>();
+        }
+
+        if ( question == null )
+            question = new Question();
+    }
+
+    @JsonIgnore
+    public String getQuestionId() {
+        return question.getQuestion_id();
+    }
 
     @JsonIgnore
     public Question getQuestion()
@@ -89,55 +89,61 @@ public class AskFast
         return question;
     }
     
-	/**
-	 * creates a comment question if the next parameter is null. If not creates a closed question.
-	 * @param value
-	 * @return
-	 */
-	public void say(String value) {
-		say(value, null);
-	}
-	
-	public void say(String value, String next) {
-		value = formatText(value);
-		next = formatURL(next);
-		question.setType(Question.QUESTION_TYPE_COMMENT);
-		question.setQuestion_text(value);
-		
-		if (next != null) question.addAnswer(new Answer(null, next));
-	}
-	
-	/**
-	 * asks a question
-	 * 
-	 * @param ask
-	 * @return
-	 */
-	public void ask(String ask) {
-		ask(ask, "");
-	}
-	
-	/**
-	 * creates an open question with media property as audio. This is used to record voice notes. 
-	 * The location of the recorded audio is sent to the <i> next </i> callback argument
-	 * @param ask
-	 * @param next
-	 */
-	public void askByVoice(String ask, String next) {
-		ask(ask, "", next);
-		addMediaProperty( MediumType.BROADSOFT, MediaPropertyKey.TYPE, Question.QUESTION_TYPE_VOICE_RECORDING );
-	}
-	
-	/**
-	 * asks an open question with text as in field: ask and an answer with callback as in field: next
-	 * @param ask
-	 * @param next
-	 * @return
-	 */
-	public void ask(String ask, String next)
-	{
-	    ask( ask, null, next );
-	}
+    /**
+     * creates a comment question if the next parameter is null. If not creates
+     * a closed question.
+     * 
+     * @param value
+     * @return
+     */
+    public void say( String value ) {
+        say( value, null );
+    }
+
+    public void say( String value, String next ) {
+        value = formatText( value );
+        next = formatURL( next );
+        question.setType( Question.QUESTION_TYPE_COMMENT );
+        question.setQuestion_text( value );
+
+        if ( next != null )
+            question.addAnswer( new Answer( null, next ) );
+    }
+
+    /**
+     * asks a question
+     * 
+     * @param ask
+     * @return
+     */
+    public void ask( String ask ) {
+        ask( ask, "" );
+    }
+
+    /**
+     * creates an open question with media property as audio. This is used to
+     * record voice notes. The location of the recorded audio is sent to the <i>
+     * next </i> callback argument
+     * 
+     * @param ask
+     * @param next
+     */
+    public void askByVoice( String ask, String next ) {
+        ask( ask, "", next );
+        addMediaProperty( MediumType.BROADSOFT, MediaPropertyKey.TYPE, Question.QUESTION_TYPE_VOICE_RECORDING );
+    }
+
+    /**
+     * asks an open question with text as in field: ask and an answer with
+     * callback as in field: next
+     * 
+     * @param ask
+     * @param next
+     * @return
+     */
+    public void ask( String ask, String next ) {
+        ask( ask, null, next );
+    }
 	
 	/**
      * asks an open question with text as in field: ask and an answer with callback as in field: next
@@ -173,88 +179,87 @@ public class AskFast
         ask(ask, null, next, Question.QUESTION_TYPE_CONFERENCE);
     }
 	
-	public void ask(String ask, AskFast askFast)
-	{
-	    ask( ask, null, null );
-	    question.addAnswer( new Answer( "", askFast.question.getQuestion_id() ) );
-	}
-	
-	/**
-	 * adds an answer corresponding to a question asked
-	 * 
-	 * @param answerText
-	 * @param next
-	 * @return
-	 */
-	public void addAnswer(String answer, String next) {
-		question.setType(Question.QUESTION_TYPE_CLOSED);
-		answer = formatText(answer);
-		next = formatURL(next);
-		question.addAnswer(new Answer(answer, next));
-	}
-	
-	/**
-	 * adds an answer by linking the questionid of the askFast parameter as the
-	 * callbackURL. <br>
-	 * Typically used with a Dialog Object (collection of questions are linked
-	 * to eachother )
-	 * 
-	 * @param answer
-	 * @param askFast
-	 *            this is linked to the callback of the answer
-	 */
-	public void addAnswer(String answer, AskFast askFast) {
-		question.setType(Question.QUESTION_TYPE_CLOSED);
-		answer = formatText(answer);
-		question.addAnswer(new Answer(answer, askFast.question.getQuestion_id()));
-	}
-	
-	/**
-	 * redirect the control to a new agent
-	 * 
-	 * @return
-	 */
-	public void redirect(String to) {
-		redirect(to, null, null);
-	}
-	
-	/**
-	 * redirect the control to a new agent
-	 * 
-	 * @param redirectText
-	 *            : can be the text directly or a HTTP based url which contains
-	 *            the text
-	 * @return
-	 */
-	public void redirect(String to, String redirectText) {
-		redirect(to, redirectText, null);
-	}
-	
-	/**
-	 * redirect the control to a new agent
-	 * 
-	 * @param redirectText
-	 *            : can be the text directly or a HTTP based url which contains
-	 *            the text
-	 * @param next
-	 *            : the URL where the question for the redirection agent is
-	 *            available
-	 * @return
-	 */
-	public void redirect(String to, String redirectText, String next) {
-		question.setType(Question.QUESTION_TYPE_REFERRAL);
-		
-		question.setUrl(to);
-		if (redirectText != null) {
-			redirectText = formatText(redirectText);
-			question.setQuestion_text(redirectText);
-		}
-		
-		if (next != null) {
-			next = formatURL(next);
-			question.addAnswer(new Answer(null, next));
-		}
-	}
+    public void ask( String ask, AskFast askFast ) {
+        ask( ask, null, null );
+        question.addAnswer( new Answer( "", askFast.question.getQuestion_id() ) );
+    }
+
+    /**
+     * adds an answer corresponding to a question asked
+     * 
+     * @param answerText
+     * @param next
+     * @return
+     */
+    public void addAnswer( String answer, String next ) {
+        question.setType( Question.QUESTION_TYPE_CLOSED );
+        answer = formatText( answer );
+        next = formatURL( next );
+        question.addAnswer( new Answer( answer, next ) );
+    }
+
+    /**
+     * adds an answer by linking the questionid of the askFast parameter as the
+     * callbackURL. <br>
+     * Typically used with a Dialog Object (collection of questions are linked
+     * to eachother )
+     * 
+     * @param answer
+     * @param askFast
+     *            this is linked to the callback of the answer
+     */
+    public void addAnswer( String answer, AskFast askFast ) {
+        question.setType( Question.QUESTION_TYPE_CLOSED );
+        answer = formatText( answer );
+        question.addAnswer( new Answer( answer, askFast.question.getQuestion_id() ) );
+    }
+
+    /**
+     * redirect the control to a new agent
+     * 
+     * @return
+     */
+    public void redirect( String to ) {
+        redirect( to, null, null );
+    }
+
+    /**
+     * redirect the control to a new agent
+     * 
+     * @param redirectText
+     *            : can be the text directly or a HTTP based url which contains
+     *            the text
+     * @return
+     */
+    public void redirect( String to, String redirectText ) {
+        redirect( to, redirectText, null );
+    }
+
+    /**
+     * redirect the control to a new agent
+     * 
+     * @param redirectText
+     *            : can be the text directly or a HTTP based url which contains
+     *            the text
+     * @param next
+     *            : the URL where the question for the redirection agent is
+     *            available
+     * @return
+     */
+    public void redirect( String to, String redirectText, String next ) {
+        question.setType( Question.QUESTION_TYPE_REFERRAL );
+
+        question.setUrl( to );
+        if ( redirectText != null ) {
+            redirectText = formatText( redirectText );
+            question.setQuestion_text( redirectText );
+        }
+
+        if ( next != null ) {
+            next = formatURL( next );
+            question.addAnswer( new Answer( null, next ) );
+        }
+    }
 	
     /**
      * redirect the control to a new phone.
@@ -294,98 +299,89 @@ public class AskFast
         }
     }
 	
-	public String render() {
-		return question.toJSON();
-	}
-	
-	/**
-	 * overloaded method for any outboundcalls without a subject (Everything
-	 * except Email)
-	 * 
-	 * @param fromAddress
-	 *            address of the sender
-	 * @param toAddress
-	 *            address of the receiver
-	 * @param url
-	 *            GET request on this URL has the question
-	 * @throws Exception
-	 */
-	public String outBoundCall(String fromAddress, String toAddress, String url)
-			throws Exception {
-		return this.outBoundCall(fromAddress, null, toAddress, null, url);
-	}
-	
-	/**
-	 * overloaded method for any outboundcalls with a subject (Everything
-	 * including Email)
-	 * 
-	 * @param fromAddress
-	 *            address of the sender
-	 * @param toAddress
-	 *            address of the receiver
-	 * @param url
-	 *            GET request on this URL has the question
-	 * @throws Exception
-	 */
-	public String outBoundCall(String fromAddress, String toAddress,
-			String subject, String url) throws Exception {
-		return this.outBoundCall(fromAddress, null, toAddress, subject, url);
-	}
-	
-	public String outBoundCall(String fromAddress, String senderName,
-			String toAddress, String subject, String url) throws Exception {
-		return outBoundCall(fromAddress, senderName, Arrays.asList(toAddress),
-				subject, url);
-	}
-	
-	/**
-	 * overloaded method for any broadcast outboundcalls with a subject
-	 * (Everything including an Email)
-	 * 
-	 * @param fromAddress
-	 *            address of the sender
-	 * @param senderName
-	 *            name of the sender (userful for sending emails)
-	 * @param toAddressList
-	 *            collection of all recipient addresses
-	 * @param subject
-	 *            subject of the email
-	 * @param url
-	 *            question url
-	 * @return
-	 * @throws Exception
-	 */
-	public String outBoundCall(String fromAddress, String senderName,
-			Collection<String> toAddressList, String subject, String url)
-			throws Exception {
-		Map<String, String> toAddressMap = new HashMap<String, String>();
-		for (String toAddress : toAddressList) {
-			toAddressMap.put(toAddress, "");
-		}
-		return outBoundCall(fromAddress, senderName, toAddressMap, subject, url);
-	}
-	
-	/**
-	 * overloaded method for any broadcast outboundcalls without a subject
-	 * (Everything except an Email).
-	 * Makes it backward compatible
-	 * 
-	 * @param fromAddress
-	 *            address of the sender
-	 * @param senderName
-	 *            name of the sender (userful for sending emails)
-	 * @param toAddressNameMap
-	 *            map containing all recipient address for a Broadcast call
-	 * @param url
-	 *            GET request on this URL has the question
-	 * @return result of this outBound
-	 * @throws Exception
-	 */
-	public String outBoundCall(String fromAddress, String senderName,
-			Map<String, String> toAddressNameMap, String url) throws Exception {
-		return outBoundCall(fromAddress, senderName, toAddressNameMap, null,
-				url);
-	}
+    public String render() {
+        return question.toJSON();
+    }
+
+    /**
+     * overloaded method for any outboundcalls without a subject (Everything
+     * except Email)
+     * 
+     * @param fromAddress
+     *            address of the sender
+     * @param toAddress
+     *            address of the receiver
+     * @param url
+     *            GET request on this URL has the question
+     * @throws Exception
+     */
+    public String outBoundCall( String fromAddress, String toAddress, String url ) throws Exception {
+        return this.outBoundCall( fromAddress, null, toAddress, null, url );
+    }
+
+    /**
+     * overloaded method for any outboundcalls with a subject (Everything
+     * including Email)
+     * 
+     * @param fromAddress
+     *            address of the sender
+     * @param toAddress
+     *            address of the receiver
+     * @param url
+     *            GET request on this URL has the question
+     * @throws Exception
+     */
+    public String outBoundCall( String fromAddress, String toAddress, String subject, String url ) throws Exception {
+        return this.outBoundCall( fromAddress, null, toAddress, subject, url );
+    }
+
+    public String outBoundCall( String fromAddress, String senderName, String toAddress, String subject, String url ) throws Exception {
+        return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress ), subject, url );
+    }
+
+    /**
+     * overloaded method for any broadcast outboundcalls with a subject
+     * (Everything including an Email)
+     * 
+     * @param fromAddress
+     *            address of the sender
+     * @param senderName
+     *            name of the sender (userful for sending emails)
+     * @param toAddressList
+     *            collection of all recipient addresses
+     * @param subject
+     *            subject of the email
+     * @param url
+     *            question url
+     * @return
+     * @throws Exception
+     */
+    public String outBoundCall( String fromAddress, String senderName, Collection<String> toAddressList, String subject, String url ) throws Exception {
+        Map<String, String> toAddressMap = new HashMap<String, String>();
+        for ( String toAddress : toAddressList ) {
+            toAddressMap.put( toAddress, "" );
+        }
+        return outBoundCall( fromAddress, senderName, toAddressMap, subject, url );
+    }
+
+    /**
+     * overloaded method for any broadcast outboundcalls without a subject
+     * (Everything except an Email). Makes it backward compatible
+     * 
+     * @param fromAddress
+     *            address of the sender
+     * @param senderName
+     *            name of the sender (userful for sending emails)
+     * @param toAddressNameMap
+     *            map containing all recipient address for a Broadcast call
+     * @param url
+     *            GET request on this URL has the question
+     * @return result of this outBound
+     * @throws Exception
+     */
+    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String url ) throws Exception {
+        return outBoundCall( fromAddress, senderName, toAddressNameMap, null, url );
+    }
 	
 	/**
      * overloaded method for any broadcast outboundcalls with a subject
@@ -481,60 +477,58 @@ public class AskFast
         question.addMediaProperties( mediaProperty );
     }
 
-	public void setAccountID(String accountID) {
-		this.accountID = accountID;
-	}
+    public void setAccountID( String accountID ) {
+        this.accountID = accountID;
+    }
 
-	public String obtainAccessToken()
-			throws Exception {
-		
-		if (accountID == null || refreshToken == null) {
-			throw new Exception("AccountID or ResfreshToken isn't set.");
-		}
-		// First obtaining accessToken from Keyserver
-		OAuthClientRequest request = OAuthClientRequest
-				.tokenLocation(ASKFAST_KEYSERVER)
-				.setGrantType(GrantType.REFRESH_TOKEN)
-				.setClientId(accountID).setClientSecret("blabla")
-				.setRefreshToken(refreshToken).buildQueryMessage();
-		
-		// create OAuth client that uses custom http client under the hood
-		OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-		OAuthJSONAccessTokenResponse response = oAuthClient
-				.accessToken(request);
-		if (response.getAccessToken() != null) {
-			bearerToken = response.getAccessToken();
-			return bearerToken;
-		}
-		return null;
-	}
-	
-	public String getAccountID() {
-		return accountID;
-	}
+    public String obtainAccessToken() throws Exception {
 
-	public String getBearerToken() {
-		return bearerToken;
-	}
+        if ( accountID == null || refreshToken == null ) {
+            throw new Exception( "AccountID or ResfreshToken isn't set." );
+        }
+        // First obtaining accessToken from Keyserver
+        OAuthClientRequest request = OAuthClientRequest.tokenLocation( ASKFAST_KEYSERVER ).setGrantType( GrantType.REFRESH_TOKEN ).setClientId( accountID ).setClientSecret( "blabla" ).setRefreshToken( refreshToken ).buildQueryMessage();
 
-	public void setBearerToken(String bearerToken) {
-		this.bearerToken = bearerToken;
-	}
+        // create OAuth client that uses custom http client under the hood
+        OAuthClient oAuthClient = new OAuthClient( new URLConnectionClient() );
+        OAuthJSONAccessTokenResponse response = oAuthClient.accessToken( request );
+        if ( response.getAccessToken() != null ) {
+            bearerToken = response.getAccessToken();
+            return bearerToken;
+        }
+        return null;
+    }
 
-	public void render(HttpServletResponse response) throws IOException {
-		
-		String json = render();
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		
-		response.getWriter().write(json);
-		response.getWriter().flush();
-		response.getWriter().close();
-	}
-	
-	public Map<String, String> getParams() {
-		return params;
-	}
+    public String getAccountID() {
+        return accountID;
+    }
+
+    public String getBearerToken() {
+        return bearerToken;
+    }
+
+    public void setBearerToken( String bearerToken ) {
+        this.bearerToken = bearerToken;
+    }
+    
+    public void setPreferredLanguage(String language) {
+        this.question.setPreferred_language( language );
+    }
+
+    public void render( HttpServletResponse response ) throws IOException {
+
+        String json = render();
+        response.setContentType( "application/json" );
+        response.setCharacterEncoding( "UTF-8" );
+
+        response.getWriter().write( json );
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
 	
 	// Private functions
     private String formatText( String text )
@@ -560,63 +554,65 @@ public class AskFast
         return text;
     }
 	
-	private String formatURL(String url) {
-		if (url == null || url.isEmpty()) return url;
-		
-		if ((!url.startsWith("http") && !url.startsWith("https"))
-				&& baseURL != null) {
-			url = baseURL + url;
-		}
-		
-		url = addQueryString(url);
-		
-		return url;
-	}
-	
-	private String addQueryString(String url) {
-		if (this.params.size() > 0) {
-			String query = "?";
-			if (url.contains("?")) query = "&";
-			Iterator<Entry<String, String>> it = this.params.entrySet()
-					.iterator();
-			while (it.hasNext()) {
-				try {
-					Entry<String, String> param = it.next();
-					query += param.getKey() + "=" + URLEncoder.encode(param.getValue(), "UTF-8") + "&";
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			return url + query.substring(0, query.length() - 1);
-		}
-		
-		return url;
-	}
-	
-	private static String getHost(HttpServletRequest req) {
-		int port = req.getServerPort();
-		if (req.getScheme().equals("http") && port == 80) {
-			port = -1;
-		} else if (req.getScheme().equals("https") && port == 443) {
-			port = -1;
-		}
-		String url = null;
-		try {
-			URL serverURL = new URL(req.getScheme(), req.getServerName(), port,
-					"");
-			url = serverURL.toString();
-		} catch (Exception e) {
-		}
-		return url;
-	}
-	
-	public String getBaseURL() {
+    private String formatURL( String url ) {
+        if ( url == null || url.isEmpty() )
+            return url;
+
+        if ( ( !url.startsWith( "http" ) && !url.startsWith( "https" ) ) && baseURL != null ) {
+            url = baseURL + url;
+        }
+
+        url = addQueryString( url );
+
+        return url;
+    }
+
+    private String addQueryString( String url ) {
+        if ( this.params.size() > 0 ) {
+            String query = "?";
+            if ( url.contains( "?" ) )
+                query = "&";
+            Iterator<Entry<String, String>> it = this.params.entrySet().iterator();
+            while ( it.hasNext() ) {
+                try {
+                    Entry<String, String> param = it.next();
+                    query += param.getKey() + "=" + URLEncoder.encode( param.getValue(), "UTF-8" ) + "&";
+                }
+                catch ( Exception e ) {
+                    e.printStackTrace();
+                }
+            }
+            return url + query.substring( 0, query.length() - 1 );
+        }
+
+        return url;
+    }
+
+    private static String getHost( HttpServletRequest req ) {
+        int port = req.getServerPort();
+        if ( req.getScheme().equals( "http" ) && port == 80 ) {
+            port = -1;
+        }
+        else if ( req.getScheme().equals( "https" ) && port == 443 ) {
+            port = -1;
+        }
+        String url = null;
+        try {
+            URL serverURL = new URL( req.getScheme(), req.getServerName(), port, "" );
+            url = serverURL.toString();
+        }
+        catch ( Exception e ) {
+        }
+        return url;
+    }
+
+    public String getBaseURL() {
         return baseURL;
     }
 	
-	public void setBaseURL(String baseURL) {
-		this.baseURL = baseURL;
-	}
+    public void setBaseURL( String baseURL ) {
+        this.baseURL = baseURL;
+    }
 	
 
     private void ask( String ask, String answerText, String answerCallback, String askType )

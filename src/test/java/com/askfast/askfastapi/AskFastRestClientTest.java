@@ -11,8 +11,10 @@ import com.askfast.model.Adapter;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.Language;
+import com.askfast.model.Recording;
 import com.askfast.model.TTSInfo;
 import com.askfast.model.TTSProvider;
+import com.askfast.model.TTSUser;
 
 public class AskFastRestClientTest extends TestFramework {
 
@@ -127,6 +129,17 @@ public class AskFastRestClientTest extends TestFramework {
                 null, null, null);
             Assert.assertTrue(ddrs.size() == 0);
         }
+    }
+    
+    @Test
+    public void testReadingRecordings() {
+        AskFastRestClient client = new AskFastRestClient(accountId, refreshToken, accessToken);
+        List<Recording> recordings = client.getRecordings();
+        
+        int count = recordings.size();
+        LOG.info("Found " + count + " recordings");
+        
+        Assert.assertTrue(count > 0);
     }
     
     private boolean isNullOrEmpty(String text) {

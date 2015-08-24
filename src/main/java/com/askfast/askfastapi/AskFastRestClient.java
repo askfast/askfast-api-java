@@ -2,18 +2,18 @@ package com.askfast.askfastapi;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import retrofit.client.OkClient;
-
+import com.askfast.askfastapi.model.Question;
 import com.askfast.model.Adapter;
 import com.askfast.model.AdapterType;
 import com.askfast.model.DDRRecord;
@@ -100,37 +100,175 @@ public class AskFastRestClient {
      * Initiate a phone call from a random call adapter.
      * 
      * @param toAddress
-     *          The address which will be called
+     *            The address which will be called
      * @param url
-     *          The url used to load the dialog. This can also be a dialogId
-     * @return
+     *            This can be one of: <br>
+     *            1. http(s) endpoint fetching a {@link Question} json as
+     *            response. <br>
+     *            2. A standard text prefixed by keyword: text://<your message>.
+     *            This will be transformed to a
+     *            {@link Question#QUESTION_TYPE_COMMENT} <br>
+     *            3. A unique dialogId as defined in the {@linkplain https
+     *            ://portal.ask-fast.com} or by method
+     *            {@link AskFastRestClient#createDialog(Dialog)} method
+     * @return Result based on a the request. If its a error, this might throw a
+     *         RetrofitError, if it has a {@link RetrofitError#getBody()} try to
+     *         deserialize it to {@link Result} and parse the reason for the
+     *         failure. A login error would however not be caught by this
+     *         Exception type.
      */
     public Result startPhoneDialog(String toAddress, String url) {
 
-        return this.startPhoneDialog( toAddress, null, url );
+        return this.startDialog(toAddress, AdapterType.CALL, url);
     }
     
     /**
-     * Initiate a phone call from a given call adapter.
+     * Initiate an SMS request from a random SMS adapter.
      * 
      * @param toAddress
-     *          The address which will be called
-     * @param adapterId
-     *          The adapterId to initiate the call from
+     *            The mobile number to which an SMS is to be sent
      * @param url
-     *          The url used to load the dialog. This can also be a dialogId
-     * @return
+     *            This can be one of: <br>
+     *            1. http(s) endpoint fetching a {@link Question} json as
+     *            response. <br>
+     *            2. A standard text prefixed by keyword: text://<your message>.
+     *            This will be transformed to a
+     *            {@link Question#QUESTION_TYPE_COMMENT} <br>
+     *            3. A unique dialogId as defined in the {@linkplain https
+     *            ://portal.ask-fast.com} or by method
+     *            {@link AskFastRestClient#createDialog(Dialog)} method
+     * @return Result based on a the request. If its a error, this might throw a
+     *         RetrofitError, if it has a {@link RetrofitError#getBody()} try to
+     *         deserialize it to {@link Result} and parse the reason for the
+     *         failure. A login error would however not be caught by this
+     *         Exception type.
      */
-    public Result startPhoneDialog(String toAddress, String adapterId, String url) {
+    public Result startSMSDialog(String toAddress, String url) {
+
+        return this.startDialog(toAddress, AdapterType.SMS, url);
+    }
+    
+    /**
+     * Initiate an Email request from a random Email adapter.
+     * 
+     * @param toAddress
+     *            An email address to which an email is to be sent
+     * @param url
+     *            This can be one of: <br>
+     *            1. http(s) endpoint fetching a {@link Question} json as
+     *            response. <br>
+     *            2. A standard text prefixed by keyword: text://<your message>.
+     *            This will be transformed to a
+     *            {@link Question#QUESTION_TYPE_COMMENT} <br>
+     *            3. A unique dialogId as defined in the {@linkplain https
+     *            ://portal.ask-fast.com} or by method
+     *            {@link AskFastRestClient#createDialog(Dialog)} method
+     * @return Result based on a the request. If its a error, this might throw a
+     *         RetrofitError, if it has a {@link RetrofitError#getBody()} try to
+     *         deserialize it to {@link Result} and parse the reason for the
+     *         failure. A login error would however not be caught by this
+     *         Exception type.
+     */
+    public Result startEmailDialog(String toAddress, String url) {
+
+        return this.startDialog(toAddress, AdapterType.EMAIL, url);
+    }
+    
+    /**
+     * Initiates a dialog request from a given adapterId.
+     * 
+     * @param toAddress
+     *            The address for which an outbound dialog request is requested
+     *            to be initiated.
+     * @param adapterId
+     *            Specific adapterId (channel or communication mode) that is
+     *            either owned by you, or that you are a shared user of.
+     * @param url
+     *            This can be one of: <br>
+     *            1. http(s) endpoint fetching a {@link Question} json as
+     *            response. <br>
+     *            2. A standard text prefixed by keyword: text://<your message>.
+     *            This will be transformed to a
+     *            {@link Question#QUESTION_TYPE_COMMENT} <br>
+     *            3. A unique dialogId as defined in the {@linkplain https
+     *            ://portal.ask-fast.com} or by method
+     *            {@link AskFastRestClient#createDialog(Dialog)} method
+     * @return Result based on a the request. If its a error, this might throw a
+     *         RetrofitError, if it has a {@link RetrofitError#getBody()} try to
+     *         deserialize it to {@link Result} and parse the reason for the
+     *         failure. A login error would however not be caught by this
+     *         Exception type.
+     */
+    public Result startDialog(String toAddress, String adapterId, String url) {
 
         AskFastRestService service = getRestService();
-        if(adapterId==null) { 
-            return service.startDialog(new DialogRequest(toAddress, AdapterType.CALL, url));
-        } else {
-            return service.startDialog(new DialogRequest(toAddress, adapterId, url));
-        }
+        return service.startDialog(new DialogRequest(toAddress, adapterId, url));
     }
+    
+    /**
+     * Initiates a dialog request from a given adapterId. This will pick up the
+     * first random adapter of the given type, in case of multiple adapters of
+     * the same type.
+     * 
+     * @param toAddress
+     *            The address for which an outbound dialog request is requested
+     *            to be initiated.
+     * @param adapterType
+     *            The type of the communication for which a dialog is initiated.
+     *            E.g. Call, SMS, Email etc
+     * @param url
+     *            The url used to load the dialog. This can also be a dialogId
+     * @return Result based on a the request. If its a error, this might throw a
+     *         RetrofitError, if it has a {@link RetrofitError#getBody()} try to
+     *         deserialize it to {@link Result} and parse the reason for the
+     *         failure. A login error would however not be caught by this
+     *         Exception type.
+     */
+    public Result startDialog(String toAddress, AdapterType adapterType, String url) {
 
+        AskFastRestService service = getRestService();
+        return service.startDialog(new DialogRequest(toAddress, adapterType, url));
+    }
+    
+    /**
+     * Initiates a broadcast dialog request from a given adapterId. 
+     * @param addressMap
+     *            The key value pairs of <toAddress, recipientName>
+     * @param addressCcMap
+     *            The key value pairs of <ccAddress, recipientName>. Used in
+     *            case of an email adapter only
+     * @param addressBccMap
+     *            The key value pairs of <bccAddress, recipientName>. Used in
+     *            case of an email adapter only
+     * @param adapterID
+     *            The id identifying a particular mode of communication. These
+     *            values can be retried from {@linkplain https
+     *            ://portal.ask-fast.com} in the adapters section.
+     * @param senderName
+     *            A senderName can be attached for medium types: SMS, EMAIL. For
+     *            SMS, the length should not exceed 11 charecters.
+     * @param subject
+     *            Only valid for an email adapter. The subject of the message to
+     *            be sent
+     * @param url
+     *            This can be one of: <br>
+     *            1. http(s) endpoint fetching a {@link Question} json as
+     *            response. <br>
+     *            2. A standard text prefixed by keyword: text://<your message>.
+     *            This will be transformed to a
+     *            {@link Question#QUESTION_TYPE_COMMENT} <br>
+     *            3. A unique dialogId as defined in the {@linkplain https
+     *            ://portal.ask-fast.com} or by method
+     *            {@link AskFastRestClient#createDialog(Dialog)} method
+     */
+    public Result startDialog(Map<String, String> addressMap, Map<String, String> addressCcMap,
+        Map<String, String> addressBccMap, String adapterID, String senderName, String subject, String url) {
+
+        AskFastRestService service = getRestService();
+        return service.startDialog(new DialogRequest(addressMap, addressCcMap, addressBccMap, adapterID, senderName,
+            subject, url));
+    }
+    
     /**
      * Returns a set of {@link Adapter Adapters}, optionally narrowed down by a {@code type}.
      *

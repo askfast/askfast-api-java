@@ -31,6 +31,13 @@ public class DialogRequest {
      * @param addressBccMap
      *            The key value pairs of <bccAddress, recipientName>. Used in
      *            case of an email adapter only
+     * @param adapterType
+     *            The type of communication opted for this outbound dialog. The
+     *            first adapter of the given type is chosen if there are
+     *            multiple ones exist. Usually either one of adapterType or
+     *            adapterID is passed, although this constructor ignores the
+     *            adapterType if the adapterID is present. An error is returned
+     *            if its set outside of this constructor.
      * @param adapterID
      *            The id identifying a particular mode of communication. These
      *            values can be retried from {@linkplain https
@@ -53,52 +60,45 @@ public class DialogRequest {
      *            {@link AskFastRestClient#createDialog(Dialog)} method
      */
     public DialogRequest(Map<String, String> addressMap, Map<String, String> addressCcMap,
-        Map<String, String> addressBccMap, String adapterID, String senderName, String subject, String url) {
+        Map<String, String> addressBccMap, AdapterType adapterType, String adapterID, String senderName,
+        String subject, String url) {
 
         this.addressMap = addressMap;
         this.addressCcMap = addressCcMap;
         this.addressBccMap = addressBccMap;
         this.adapterID = adapterID;
+        //use the adapterType only if the adapterID is null
+        if (adapterID == null) {
+            this.adapterType = adapterType;
+        }
         this.senderName = senderName;
         this.subject = subject;
         this.url = url;
     }
 
     /**
-     * A consturctor which can be used to trigger an outbound request 
-     * @param address
-     *            The address of the receipient. E.g. Phonenumber for Call, SMS and Email for Email adpater.
-     * @param adapterID
-     *            The id identifying a particular mode of communication. These
-     *            values can be retried from {@linkplain https
-     *            ://portal.ask-fast.com} in the adapters section.
-     * @param url
-     *            This can be one of: <br>
-     *            1. http(s) endpoint fetching a {@link Question} json as
-     *            response. <br>
-     *            2. A standard text prefixed by keyword: text://<your message>.
-     *            This will be transformed to a
-     *            {@link Question#QUESTION_TYPE_COMMENT} <br>
-     *            3. A unique dialogId as defined in the {@linkplain https
-     *            ://portal.ask-fast.com} or by method
-     *            {@link AskFastRestClient#createDialog(Dialog)} method
-     */
-    public DialogRequest(String address, String adapterId, String url) {
-        this.address = address;
-        this.adapterID = adapterId;
-        this.url = url;
-    }
-    
-    /**
      * A consturctor which can be used to trigger an outbound request
      * 
      * @param address
      *            The address of the receipient. E.g. Phonenumber for Call, SMS
      *            and Email for Email adpater.
-     * @param AdapterType
-     *            An adapterType which defines the mode of communication with
-     *            the recepient. ASK-Fast will randomly pick an adapter if there
-     *            are multiple adapter of the same type. 
+     * @param adapterType
+     *            The type of communication opted for this outbound dialog. The
+     *            first adapter of the given type is chosen if there are
+     *            multiple ones exist. Usually either one of adapterType or
+     *            adapterID is passed, although this constructor ignores the
+     *            adapterType if the adapterID is present. An error is returned
+     *            if its set outside of this constructor.
+     * @param adapterID
+     *            The id identifying a particular mode of communication. These
+     *            values can be retried from {@linkplain https
+     *            ://portal.ask-fast.com} in the adapters section.
+     * @param senderName
+     *            A senderName can be attached for medium types: SMS, EMAIL. For
+     *            SMS, the length should not exceed 11 charecters.
+     * @param subject
+     *            Only valid for an email adapter. The subject of the message to
+     *            be sent
      * @param url
      *            This can be one of: <br>
      *            1. http(s) endpoint fetching a {@link Question} json as
@@ -110,12 +110,20 @@ public class DialogRequest {
      *            ://portal.ask-fast.com} or by method
      *            {@link AskFastRestClient#createDialog(Dialog)} method
      */
-    public DialogRequest(String address, AdapterType adapterType, String url) {
+    public DialogRequest(String address, AdapterType adapterType, String adapterId, String senderName, String subject,
+        String url) {
+
         this.address = address;
-        this.adapterType = adapterType;
+        this.adapterID = adapterId;
+        //use the adapterType only if the adapterID is null
+        if (adapterID == null) {
+            this.adapterType = adapterType;
+        }
+        this.senderName = senderName;
+        this.subject = subject;
         this.url = url;
     }
-
+    
     public String getAddress() {
 
         return address;

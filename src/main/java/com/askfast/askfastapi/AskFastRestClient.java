@@ -119,7 +119,7 @@ public class AskFastRestClient {
      */
     public Result startPhoneDialog(String toAddress, String url) {
 
-        return this.startDialog(toAddress, AdapterType.CALL, url);
+        return this.startDialog(toAddress, AdapterType.CALL, null, null, url);
     }
     
     /**
@@ -127,6 +127,9 @@ public class AskFastRestClient {
      * 
      * @param toAddress
      *            The mobile number to which an SMS is to be sent
+     * @param senderName
+     *            A senderName can be attached for medium types: SMS, EMAIL. For
+     *            SMS, the length should not exceed 11 charecters.
      * @param url
      *            This can be one of: <br>
      *            1. http(s) endpoint fetching a {@link Question} json as
@@ -143,16 +146,24 @@ public class AskFastRestClient {
      *         failure. A login error would however not be caught by this
      *         Exception type.
      */
-    public Result startSMSDialog(String toAddress, String url) {
+    public Result startSMSDialog(String toAddress, String senderName, String url) {
 
-        return this.startDialog(toAddress, AdapterType.SMS, url);
+        return this.startDialog(toAddress, AdapterType.SMS, senderName, null, url);
     }
-    
+
     /**
      * Initiate an Email request from a random Email adapter.
      * 
      * @param toAddress
      *            An email address to which an email is to be sent
+     * @param senderName
+     *            A senderName can be attached for medium types: SMS, EMAIL. For
+     *            SMS, the length should not exceed 11 charecters. * @param
+     *            subject Only valid for an email adapter. The subject of the
+     *            message to be sent
+     * @param subject
+     *            Only valid for an email adapter. The subject of the message to
+     *            be sent
      * @param url
      *            This can be one of: <br>
      *            1. http(s) endpoint fetching a {@link Question} json as
@@ -169,9 +180,9 @@ public class AskFastRestClient {
      *         failure. A login error would however not be caught by this
      *         Exception type.
      */
-    public Result startEmailDialog(String toAddress, String url) {
+    public Result startEmailDialog(String toAddress, String senderName, String subject, String url) {
 
-        return this.startDialog(toAddress, AdapterType.EMAIL, url);
+        return this.startDialog(toAddress, AdapterType.EMAIL, senderName, subject, url);
     }
     
     /**
@@ -183,6 +194,12 @@ public class AskFastRestClient {
      * @param adapterId
      *            Specific adapterId (channel or communication mode) that is
      *            either owned by you, or that you are a shared user of.
+     * @param senderName
+     *            A senderName can be attached for medium types: SMS, EMAIL. For
+     *            SMS, the length should not exceed 11 charecters.
+     * @param subject
+     *            Only valid for an email adapter. The subject of the message to
+     *            be sent
      * @param url
      *            This can be one of: <br>
      *            1. http(s) endpoint fetching a {@link Question} json as
@@ -199,10 +216,10 @@ public class AskFastRestClient {
      *         failure. A login error would however not be caught by this
      *         Exception type.
      */
-    public Result startDialog(String toAddress, String adapterId, String url) {
+    public Result startDialog(String toAddress, String adapterId, String senderName, String subject, String url) {
 
         AskFastRestService service = getRestService();
-        return service.startDialog(new DialogRequest(toAddress, adapterId, url));
+        return service.startDialog(new DialogRequest(toAddress, null, adapterId, senderName, subject, url));
     }
     
     /**
@@ -216,6 +233,12 @@ public class AskFastRestClient {
      * @param adapterType
      *            The type of the communication for which a dialog is initiated.
      *            E.g. Call, SMS, Email etc
+     * @param senderName
+     *            A senderName can be attached for medium types: SMS, EMAIL. For
+     *            SMS, the length should not exceed 11 charecters.
+     * @param subject
+     *            Only valid for an email adapter. The subject of the message to
+     *            be sent
      * @param url
      *            The url used to load the dialog. This can also be a dialogId
      * @return Result based on a the request. If its a error, this might throw a
@@ -224,14 +247,15 @@ public class AskFastRestClient {
      *         failure. A login error would however not be caught by this
      *         Exception type.
      */
-    public Result startDialog(String toAddress, AdapterType adapterType, String url) {
+    public Result startDialog(String toAddress, AdapterType adapterType, String senderName, String subject, String url) {
 
         AskFastRestService service = getRestService();
-        return service.startDialog(new DialogRequest(toAddress, adapterType, url));
+        return service.startDialog(new DialogRequest(toAddress, adapterType, null, senderName, subject, url));
     }
     
     /**
-     * Initiates a broadcast dialog request from a given adapterId. 
+     * Initiates a broadcast dialog request from a given adapterId.
+     * 
      * @param addressMap
      *            The key value pairs of <toAddress, recipientName>
      * @param addressCcMap
@@ -240,6 +264,11 @@ public class AskFastRestClient {
      * @param addressBccMap
      *            The key value pairs of <bccAddress, recipientName>. Used in
      *            case of an email adapter only
+     * @param adapterType
+     *            The type of communication opted for this outbound dialog. The
+     *            first adapter of the given type is chosen if there are
+     *            multiple ones exist. Usually either one of adapterType or
+     *            adapterID.
      * @param adapterID
      *            The id identifying a particular mode of communication. These
      *            values can be retried from {@linkplain https
@@ -262,10 +291,10 @@ public class AskFastRestClient {
      *            {@link AskFastRestClient#createDialog(Dialog)} method
      */
     public Result startDialog(Map<String, String> addressMap, Map<String, String> addressCcMap,
-        Map<String, String> addressBccMap, String adapterID, String senderName, String subject, String url) {
+        Map<String, String> addressBccMap, AdapterType adapterType, String adapterID, String senderName, String subject, String url) {
 
         AskFastRestService service = getRestService();
-        return service.startDialog(new DialogRequest(addressMap, addressCcMap, addressBccMap, adapterID, senderName,
+        return service.startDialog(new DialogRequest(addressMap, addressCcMap, addressBccMap, adapterType, adapterID, senderName,
             subject, url));
     }
     

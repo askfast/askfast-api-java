@@ -4,7 +4,7 @@
 
 	<groupId>com.askfast.askfastapi</groupId>
 	<artifactId>askfast-api-java</artifactId>
-	<version>1.4.2</version>
+	<version>1.4.3</version>
 	<name>AskFast Library</name>
 	<description>AskFast Library to use the AskFast system</description>
 
@@ -45,7 +45,7 @@
 	</developers>
 
 	<properties>
-		<jackson.version>2.4.1</jackson.version>
+		<jackson.version>2.5.4</jackson.version>
 		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<org.apache.oltu.version>0.31</org.apache.oltu.version>

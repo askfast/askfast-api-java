@@ -494,6 +494,39 @@ public class AskFastRestClient {
         return service.getDDRRecords(delimitedAdapterIds, delimitedAdapterTypes, fromAddress, typeId, status,
             startTime, endTime, delimitedSessionKeys, offset, limit, shouldGenerateCosts, shouldIncludeServiceCosts);
     }
+    
+    /**
+     * A faster fetch of the aggregation of all quantities in the {@link DDRRecord#getQuantity()}
+     * based on the filtering criteria given
+     * 
+     * @param adapterIds
+     * @param adapterTypes
+     * @param fromAddress
+     * @param typeId
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param delimitedSessionKeys
+     * @param offset
+     * @throws Exception
+     * @return
+     */
+    public List<DDRRecord> getDDRRecordCount(Collection<String> adapterIds, Collection<String> adapterTypes,
+        String fromAddress, String typeId, String status, Long startTime, Long endTime, String delimitedSessionKeys,
+        Integer offset) throws Exception {
+
+        AskFastRestService service = getRestService();
+        String delimitedAdapterIds = null;
+        String delimitedAdapterTypes = null;
+        if (adapterIds != null) {
+            delimitedAdapterIds = JSONUtil.toCDLString(adapterIds);
+        }
+        if (adapterTypes != null) {
+            delimitedAdapterTypes = JSONUtil.toCDLString(adapterTypes);
+        }
+        return service.getDDRRecordsCount(delimitedAdapterIds, delimitedAdapterTypes, fromAddress, typeId, status,
+            startTime, endTime, delimitedSessionKeys, offset);
+    }
 
     /**
      * Builds the RestAdapter that is able instantiate a RestService instance.

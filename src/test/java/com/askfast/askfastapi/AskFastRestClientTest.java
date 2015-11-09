@@ -1,20 +1,19 @@
 package com.askfast.askfastapi;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import com.askfast.model.Adapter;
+import com.askfast.model.AdapterType;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.Language;
 import com.askfast.model.Recording;
 import com.askfast.model.TTSInfo;
 import com.askfast.model.TTSProvider;
-import com.askfast.model.TTSUser;
 
 public class AskFastRestClientTest extends TestFramework {
 
@@ -140,6 +139,22 @@ public class AskFastRestClientTest extends TestFramework {
         LOG.info("Found " + count + " recordings");
         
         Assert.assertTrue(count > 0);
+    }
+    
+    /**
+     * This is a test to fetch the number of ddrRecords using the rest endpoint of ASK-FAST api
+     * @throws Exception 
+     */
+    @Test
+    public void fetchDDRCountTest() throws Exception {
+
+        if (!isNullOrEmpty(accountId) && !isNullOrEmpty(accessToken) && !isNullOrEmpty(refreshToken)) {
+            AskFastRestClient client = new AskFastRestClient(accountId, refreshToken, accessToken);
+            Integer ddrRecordCount = client.getDDRRecordCount(null,
+                Arrays.asList(AdapterType.SMS.toString(), AdapterType.CALL.toString()), null, null, null, null, null,
+                null, null);
+            Assert.assertTrue(ddrRecordCount > 0);
+        }
     }
     
     private boolean isNullOrEmpty(String text) {

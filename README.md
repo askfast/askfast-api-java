@@ -9,11 +9,11 @@ Overview
 --------
 
 This is library to help you create dialogs which interact with the AskFast system. You can download the latest pre-build version here
-[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api-java-1.4.3.jar?raw=true)
+[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api-java-1.4.4.jar?raw=true)
 
 ------------
 
-Current version is 1.4.3
+Current version is 1.4.4
 
 
 Requirements
@@ -42,7 +42,7 @@ Using the Maven artifact
 <dependency>
     <groupId>com.askfast.askfastapi</groupId>
     <artifactId>askfast-api-java</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4</version>
 </dependency>
 ```
 

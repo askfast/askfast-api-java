@@ -24,6 +24,7 @@ public class DDRRecord
     
     private String id;
     private String adapterId;
+    AdapterType adapterType;
     private String accountId;
     private String fromAddress;
 
@@ -196,6 +197,14 @@ public class DDRRecord
     public void setChildIds(Collection<String> childIds) {
 
         this.childIds = childIds;
+    }
+    public AdapterType getAdapterType() {
+        
+        return adapterType;
+    }
+    public void setAdapterType(AdapterType adapterType) {
+    
+        this.adapterType = adapterType;
     }
 }
 

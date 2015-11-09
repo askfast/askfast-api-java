@@ -120,9 +120,6 @@ public interface AskFastRestService {
      * @param endTime
      * @param delimitedSessionKeys
      * @param offset
-     * @param limit
-     * @param shouldGenerateCosts
-     * @param shouldIncludeServiceCosts
      * @return
      */
     @GET("/ddr/count")

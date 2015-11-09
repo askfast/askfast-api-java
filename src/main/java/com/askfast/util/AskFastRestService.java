@@ -7,6 +7,7 @@ import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.DialogRequest;
 import com.askfast.model.Recording;
+import com.askfast.model.RestResponse;
 import com.askfast.model.Result;
 import com.askfast.model.TTSUser;
 import retrofit.client.Response;
@@ -123,7 +124,7 @@ public interface AskFastRestService {
      * @return
      */
     @GET("/ddr/count")
-    public List<DDRRecord> getDDRRecordsCount(@Query("adapterIds") String delimitedAdapterIds,
+    public RestResponse getDDRRecordsCount(@Query("adapterIds") String delimitedAdapterIds,
         @Query("adapterTypes") String delimitedAdapterTypes, @Query("fromAddress") String fromAddress,
         @Query("typeId") String typeId, @Query("status") String status, @Query("startTime") Long startTime,
         @Query("endTime") Long endTime, @Query("sessionKeys") String delimitedSessionKeys,

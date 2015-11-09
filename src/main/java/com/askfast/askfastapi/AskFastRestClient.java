@@ -16,6 +16,7 @@ import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.DialogRequest;
 import com.askfast.model.Recording;
+import com.askfast.model.RestResponse;
 import com.askfast.model.Result;
 import com.askfast.util.AskFastRestService;
 import com.askfast.util.JSONUtil;
@@ -511,7 +512,7 @@ public class AskFastRestClient {
      * @throws Exception
      * @return
      */
-    public List<DDRRecord> getDDRRecordCount(Collection<String> adapterIds, Collection<String> adapterTypes,
+    public RestResponse getDDRRecordCount(Collection<String> adapterIds, Collection<String> adapterTypes,
         String fromAddress, String typeId, String status, Long startTime, Long endTime, String delimitedSessionKeys,
         Integer offset) throws Exception {
 

@@ -9,10 +9,6 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.OkClient;
 import com.askfast.askfastapi.model.Question;
 import com.askfast.model.Adapter;
 import com.askfast.model.AdapterType;
@@ -20,11 +16,16 @@ import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
 import com.askfast.model.DialogRequest;
 import com.askfast.model.Recording;
+import com.askfast.model.RestResponse;
 import com.askfast.model.Result;
 import com.askfast.util.AskFastRestService;
 import com.askfast.util.JSONUtil;
 import com.askfast.util.JacksonConverter;
 import com.squareup.okhttp.OkHttpClient;
+import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 
 /**
  * A client that gives access to the Ask Fast REST API. An accountId and accessToken are required to access the REST
@@ -311,6 +312,15 @@ public class AskFastRestClient {
         AskFastRestService service = getRestService();
         return service.getAdapters(type);
     }
+    
+    /**
+     * Returns the corresponding adapter by id
+     * @param type
+     * @return
+     */
+    public Adapter getAdapter(String adapterId) {
+        return getRestService().getAdapter(adapterId);
+    }
 
     /**
      * Updates the adapter with the given {@code adapterId}.
@@ -484,6 +494,45 @@ public class AskFastRestClient {
         }
         return service.getDDRRecords(delimitedAdapterIds, delimitedAdapterTypes, fromAddress, typeId, status,
             startTime, endTime, delimitedSessionKeys, offset, limit, shouldGenerateCosts, shouldIncludeServiceCosts);
+    }
+    
+    /**
+     * A faster fetch of the aggregation of all quantities in the {@link DDRRecord#getQuantity()}
+     * based on the filtering criteria given
+     * 
+     * @param adapterIds
+     * @param adapterTypes
+     * @param fromAddress
+     * @param typeId
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @param delimitedSessionKeys
+     * @param offset
+     * @throws Exception
+     * @return
+     */
+    public Integer getDDRRecordCount(Collection<String> adapterIds, Collection<String> adapterTypes, String fromAddress,
+        String typeId, String status, Long startTime, Long endTime, String delimitedSessionKeys, Integer offset)
+            throws Exception {
+
+        AskFastRestService service = getRestService();
+        String delimitedAdapterIds = null;
+        String delimitedAdapterTypes = null;
+        if (adapterIds != null) {
+            delimitedAdapterIds = JSONUtil.toCDLString(adapterIds);
+        }
+        if (adapterTypes != null) {
+            delimitedAdapterTypes = JSONUtil.toCDLString(adapterTypes);
+        }
+        RestResponse ddrRecordsCountResponse = service.getDDRRecordsCount(delimitedAdapterIds, delimitedAdapterTypes,
+            fromAddress, typeId, status, startTime, endTime, delimitedSessionKeys, offset);
+        if (ddrRecordsCountResponse != null && ddrRecordsCountResponse.getCode() == 200) {
+            return (Integer) ddrRecordsCountResponse.getResult();
+        }
+        else {
+            throw new Exception(ddrRecordsCountResponse.getMessage());
+        }
     }
 
     /**

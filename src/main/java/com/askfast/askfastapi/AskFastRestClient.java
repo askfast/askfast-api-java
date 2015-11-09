@@ -512,9 +512,9 @@ public class AskFastRestClient {
      * @throws Exception
      * @return
      */
-    public RestResponse getDDRRecordCount(Collection<String> adapterIds, Collection<String> adapterTypes,
-        String fromAddress, String typeId, String status, Long startTime, Long endTime, String delimitedSessionKeys,
-        Integer offset) throws Exception {
+    public Integer getDDRRecordCount(Collection<String> adapterIds, Collection<String> adapterTypes, String fromAddress,
+        String typeId, String status, Long startTime, Long endTime, String delimitedSessionKeys, Integer offset)
+            throws Exception {
 
         AskFastRestService service = getRestService();
         String delimitedAdapterIds = null;
@@ -525,8 +525,14 @@ public class AskFastRestClient {
         if (adapterTypes != null) {
             delimitedAdapterTypes = JSONUtil.toCDLString(adapterTypes);
         }
-        return service.getDDRRecordsCount(delimitedAdapterIds, delimitedAdapterTypes, fromAddress, typeId, status,
-            startTime, endTime, delimitedSessionKeys, offset);
+        RestResponse ddrRecordsCountResponse = service.getDDRRecordsCount(delimitedAdapterIds, delimitedAdapterTypes,
+            fromAddress, typeId, status, startTime, endTime, delimitedSessionKeys, offset);
+        if (ddrRecordsCountResponse != null && ddrRecordsCountResponse.getCode() == 200) {
+            return (Integer) ddrRecordsCountResponse.getResult();
+        }
+        else {
+            throw new Exception(ddrRecordsCountResponse.getMessage());
+        }
     }
 
     /**

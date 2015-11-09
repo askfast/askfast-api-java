@@ -9,10 +9,6 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.OkClient;
 import com.askfast.askfastapi.model.Question;
 import com.askfast.model.Adapter;
 import com.askfast.model.AdapterType;
@@ -25,6 +21,10 @@ import com.askfast.util.AskFastRestService;
 import com.askfast.util.JSONUtil;
 import com.askfast.util.JacksonConverter;
 import com.squareup.okhttp.OkHttpClient;
+import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
 
 /**
  * A client that gives access to the Ask Fast REST API. An accountId and accessToken are required to access the REST
@@ -310,6 +310,15 @@ public class AskFastRestClient {
         
         AskFastRestService service = getRestService();
         return service.getAdapters(type);
+    }
+    
+    /**
+     * Returns the corresponding adapter by id
+     * @param type
+     * @return
+     */
+    public Adapter getAdapter(String adapterId) {
+        return getRestService().getAdapter(adapterId);
     }
 
     /**

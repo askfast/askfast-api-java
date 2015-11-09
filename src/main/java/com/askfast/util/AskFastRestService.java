@@ -2,7 +2,6 @@ package com.askfast.util;
 
 import java.util.List;
 import java.util.Set;
-
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -11,7 +10,6 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
-
 import com.askfast.model.Adapter;
 import com.askfast.model.DDRRecord;
 import com.askfast.model.Dialog;
@@ -29,6 +27,10 @@ public interface AskFastRestService {
 	// Adapter calls	
 	@GET("/adapter")
 	public Set<Adapter> getAdapters(@Query("type") String type);
+	
+        // Adapter calls        
+        @GET("/adapter")
+        public Adapter getAdapter(@Path("adapterId") String adapterId);
 
 	@POST("/adapter/{adapterId}")
         public Response buyAdapter(@Path("adapterId") String adapterId);

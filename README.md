@@ -21,13 +21,16 @@ Requirements
 
 You can install this library in any Java application or application server. The library depends primarily on jackson libraries. The following listing shows all the libraries that need to be present in an application that uses the AskFast Library:
 
-	* jettison-1.2.jar
-	* org.apache.oltu.oauth2.client-0.31.jar
+	* askfast-api-java-1.4.4.jar
+	* jackson-core-2.0.0.jar
+	* javax.servlet-api-3.0.1.jar
+	* okio-1.6.0.jar
 	* org.apache.oltu.oauth2.common-0.31.jar
 	* jackson-annotations-2.0.0.jar
-	* jackson-core-2.0.0.jar
 	* jackson-databind-2.0.0.jar
-	* javax.servlet-api-3.0.1.jar
+	* okhttp-2.2.0.jar
+	* org.apache.oltu.oauth2.client-0.31.jar
+	* retrofit-1.9.0.jar
 
 All libraries have been included in the [lib/](https://github.com/askfast/askfast-api-java/tree/master/lib) folder.
 

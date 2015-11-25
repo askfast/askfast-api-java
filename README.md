@@ -9,11 +9,11 @@ Overview
 --------
 
 This is library to help you create dialogs which interact with the AskFast system. You can download the latest pre-build version here
-[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api-java-1.4.4.jar?raw=true)
+[jar](https://github.com/askfast/askfast-api-java/blob/master/bin/askfast-api-java-1.4.5.jar?raw=true)
 
 ------------
 
-Current version is 1.4.4
+Current version is 1.4.5
 
 
 Requirements
@@ -21,7 +21,7 @@ Requirements
 
 You can install this library in any Java application or application server. The library depends primarily on jackson libraries. The following listing shows all the libraries that need to be present in an application that uses the AskFast Library:
 
-	* askfast-api-java-1.4.4.jar
+	* askfast-api-java-1.4.5.jar
 	* jackson-core-2.0.0.jar
 	* javax.servlet-api-3.0.1.jar
 	* okio-1.6.0.jar
@@ -45,7 +45,7 @@ Using the Maven artifact
 <dependency>
     <groupId>com.askfast.askfastapi</groupId>
     <artifactId>askfast-api-java</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
 </dependency>
 ```
 

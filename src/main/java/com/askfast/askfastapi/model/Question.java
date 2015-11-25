@@ -3,6 +3,7 @@ package com.askfast.askfastapi.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import com.askfast.askfastapi.model.EventPost.EventType;
@@ -28,7 +29,7 @@ public class Question extends ModelBase{
 	private String question_id = "";
 	private String question_text = null;
 	private String type = null;
-	private String url = null;
+	private List<String> url = null;
 	
 	ArrayList<Answer> answers;
 	ArrayList<EventCallback> event_callbacks;
@@ -63,7 +64,7 @@ public class Question extends ModelBase{
 		return this.type;
 	}
 
-	public String getUrl() {
+	public List<String> getUrl() {
 		return this.url;
 	}
 
@@ -96,12 +97,8 @@ public class Question extends ModelBase{
     {
         this.preferred_language = preferred_language;
     }
-
-    public void setUrl(String url) {
-
-        if (url != null && !url.startsWith("http") && !url.startsWith("tel:")) {
-            url = "tel:" + url;
-        }
+    
+    public void setUrl(List<String> url) {
         this.url = url;
     }
 	

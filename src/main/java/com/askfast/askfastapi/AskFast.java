@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -228,7 +229,7 @@ public class AskFast
      * @return
      */
     public void redirect( String to ) {
-        redirect( to, null, null );
+        redirect( to, null, null, null );
     }
 
     /**
@@ -240,7 +241,7 @@ public class AskFast
      * @return
      */
     public void redirect( String to, String redirectText ) {
-        redirect( to, redirectText, null );
+        redirect( to, redirectText, null, null );
     }
 
     /**
@@ -255,18 +256,7 @@ public class AskFast
      * @return
      */
     public void redirect( String to, String redirectText, String next ) {
-        question.setType( Question.QUESTION_TYPE_REFERRAL );
-
-        question.setUrl( to );
-        if ( redirectText != null ) {
-            redirectText = formatText( redirectText );
-            question.setQuestion_text( redirectText );
-        }
-
-        if ( next != null ) {
-            next = formatURL( next );
-            question.addAnswer( new Answer( null, next ) );
-        }
+        redirect(to, redirectText, next, null);
     }
 	
     /**
@@ -289,8 +279,51 @@ public class AskFast
     public void redirect(String to, String redirectText, String next, String preconnectURL) {
 
         question.setType(Question.QUESTION_TYPE_REFERRAL);
+        
+        to = formatPhoneUrl(to);
+        question.setUrl(Arrays.asList(to));
+        if (redirectText != null) {
+            redirectText = formatText(redirectText);
+            question.setQuestion_text(redirectText);
+        }
 
-        question.setUrl(to);
+        if (next != null) {
+            next = formatURL(next);
+            question.addAnswer(new Answer(null, next));
+        }
+        if (preconnectURL != null && !preconnectURL.isEmpty()) {
+            question.addEvent_callbacks(EventType.preconnect, preconnectURL);
+            //add use preconnect media property
+            question.addProperty(MediumType.BROADSOFT, MediaPropertyKey.USE_PRECONNECT, "true");
+        }
+    }
+    
+    /**
+     * redirect the control to a new phone.
+     * 
+     * @param addresses
+     *            redirect the phone call to all these addresses
+     * @param plays
+     *            this redirectText or url when the control is being redirected.
+     * @param next
+     *            the URL where the question for the redirection agent is
+     *            available
+     * @param preconnectURL
+     *            this url is used to execute a question at the callee side
+     *            before connecting him to the caller. E.g. Now the callee can
+     *            pick the phone, listen to a menu, then connect the call. This
+     *            is useful only with special calling adapters.
+     * @return
+     */
+    public void redirect(List<String> addresses, String redirectText, String next, String preconnectURL) {
+
+        question.setType(Question.QUESTION_TYPE_REFERRAL);
+
+        List<String> formatedAddresses = new ArrayList<String>();
+        for(String address : addresses) {
+            formatedAddresses.add(formatPhoneUrl(address));
+        }
+        question.setUrl(formatedAddresses);
         if (redirectText != null) {
             redirectText = formatText(redirectText);
             question.setQuestion_text(redirectText);
@@ -560,6 +593,13 @@ public class AskFast
         }
         
         return text;
+    }
+    
+    private String formatPhoneUrl( String url ) {
+        if (url != null && !url.startsWith("http") && !url.startsWith("tel:")) {
+            url = "tel:" + url;
+        }
+        return url;
     }
 	
     private String formatURL( String url ) {

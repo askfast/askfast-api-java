@@ -163,8 +163,16 @@ public class AskFast
      */
     public void exit(String exitURL)
     {
-        question.setType("exit");
+        question.setType(Question.QUESTION_TYPE_EXIT);
         question.setQuestion_text(exitURL);
+    }
+    
+    /**
+     * Reject this conversation
+     */
+    public void reject()
+    {
+        question.setType(Question.QUESTION_TYPE_REJECT);
     }
     
     /**

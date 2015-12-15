@@ -20,7 +20,9 @@ public class Question extends ModelBase{
 	public static final String QUESTION_TYPE_REFERRAL = "referral";
 	public static final String QUESTION_TYPE_VOICE_RECORDING = "audio";
 	public static final String QUESTION_TYPE_CONFERENCE = "conference";
-	
+	public static final String QUESTION_TYPE_EXIT = "exit";
+	public static final String QUESTION_TYPE_REJECT = "reject";
+
 	private Collection<MediaProperty> media_properties;
 	private String preferred_language = "nl";
 	private String question_id = "";

@@ -79,7 +79,26 @@ public class MediaProperty
          * participant is waiting in a conference room to be connected to other
          * participants
          */
-        CONFERENCE_WAIT_URL;
+        CONFERENCE_WAIT_URL,
+        /**
+         * Define how long you want the call to be in Secs
+         */
+        CALL_LENGTH,
+        /**
+         * Any time during the conference, if this is set to true. Will exit
+         * the conference and perform the next sequence of control events
+         */
+        CONFERENCE_EXIT_ON_STAR,
+        /**
+         * If true, records the call conversation and posts it to the given {@link MediaPropertyKey#RECORD_CALL_POST_CALLBACK}
+         */
+        RECORD_CALL,
+        /**
+         * This is always together with the
+         * {@link MediaPropertyKey#RECORD_CALL} option. If this url is
+         * missing, the recorded conversation is posted to the answer url
+         */
+        RECORD_CALL_POST_CALLBACK;
         
         @JsonCreator
         public static MediaPropertyKey fromJson(String name) {

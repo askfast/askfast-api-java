@@ -1,20 +1,21 @@
 package com.askfast.askfastapi;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -614,23 +615,28 @@ public class AskFast
 
         return url;
     }
+    
+    /**
+     * Returns the url by adding the queryKey=queryValue based on if a query
+     * param is already seen in the url
+     * 
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    private String addQueryString(String url) {
 
-    private String addQueryString( String url ) {
-        if ( this.params.size() > 0 ) {
-            String query = "?";
-            if ( url.contains( "?" ) )
-                query = "&";
-            Iterator<Entry<String, String>> it = this.params.entrySet().iterator();
-            while ( it.hasNext() ) {
-                try {
-                    Entry<String, String> param = it.next();
-                    query += param.getKey() + "=" + URLEncoder.encode( param.getValue(), "UTF-8" ) + "&";
+        if (params != null && !params.isEmpty()) {
+            try {
+                url = url.replace(" ", URLEncoder.encode(" ", "UTF-8"));
+                URIBuilder uriBuilder = new URIBuilder(new URI(url));
+                for (String queryKey : params.keySet()) {
+                    uriBuilder.addParameter(queryKey, params.get(queryKey));
                 }
-                catch ( Exception e ) {
-                    e.printStackTrace();
-                }
+                return uriBuilder.toString();
             }
-            return url + query.substring( 0, query.length() - 1 );
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return url;

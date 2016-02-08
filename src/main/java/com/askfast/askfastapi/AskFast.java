@@ -346,8 +346,17 @@ public class AskFast
     }
 
     /**
-     * overloaded method for any outboundcalls without a subject (Everything
-     * except Email)
+     * @deprecated Use the one of:
+     *             {@link AskFastRestClient#startDialog(String, com.askfast.model.AdapterType, String, String, String)}
+     *             {@link AskFastRestClient#startDialog(String, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startDialog(Map, Map, Map, com.askfast.model.AdapterType, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
+     *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)} <br>
+     *             Overloaded method for any outboundcalls without a subject
+     *             (Everything except Email)
      * 
      * @param fromAddress
      *            address of the sender
@@ -357,13 +366,25 @@ public class AskFast
      *            GET request on this URL has the question
      * @throws Exception
      */
-    public String outBoundCall( String fromAddress, String toAddress, String url ) throws Exception {
-        return this.outBoundCall( fromAddress, null, toAddress, null, url );
+    @Deprecated
+    public String outBoundCall(String fromAddress, String toAddress, String url) throws Exception {
+
+        return this.outBoundCall(fromAddress, null, toAddress, null, url);
     }
 
     /**
-     * overloaded method for any outboundcalls with a subject (Everything
-     * including Email)
+     * @deprecated Use the one of:
+     *             {@link AskFastRestClient#startDialog(String, com.askfast.model.AdapterType, String, String, String)}
+     *             {@link AskFastRestClient#startDialog(String, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startDialog(Map, Map, Map, com.askfast.model.AdapterType, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
+     *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
+     *             <br>
+     *             overloaded method for any outboundcalls with a subject
+     *             (Everything including Email)
      * 
      * @param fromAddress
      *            address of the sender
@@ -373,17 +394,49 @@ public class AskFast
      *            GET request on this URL has the question
      * @throws Exception
      */
-    public String outBoundCall( String fromAddress, String toAddress, String subject, String url ) throws Exception {
-        return this.outBoundCall( fromAddress, null, toAddress, subject, url );
-    }
+    public String outBoundCall(String fromAddress, String toAddress, String subject, String url) throws Exception {
 
-    public String outBoundCall( String fromAddress, String senderName, String toAddress, String subject, String url ) throws Exception {
-        return outBoundCall( fromAddress, senderName, Arrays.asList( toAddress ), subject, url );
+        return this.outBoundCall(fromAddress, null, toAddress, subject, url);
     }
 
     /**
-     * overloaded method for any broadcast outboundcalls with a subject
-     * (Everything including an Email)
+     * @deprecated Use the one of:
+     *             {@link AskFastRestClient#startDialog(String, com.askfast.model.AdapterType, String, String, String)}
+     *             {@link AskFastRestClient#startDialog(String, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startDialog(Map, Map, Map, com.askfast.model.AdapterType, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
+     *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
+     *             <br>
+     * @param fromAddress
+     * @param senderName
+     * @param toAddress
+     * @param subject
+     * @param url
+     * @return
+     * @throws Exception
+     */
+    public String outBoundCall(String fromAddress, String senderName, String toAddress, String subject, String url)
+        throws Exception {
+
+        return outBoundCall(fromAddress, senderName, Arrays.asList(toAddress), subject, url);
+    }
+
+    /**
+     * @deprecated Use the one of:
+     *             {@link AskFastRestClient#startDialog(String, com.askfast.model.AdapterType, String, String, String)}
+     *             {@link AskFastRestClient#startDialog(String, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startDialog(Map, Map, Map, com.askfast.model.AdapterType, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
+     *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
+     *             <br>
+     *             overloaded method for any broadcast outboundcalls with a
+     *             subject (Everything including an Email)
      * 
      * @param fromAddress
      *            address of the sender
@@ -398,15 +451,26 @@ public class AskFast
      * @return
      * @throws Exception
      */
-    public String outBoundCall( String fromAddress, String senderName, Collection<String> toAddressList, String subject, String url ) throws Exception {
+    public String outBoundCall(String fromAddress, String senderName, Collection<String> toAddressList, String subject,
+        String url) throws Exception {
+
         Map<String, String> toAddressMap = new HashMap<String, String>();
-        for ( String toAddress : toAddressList ) {
-            toAddressMap.put( toAddress, "" );
+        for (String toAddress : toAddressList) {
+            toAddressMap.put(toAddress, "");
         }
-        return outBoundCall( fromAddress, senderName, toAddressMap, subject, url );
+        return outBoundCall(fromAddress, senderName, toAddressMap, subject, url);
     }
 
     /**
+     * @deprecated Use the one of:
+     *             {@link AskFastRestClient#startDialog(String, com.askfast.model.AdapterType, String, String, String)}
+     *             {@link AskFastRestClient#startDialog(String, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startDialog(Map, Map, Map, com.askfast.model.AdapterType, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
+     *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)} <br>
      * overloaded method for any broadcast outboundcalls without a subject
      * (Everything except an Email). Makes it backward compatible
      * 
@@ -425,83 +489,111 @@ public class AskFast
         return outBoundCall( fromAddress, senderName, toAddressNameMap, null, url );
     }
 	
-	/**
-     * overloaded method for any broadcast outboundcalls with a subject
-     * @param fromAddress address of the sender 
-     * @param senderName name of the sender (userful for sending emails)
-     * @param toAddressNameMap map containing all recipient address for a Broadcast call
-     * @param subject subject used in case this is an outbound email
-     * @param url GET request on this URL has the question 
+    /**
+     * @deprecated Use the one of:
+     *             {@link AskFastRestClient#startDialog(String, com.askfast.model.AdapterType, String, String, String)}
+     *             {@link AskFastRestClient#startDialog(String, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startDialog(Map, Map, Map, com.askfast.model.AdapterType, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
+     *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
+     *             <br>
+     *             overloaded method for any broadcast outboundcalls with a
+     *             subject
+     * @param fromAddress
+     *            address of the sender
+     * @param senderName
+     *            name of the sender (userful for sending emails)
+     * @param toAddressNameMap
+     *            map containing all recipient address for a Broadcast call
+     * @param subject
+     *            subject used in case this is an outbound email
+     * @param url
+     *            GET request on this URL has the question
      * @return result of this outBound
      * @throws Exception
      */
-    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap,
-        String subject, String url ) throws Exception
-    {
-        return outBoundCall( fromAddress, senderName, toAddressNameMap, null, null, subject, url );
+    public String outBoundCall(String fromAddress, String senderName, Map<String, String> toAddressNameMap,
+        String subject, String url) throws Exception {
+
+        return outBoundCall(fromAddress, senderName, toAddressNameMap, null, null, subject, url);
     }
     
     /**
-     * overloaded method for any broadcast outboundcalls with a subject, cc and bcc list (Everything including Email)
-     * @param fromAddress address of the sender 
-     * @param senderName name of the sender (userful for sending emails)
-     * @param toAddressNameMap map containing all recipient address for a Broadcast call
-     * @param subject subject used in case this is an outbound email
-     * @param url GET request on this URL has the question 
+     * @deprecated Use the one of:
+     *             {@link AskFastRestClient#startDialog(String, com.askfast.model.AdapterType, String, String, String)}
+     *             {@link AskFastRestClient#startDialog(String, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startDialog(Map, Map, Map, com.askfast.model.AdapterType, String, String, String, String)}
+     *             ,
+     *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
+     *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
+     *             <br>
+     *             overloaded method for any broadcast outboundcalls with a
+     *             subject, cc and bcc list (Everything including Email)
+     * @param fromAddress
+     *            address of the sender
+     * @param senderName
+     *            name of the sender (userful for sending emails)
+     * @param toAddressNameMap
+     *            map containing all recipient address for a Broadcast call
+     * @param subject
+     *            subject used in case this is an outbound email
+     * @param url
+     *            GET request on this URL has the question
      * @return result of this outBound
      * @throws Exception
      */
-    public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap,
-        Map<String, String> ccAddressNameMap, Map<String, String> bccAddressNameMap, String subject, String url )
-    throws Exception
-    {
+    public String outBoundCall(String fromAddress, String senderName, Map<String, String> toAddressNameMap,
+        Map<String, String> ccAddressNameMap, Map<String, String> bccAddressNameMap, String subject, String url)
+            throws Exception {
 
-        if(bearerToken == null)
-        {
+        if (bearerToken == null) {
             obtainAccessToken();
         }
-    	if (accountID == null || bearerToken == null) {
-			throw new Exception("AccountID or BearerToken isn't set, please obtainAccessToken() first!");
-		}
+        if (accountID == null || bearerToken == null) {
+            throw new Exception("AccountID or BearerToken isn't set, please obtainAccessToken() first!");
+        }
 
-        log.info( String.format(
-            "request received to initiate outbound call. From: %s To: %s Cc: %s and Bcc: %s using URL: %s",
-            fromAddress, toAddressNameMap, ccAddressNameMap, bccAddressNameMap, url ) );
-        
+        log.info(String.format(
+            "request received to initiate outbound call. From: %s To: %s Cc: %s and Bcc: %s using URL: %s", fromAddress,
+            toAddressNameMap, ccAddressNameMap, bccAddressNameMap, url));
+
         url = formatURL(url);
-        
+
         ObjectMapper om = new ObjectMapper();
         ObjectNode body = om.createObjectNode();
-        body.put( "id", UUID.randomUUID().toString() );
+        body.put("id", UUID.randomUUID().toString());
         body.put("method", "outboundCallWithMap");
-        
+
         ObjectNode params = om.createObjectNode();
-        params.put( "adapterID", fromAddress );
-        params.putPOJO( "addressMap", om.writeValueAsString( toAddressNameMap ) );
-        if(ccAddressNameMap != null && !ccAddressNameMap.isEmpty())
-        {
-            params.putPOJO( "addressCcMap", om.writeValueAsString( ccAddressNameMap ) );
+        params.put("adapterID", fromAddress);
+        params.putPOJO("addressMap", om.writeValueAsString(toAddressNameMap));
+        if (ccAddressNameMap != null && !ccAddressNameMap.isEmpty()) {
+            params.putPOJO("addressCcMap", om.writeValueAsString(ccAddressNameMap));
         }
-        if(bccAddressNameMap != null && !bccAddressNameMap.isEmpty())
-        {
-            params.putPOJO( "addressBccMap", om.writeValueAsString( bccAddressNameMap ) );
+        if (bccAddressNameMap != null && !bccAddressNameMap.isEmpty()) {
+            params.putPOJO("addressBccMap", om.writeValueAsString(bccAddressNameMap));
         }
-        params.put( "url", url );
-        params.put( "senderName", senderName );
-		params.put("accountID", accountID);
-		params.put("bearerToken", bearerToken);
-        params.put( "subject", subject );
-        body.set( "params" , params);
-        log.info( String.format( "request initiated for outbound call at: %s with payload: %s", ASKFAST_JSONRPC,
-                body.toString() ) );
-        String res = HttpUtil.post( ASKFAST_JSONRPC, body.toString() );
+        params.put("url", url);
+        params.put("senderName", senderName);
+        params.put("accountID", accountID);
+        params.put("bearerToken", bearerToken);
+        params.put("subject", subject);
+        body.set("params", params);
+        log.info(String.format("request initiated for outbound call at: %s with payload: %s", ASKFAST_JSONRPC,
+            body.toString()));
+        String res = HttpUtil.post(ASKFAST_JSONRPC, body.toString());
         if (res != null && res.startsWith("{") || res.trim().startsWith("{")) {
-			ObjectNode json = om.readValue(res, ObjectNode.class);
-			if (json.has("error") && json.get("error").get("message").textValue().equals("Invalid token given")){
-				throw new Exception("Please re-obtain AccessToken!");
-			}
-		} 
-        log.info( String.format( "outbound call response recieved: %s", res ) );
+            ObjectNode json = om.readValue(res, ObjectNode.class);
+            if (json.has("error") && json.get("error").get("message").textValue().equals("Invalid token given")) {
+                throw new Exception("Please re-obtain AccessToken!");
+            }
+        }
+        log.info(String.format("outbound call response recieved: %s", res));
         return res;
     }
             
@@ -603,7 +695,7 @@ public class AskFast
         return url;
     }
 	
-    private String formatURL( String url ) {
+    protected String formatURL( String url ) {
         if ( url == null || url.isEmpty() )
             return url;
 

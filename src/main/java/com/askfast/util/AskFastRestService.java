@@ -30,7 +30,7 @@ public interface AskFastRestService {
 	public Set<Adapter> getAdapters(@Query("type") String type);
 	
         // Adapter calls        
-        @GET("/adapter")
+        @GET("/adapter/{adapterId}")
         public Adapter getAdapter(@Path("adapterId") String adapterId);
 
 	@POST("/adapter/{adapterId}")

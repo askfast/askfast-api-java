@@ -33,6 +33,10 @@ public class MediaProperty
          */
         VOICE_MESSAGE_LENGTH, 
         /**
+         * defines the endpoint where the recording message must be posted to
+         */
+        VOICE_MESSAGE_URL,
+        /**
          * defines the number of times the question should repeat in case of a wrong answer input.
          * works only for phonecalls so as to end a call with repeated input errors.
          */ 
@@ -88,17 +92,7 @@ public class MediaProperty
          * Any time during the conference, if this is set to true. Will exit
          * the conference and perform the next sequence of control events
          */
-        CONFERENCE_EXIT_ON_STAR,
-        /**
-         * If true, records the call conversation and posts it to the given {@link MediaPropertyKey#RECORD_CALL_POST_CALLBACK}
-         */
-        RECORD_CALL,
-        /**
-         * This is always together with the
-         * {@link MediaPropertyKey#RECORD_CALL} option. If this url is
-         * missing, the recorded conversation is posted to the answer url
-         */
-        RECORD_CALL_POST_CALLBACK;
+        CONFERENCE_EXIT_ON_STAR;
         
         @JsonCreator
         public static MediaPropertyKey fromJson(String name) {
@@ -106,12 +100,12 @@ public class MediaProperty
         }
     }
 
-    public enum MediumType
-    {
-        BROADSOFT, GTALK, SKYPE, SMS, TWITTER;
-        
+    public enum MediumType {
+
+        EMAIL, BROADSOFT, GTALK, SKYPE, SMS, TWITTER;
         @JsonCreator
         public static MediumType fromJson(String name) {
+
             return valueOf(name.toUpperCase());
         }
     }

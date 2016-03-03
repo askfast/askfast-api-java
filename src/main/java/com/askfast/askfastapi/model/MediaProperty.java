@@ -92,7 +92,17 @@ public class MediaProperty
          * Any time during the conference, if this is set to true. Will exit
          * the conference and perform the next sequence of control events
          */
-        CONFERENCE_EXIT_ON_STAR;
+        CONFERENCE_EXIT_ON_STAR, 
+        /**
+         * If this is set to true. Will generate the call transcript and POST it to the 
+         * {@link MediaPropertyKey#TRANSCRIPT_URL}
+         */
+        TRANSCRIPT,
+        /**
+         * The URL to which the transcript is POSTed to. This is used only
+         * if {@link MediaPropertyKey#TRANSCRIPT} is set to true
+         */
+        TRANSCRIPT_URL;
         
         @JsonCreator
         public static MediaPropertyKey fromJson(String name) {

@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -278,24 +279,34 @@ public class HttpUtil {
      */
     static public String appendQueryParams(String url, Map<String, String> params) throws IOException {
 
-        String fullUrl = new String(url);
-
         if (params != null) {
-            boolean first = (fullUrl.indexOf('?') == -1);
             for (String param : params.keySet()) {
-                if (first) {
-                    fullUrl += '?';
-                    first = false;
+                try {
+                    url = url.replace(" ", URLEncoder.encode(" ", "UTF-8"));
+                    URIBuilder uriBuilder = new URIBuilder(new URI(url));
+                    URIBuilder returnResult = new URIBuilder(new URI(url)).removeQuery();
+                    //avoid double decoding
+                    String queryValue = params.get(param);
+                    String decodedQueryParam = URLDecoder.decode(queryValue, "UTF-8");
+                    //queryValue is already encoded if after decoded its not the same 
+                    if(!decodedQueryParam.equals(queryValue)) {
+                        queryValue = decodedQueryParam;
+                    }
+                    returnResult.addParameter(param, queryValue);
+                    for (NameValuePair nameValue : uriBuilder.getQueryParams()) {
+
+                        if (!nameValue.getName().equals(queryValue)) {
+                            returnResult.addParameter(nameValue.getName(), nameValue.getValue());
+                        }
+                    }
+                    url = returnResult.toString();
                 }
-                else {
-                    fullUrl += '&';
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
-                String value = params.get(param);
-                fullUrl += URLEncoder.encode(param, "UTF-8") + '=';
-                fullUrl += URLEncoder.encode(value, "UTF-8");
             }
         }
-        return fullUrl;
+        return url;
     }
 
     /**

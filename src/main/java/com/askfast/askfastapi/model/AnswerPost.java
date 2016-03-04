@@ -18,7 +18,7 @@ public class AnswerPost extends ModelBase {
     String voiceMessageURL;
     Map<String, Object> extras;
 
-    private AnswerPost() {
+    public AnswerPost() {
     }
 
     public static AnswerPost createInstance(HttpServletRequest req) {
@@ -31,7 +31,6 @@ public class AnswerPost extends ModelBase {
         }
         catch (Exception e) {
         }
-
         return ap;
     }
 

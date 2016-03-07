@@ -665,26 +665,19 @@ public class AskFast
     }
 	
 	// Private functions
-    private String formatText( String text )
-    {
-        if ( text == null )
+    private String formatText(String text) {
+
+        if (text == null)
             return null;
 
-        if ( !text.startsWith( "http" ) && !text.startsWith( "https" ) )
-        {
-            if ( text.endsWith( ".wav" ) )
-            {
-                if ( baseURL != null )
-                {
-                	text = baseURL + text;
-                }
+        if (!text.startsWith("http") && !text.startsWith("https")) {
+            if (text.endsWith(".wav") && baseURL != null && !baseURL.isEmpty()) {
+                text = baseURL + text;
             }
-            else if(!text.startsWith( "dtmfKey://" ))
-            {
+            else if (!text.startsWith("dtmfKey://")) {
                 text = "text://" + text;
             }
         }
-        
         return text;
     }
     
@@ -699,12 +692,10 @@ public class AskFast
         if ( url == null || url.isEmpty() )
             return url;
 
-        if ( ( !url.startsWith( "http" ) && !url.startsWith( "https" ) ) && baseURL != null ) {
+        if ((!url.startsWith("http") && !url.startsWith("https")) && baseURL != null && !baseURL.isEmpty()) {
             url = baseURL + url;
         }
-
         url = addQueryString( url );
-
         return url;
     }
     

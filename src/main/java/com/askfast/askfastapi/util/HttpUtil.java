@@ -282,11 +282,13 @@ public class HttpUtil {
         if (params != null) {
             for (String param : params.keySet()) {
                 try {
-                    url = url.replace(" ", URLEncoder.encode(" ", "UTF-8"));
+                    url = url.replace(" ", "%20");
                     URIBuilder uriBuilder = new URIBuilder(new URI(url));
                     URIBuilder returnResult = new URIBuilder(new URI(url)).removeQuery();
                     //avoid double decoding
                     String queryValue = params.get(param);
+                    //replace + with encoded version. it will be replaced by space otherwise
+                    queryValue = queryValue.replace("+", URLEncoder.encode("+", "UTF-8"));
                     String decodedQueryParam = URLDecoder.decode(queryValue, "UTF-8");
                     //queryValue is already encoded if after decoded its not the same 
                     if(!decodedQueryParam.equals(queryValue)) {
@@ -321,10 +323,9 @@ public class HttpUtil {
 
         Map<String, String> params = new HashMap<String, String>();
         try {
-            url = url.replace(" ", URLEncoder.encode(" ", "UTF-8"));
+            url = url.replace(" ", "%20");
             URIBuilder uriBuilder = new URIBuilder(new URI(url));
             for (NameValuePair nameValue : uriBuilder.getQueryParams()) {
-
                 params.put(nameValue.getName(), nameValue.getValue());
             }
         }
@@ -345,7 +346,7 @@ public class HttpUtil {
     static public String removeQueryParams(String url) throws IOException {
 
         try {
-            url = url.replace(" ", URLEncoder.encode(" ", "UTF-8"));
+            url = url.replace(" ", "%20");
             URIBuilder uriBuilder = new URIBuilder(new URI(url));
             return uriBuilder.removeQuery().toString();
         }

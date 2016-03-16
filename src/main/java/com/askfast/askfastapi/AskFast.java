@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -710,7 +709,7 @@ public class AskFast
 
         if (params != null && !params.isEmpty()) {
             try {
-                url = url.replace(" ", URLEncoder.encode(" ", "UTF-8"));
+                url = url.replace(" ", "%20");
                 URIBuilder uriBuilder = new URIBuilder(new URI(url));
                 for (String queryKey : params.keySet()) {
                     uriBuilder.addParameter(queryKey, params.get(queryKey));

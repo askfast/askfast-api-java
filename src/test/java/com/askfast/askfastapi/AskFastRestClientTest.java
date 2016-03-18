@@ -157,6 +157,22 @@ public class AskFastRestClientTest extends TestFramework {
         }
     }
     
+    /**
+     * Test to check if the getAdapter() method works fine
+     */
+    @Test
+    public void getAdapterTest() {
+        
+        AskFastRestClient askFastRestClient = new AskFastRestClient(accountId, refreshToken);
+        Set<Adapter> adapters = askFastRestClient.getAdapters(AdapterType.CALL.toString());
+        Assert.assertTrue(adapters.size() > 0);
+        
+        for (Adapter adapter : adapters) {
+            Adapter fetchedAdapter = askFastRestClient.getAdapter(adapter.getConfigId());
+            Assert.assertNotNull(fetchedAdapter);
+        }
+    }
+    
     private boolean isNullOrEmpty(String text) {
         return text == null || text.isEmpty();
     }

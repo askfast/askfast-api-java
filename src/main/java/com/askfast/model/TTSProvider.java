@@ -7,10 +7,10 @@ public enum TTSProvider {
     ACAPELA, VOICE_RSS;
 
     /**
-     * returns the enum based on the name or the value
+     * Returns the enum based on the name or the value
      * 
-     * @param value
-     * @return
+     * @param value The value for which the corresponding tts must be provided
+     * @return The corresponding TTS enum
      */
     @JsonCreator
     public static TTSProvider getByValue(String value) {

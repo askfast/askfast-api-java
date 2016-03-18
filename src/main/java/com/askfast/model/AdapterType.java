@@ -29,8 +29,8 @@ public enum AdapterType
     /**
      * returns the enum based on the name or the value
      * 
-     * @param value
-     * @return
+     * @param value The value that is searched on
+     * @return The corresponding type that matches
      */
     public static AdapterType getByValue(String value) {
 

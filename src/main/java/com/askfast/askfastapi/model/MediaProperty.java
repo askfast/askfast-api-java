@@ -33,6 +33,10 @@ public class MediaProperty
          */
         VOICE_MESSAGE_LENGTH, 
         /**
+         * defines the endpoint where the recording message must be posted to
+         */
+        VOICE_MESSAGE_URL,
+        /**
          * defines the number of times the question should repeat in case of a wrong answer input.
          * works only for phonecalls so as to end a call with repeated input errors.
          */ 
@@ -79,7 +83,26 @@ public class MediaProperty
          * participant is waiting in a conference room to be connected to other
          * participants
          */
-        CONFERENCE_WAIT_URL;
+        CONFERENCE_WAIT_URL,
+        /**
+         * Define how long you want the call to be in Secs
+         */
+        CALL_LENGTH,
+        /**
+         * Any time during the conference, if this is set to true. Will exit
+         * the conference and perform the next sequence of control events
+         */
+        CONFERENCE_EXIT_ON_STAR, 
+        /**
+         * If this is set to true. Will generate the call transcript and POST it to the 
+         * {@link MediaPropertyKey#TRANSCRIPT_URL}
+         */
+        TRANSCRIPT,
+        /**
+         * The URL to which the transcript is POSTed to. This is used only
+         * if {@link MediaPropertyKey#TRANSCRIPT} is set to true
+         */
+        TRANSCRIPT_URL;
         
         @JsonCreator
         public static MediaPropertyKey fromJson(String name) {
@@ -87,12 +110,12 @@ public class MediaProperty
         }
     }
 
-    public enum MediumType
-    {
-        BROADSOFT, GTALK, SKYPE, SMS, TWITTER;
-        
+    public enum MediumType {
+
+        EMAIL, BROADSOFT, GTALK, SKYPE, SMS, TWITTER;
         @JsonCreator
         public static MediumType fromJson(String name) {
+
             return valueOf(name.toUpperCase());
         }
     }

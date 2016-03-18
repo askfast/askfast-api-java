@@ -4,36 +4,37 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * language maps to language-country enum value
+ * 
  * @author Shravan
  *
  */
 public enum Language {
-    CATALAN("ca-es"),
-    CHINESE("zh-cn"),
-    CHINESE_HONGKONG("zh-hk"),
-    CHINESE_TAIWAN("zh-tw"),
-    DANISH("da-dk"),
-    DUTCH("nl-nl", "nl"),
-    ENGLISH_AUSTRALIA("en-au"),
-    ENGLISH_CANADA("en-ca"),
-    ENGLISH_GREATBRITAIN("en-gb"),
-    ENGLISH_INDIA("en-in"),
-    ENGLISH_UNITEDSTATES("en-us", "en"),
-    FINNISH("fi-fi"),
-    FRENCH_CANADA("fr-ca"),
-    FRENCH_FRANCE("fr-fr"),
-    GERMAN("de-de"),
-    ITALIAN("it-it"),
-    JAPANESE("ja-jp"),
-    KOREAN("ko-kr"),
-    NORWEGIAN("nb-no"),
-    POLISH("pl-pl"),
-    PORTUGUESE_BRAZIL("pt-br"),
-    PORTUGUESE_PORTUGAL("pt-pt"),
-    RUSSIAN("ru-ru"),
-    SPANISH_MEXICO("es-mx"),
-    SPANISH_SPAIN("es-es"),
-    SWEDISH_SWEDEN("sv-se");
+        CATALAN("ca-es"),
+        CHINESE("zh-cn"),
+        CHINESE_HONGKONG("zh-hk"),
+        CHINESE_TAIWAN("zh-tw"),
+        DANISH("da-dk"),
+        DUTCH("nl-nl", "nl"),
+        ENGLISH_AUSTRALIA("en-au"),
+        ENGLISH_CANADA("en-ca"),
+        ENGLISH_GREATBRITAIN("en-gb"),
+        ENGLISH_INDIA("en-in"),
+        ENGLISH_UNITEDSTATES("en-us", "en"),
+        FINNISH("fi-fi"),
+        FRENCH_CANADA("fr-ca"),
+        FRENCH_FRANCE("fr-fr"),
+        GERMAN("de-de"),
+        ITALIAN("it-it"),
+        JAPANESE("ja-jp"),
+        KOREAN("ko-kr"),
+        NORWEGIAN("nb-no"),
+        POLISH("pl-pl"),
+        PORTUGUESE_BRAZIL("pt-br"),
+        PORTUGUESE_PORTUGAL("pt-pt"),
+        RUSSIAN("ru-ru"),
+        SPANISH_MEXICO("es-mx"),
+        SPANISH_SPAIN("es-es"),
+        SWEDISH_SWEDEN("sv-se");
 
     String code = null;
     String secondaryCode = null;
@@ -53,18 +54,19 @@ public enum Language {
 
         return code;
     }
-    
+
     public String getSecondaryCode() {
-        
+
         return secondaryCode;
     }
 
     /**
-     * returns the enum based on the name or the value. if it doesnt match any.
-     * return {@link Language#Dutch} by default
+     * Returns the enum based on the name or the value. if it doesnt match any
+     * return {@link Language#DUTCH} by default
      * 
-     * @param value
-     * @return
+     * @param nameOrValue
+     *            The value corresponding to which the language is to be fetched
+     * @return Returns the Language enum based on the value given
      */
     public static Language getByValue(String nameOrValue) {
 

@@ -21,6 +21,7 @@ import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import com.askfast.askfastapi.model.Answer;
+import com.askfast.askfastapi.model.EventPost;
 import com.askfast.askfastapi.model.EventPost.EventType;
 import com.askfast.askfastapi.model.MediaProperty;
 import com.askfast.askfastapi.model.MediaProperty.MediaPropertyKey;
@@ -91,88 +92,121 @@ public class AskFast
     }
     
     /**
-     * creates a comment question if the next parameter is null. If not creates
+     * Creates a comment question if the next parameter is null. If not creates
      * a closed question.
      * 
      * @param value
-     * @return
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
      */
     public void say( String value ) {
         say( value, null );
     }
 
-    public void say( String value, String next ) {
-        value = formatText( value );
-        next = formatURL( next );
-        question.setType( Question.QUESTION_TYPE_COMMENT );
-        question.setQuestion_text( value );
-
-        if ( next != null )
-            question.addAnswer( new Answer( null, next ) );
-    }
-
     /**
-     * asks a question
+     * Creates a comment question if the next parameter is null. If not creates
+     * a closed question.
      * 
-     * @param ask
-     * @return
-     */
-    public void ask( String ask ) {
-        ask( ask, "" );
-    }
-
-    /**
-     * creates an open question with media property as audio. This is used to
-     * record voice notes. The location of the recorded audio is sent to the <i>
-     * next </i> callback argument
-     * 
-     * @param ask
+     * @param value
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
      * @param next
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      */
-    public void askByVoice( String ask, String next ) {
-        ask( ask, "", next );
-        addMediaProperty( MediumType.BROADSOFT, MediaPropertyKey.TYPE, Question.QUESTION_TYPE_VOICE_RECORDING );
+    public void say(String value, String next) {
+
+        value = formatText(value);
+        next = formatURL(next);
+        question.setType(Question.QUESTION_TYPE_COMMENT);
+        question.setQuestion_text(value);
+
+        if (next != null)
+            question.addAnswer(new Answer(null, next));
     }
 
     /**
-     * asks an open question with text as in field: ask and an answer with
+     * Asks a question of Type {@link Question#QUESTION_TYPE_OPEN}
+     * 
+     * @param ask
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
+     */
+    public void ask(String ask) {
+
+        ask(ask, "");
+    }
+
+    /**
+     * Creates an open question with media property as audio. This is used to
+     * record voice notes. The location of the recorded audio is sent to the
+     * <i> next </i> callback argument
+     * 
+     * @param ask
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
+     * @param next
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
+     */
+    public void askByVoice(String ask, String next) {
+
+        ask(ask, "", next);
+        addMediaProperty(MediumType.BROADSOFT, MediaPropertyKey.TYPE, Question.QUESTION_TYPE_VOICE_RECORDING);
+    }
+
+    /**
+     * Asks an open question with text as in field: ask and an answer with
      * callback as in field: next
      * 
      * @param ask
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
      * @param next
-     * @return
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      */
-    public void ask( String ask, String next ) {
-        ask( ask, null, next );
+    public void ask(String ask, String next) {
+
+        ask(ask, null, next);
     }
 	
-	/**
-     * asks an open question with text as in field: ask and an answer with callback as in field: next
-     * and text as in field: answerText
+    /**
+     * Asks an open question with text as in field: ask and an answer with
+     * callback as in field: next and text as in field: answerText
+     * 
      * @param ask
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
+     * @param answerText
+     *            In an open question, this is not very relevant as information
+     *            specific to an answer can also be added to the ask param
      * @param next
-     * @return
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      */
-    public void ask(String ask, String answerText, String next)
-    {
-        ask( ask, answerText, next, Question.QUESTION_TYPE_OPEN );
+    public void ask(String ask, String answerText, String next) {
+
+        ask(ask, answerText, next, Question.QUESTION_TYPE_OPEN);
     }
     
     /**
-     * Ends this conversation
-     * @param Text or url to be played before exit
+     * Ends an existing conversation
+     * 
+     * @param exitURL Text or url to be played before exit
      */
-    public void exit(String exitURL)
-    {
+    public void exit(String exitURL) {
+
         question.setType(Question.QUESTION_TYPE_EXIT);
         question.setQuestion_text(exitURL);
     }
     
     /**
-     * Reject this conversation
+     * Reject this conversation. Does not start a conversation if rendered as
+     * the first question
      */
-    public void reject()
-    {
+    public void reject() {
+
         question.setType(Question.QUESTION_TYPE_REJECT);
     }
     
@@ -180,106 +214,97 @@ public class AskFast
      * Sets up a conference. Either the person called is pushed to a conference,
      * or the the number being called is pushed to a conference
      * 
-     * @param Text
-     *            or url to be played before exit
+     * @param ask
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
+     * @param next
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      */
     public void conference(String ask, String next) {
 
         ask(ask, null, next, Question.QUESTION_TYPE_CONFERENCE);
     }
-	
-    public void ask( String ask, AskFast askFast ) {
-        ask( ask, null, null );
-        question.addAnswer( new Answer( "", askFast.question.getQuestion_id() ) );
-    }
 
     /**
-     * adds an answer corresponding to a question asked
+     * Adds an answer corresponding to a question asked
      * 
      * @param answerText
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains this answer or statement
      * @param next
-     * @return
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      */
-    public void addAnswer( String answer, String next ) {
-        question.setType( Question.QUESTION_TYPE_CLOSED );
-        answer = formatText( answer );
-        next = formatURL( next );
-        question.addAnswer( new Answer( answer, next ) );
+    public void addAnswer(String answer, String next) {
+
+        question.setType(Question.QUESTION_TYPE_CLOSED);
+        answer = formatText(answer);
+        next = formatURL(next);
+        question.addAnswer(new Answer(answer, next));
     }
 
     /**
-     * adds an answer by linking the questionid of the askFast parameter as the
-     * callbackURL. <br>
-     * Typically used with a Dialog Object (collection of questions are linked
-     * to eachother )
+     * Redirect the control to a new agent/url
      * 
-     * @param answer
-     * @param askFast
-     *            this is linked to the callback of the answer
+     * @param to
+     *            You can redirect to a phonenumber, client or another http URL.
      */
-    public void addAnswer( String answer, AskFast askFast ) {
-        question.setType( Question.QUESTION_TYPE_CLOSED );
-        answer = formatText( answer );
-        question.addAnswer( new Answer( answer, askFast.question.getQuestion_id() ) );
+    public void redirect(String to) {
+
+        redirect(to, null, null, null);
     }
 
     /**
-     * redirect the control to a new agent
+     * Redirect the control to a new agent
      * 
-     * @return
-     */
-    public void redirect( String to ) {
-        redirect( to, null, null, null );
-    }
-
-    /**
-     * redirect the control to a new agent
-     * 
+     * @param to
+     *            You can redirect to a phonenumber, client or another http URL.
      * @param redirectText
-     *            : can be the text directly or a HTTP based url which contains
-     *            the text
-     * @return
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which is played out before the redirect happens
      */
-    public void redirect( String to, String redirectText ) {
-        redirect( to, redirectText, null, null );
+    public void redirect(String to, String redirectText) {
+
+        redirect(to, redirectText, null, null);
     }
 
     /**
-     * redirect the control to a new agent
+     * Redirect the control to a new agent
      * 
+     * @param to
+     *            You can redirect to a phonenumber, client or another http URL.
      * @param redirectText
-     *            : can be the text directly or a HTTP based url which contains
-     *            the text
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which is played out before the redirect happens
      * @param next
-     *            : the URL where the question for the redirection agent is
-     *            available
-     * @return
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      */
     public void redirect( String to, String redirectText, String next ) {
         redirect(to, redirectText, next, null);
     }
 	
     /**
-     * redirect the control to a new phone.
+     * Redirect the control to a new phone.
      * 
      * @param to
-     *            redirect the phone control to this address
-     * @param plays
-     *            this redirectText or url when the control is being redirected.
+     *            You can redirect to a phonenumber, client or another http URL.
+     * @param redirectText
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which is played out before the redirect happens
      * @param next
-     *            the URL where the question for the redirection agent is
-     *            available
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      * @param preconnectURL
      *            this url is used to execute a question at the callee side
      *            before connecting him to the caller. E.g. Now the callee can
      *            pick the phone, listen to a menu, then connect the call. This
      *            is useful only with special calling adapters.
-     * @return
      */
     public void redirect(String to, String redirectText, String next, String preconnectURL) {
 
         question.setType(Question.QUESTION_TYPE_REFERRAL);
-        
         to = formatPhoneUrl(to);
         question.setUrl(Arrays.asList(to));
         if (redirectText != null) {
@@ -299,28 +324,28 @@ public class AskFast
     }
     
     /**
-     * redirect the control to a new phone.
+     * Redirect the control to multiple agents
      * 
      * @param addresses
-     *            redirect the phone call to all these addresses
-     * @param plays
-     *            this redirectText or url when the control is being redirected.
+     *            Redirect the phone call to all these addresses
+     * @param redirectText
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which is played out before the redirect happens
      * @param next
-     *            the URL where the question for the redirection agent is
-     *            available
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
      * @param preconnectURL
      *            this url is used to execute a question at the callee side
      *            before connecting him to the caller. E.g. Now the callee can
      *            pick the phone, listen to a menu, then connect the call. This
      *            is useful only with special calling adapters.
-     * @return
      */
     public void redirect(List<String> addresses, String redirectText, String next, String preconnectURL) {
 
         question.setType(Question.QUESTION_TYPE_REFERRAL);
 
         List<String> formatedAddresses = new ArrayList<String>();
-        for(String address : addresses) {
+        for (String address : addresses) {
             formatedAddresses.add(formatPhoneUrl(address));
         }
         question.setUrl(formatedAddresses);
@@ -340,6 +365,10 @@ public class AskFast
         }
     }
 	
+    /**
+     * Serializer the question prepared till now. 
+     * @return Question JSON 
+     */
     public String render() {
         return question.toJSON();
     }
@@ -353,7 +382,8 @@ public class AskFast
      *             ,
      *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
      *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
-     *             {@link AskFastRestClient#startSMSDialog(String, String, String)} <br>
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
+     *             <br>
      *             Overloaded method for any outboundcalls without a subject
      *             (Everything except Email)
      * 
@@ -363,6 +393,8 @@ public class AskFast
      *            address of the receiver
      * @param url
      *            GET request on this URL has the question
+     * @return Address and SessionKey, if the call is successful, if not the
+     *         reason is given
      * @throws Exception
      */
     @Deprecated
@@ -391,6 +423,8 @@ public class AskFast
      *            address of the receiver
      * @param url
      *            GET request on this URL has the question
+     * @return Address and SessionKey, if the call is successful, if not the
+     *         reason is given
      * @throws Exception
      */
     public String outBoundCall(String fromAddress, String toAddress, String subject, String url) throws Exception {
@@ -414,7 +448,8 @@ public class AskFast
      * @param toAddress
      * @param subject
      * @param url
-     * @return
+     * @return Address and SessionKey, if the call is successful, if not the
+     *         reason is given
      * @throws Exception
      */
     public String outBoundCall(String fromAddress, String senderName, String toAddress, String subject, String url)
@@ -447,7 +482,8 @@ public class AskFast
      *            subject of the email
      * @param url
      *            question url
-     * @return
+     * @return Address and SessionKey, if the call is successful, if not the
+     *         reason is given
      * @throws Exception
      */
     public String outBoundCall(String fromAddress, String senderName, Collection<String> toAddressList, String subject,
@@ -595,25 +631,46 @@ public class AskFast
         log.info(String.format("outbound call response recieved: %s", res));
         return res;
     }
-            
-    public void addEvent(EventType eventType, String callbackURL)
-    {
+        
+    /**
+     * Adds an event callback
+     * 
+     * @param eventType
+     *            Type of the event
+     * @param callbackURL
+     *            The callback to which {@link EventPost} is POSTed to
+     */
+    public void addEvent(EventType eventType, String callbackURL) {
+
         callbackURL = formatURL(callbackURL);
         question.addEvent_callbacks(eventType, callbackURL);
     }
     
-    public void addMediaProperty( MediumType mediumType, MediaPropertyKey propertyKey, String value )
-    {
+    /**
+     * Adds some communication channel specific properties. E.g. TIMEOUT for
+     * phonecalls etc
+     * 
+     * @param mediumType
+     *            The type of the communication channel
+     * @param propertyKey
+     *            The type of the property added
+     * @param value
+     *            The value of the property added
+     */
+    public void addMediaProperty(MediumType mediumType, MediaPropertyKey propertyKey, String value) {
+
         MediaProperty mediaProperty = new MediaProperty();
-        mediaProperty.setMedium( mediumType );
-        mediaProperty.addProperty( propertyKey, value );
-        question.addMediaProperties( mediaProperty );
+        mediaProperty.setMedium(mediumType);
+        mediaProperty.addProperty(propertyKey, value);
+        question.addMediaProperties(mediaProperty);
     }
 
-    public void setAccountID( String accountID ) {
-        this.accountID = accountID;
-    }
-
+    /**
+     * @deprecated
+     * Recommended use {@link AskFastRestClient#getAccessToken()} instead
+     * @return The accessToken by connecting to the ASK-Fast backend
+     * @throws Exception
+     */
     public String obtainAccessToken() throws Exception {
 
         if ( accountID == null || refreshToken == null ) {
@@ -632,6 +689,14 @@ public class AskFast
         return null;
     }
 
+    /**
+     * Set the accountId for this instance
+     * @param accountID
+     */
+    public void setAccountID( String accountID ) {
+        this.accountID = accountID;
+    }
+    
     public String getAccountID() {
         return accountID;
     }
@@ -750,37 +815,52 @@ public class AskFast
         this.baseURL = baseURL;
     }
 	
+    /**
+     * Asks an question of given type, with text as in field: ask and an answer
+     * with callback as in field: answerCallback and text as in field:
+     * answerText
+     * 
+     * @param ask
+     *            Either a string value (TTS in case of a phonecall) or a url to
+     *            an audio file, which explains your question or statement
+     * @param answerText
+     *            In an open question, this is not very relevant as information
+     *            specific to an answer can also be added to the ask param
+     * @param answerCallback
+     *            The next URL that must be fetched. This url is added as the
+     *            answer callback
+     * @param askType
+     *            The question Type
+     */
+    private void ask(String ask, String answerText, String answerCallback, String askType) {
 
-    private void ask( String ask, String answerText, String answerCallback, String askType )
-    {
-        ask = formatText( ask );
-        answerCallback = formatURL( answerCallback );
+        ask = formatText(ask);
+        answerCallback = formatURL(answerCallback);
         answerText = answerText != null ? answerText : "";
-        question.setQuestion_text( ask );
-        question.setType( askType );
-        if ( answerCallback != null && !answerCallback.isEmpty() )
-        {
-            question.setAnswers( new ArrayList<Answer>( Arrays.asList( new Answer( answerText, answerCallback ) ) ) );
+        question.setQuestion_text(ask);
+        question.setType(askType);
+        if (answerCallback != null && !answerCallback.isEmpty()) {
+            question.setAnswers(new ArrayList<Answer>(Arrays.asList(new Answer(answerText, answerCallback))));
         }
     }
 
-    public String getASKFAST_JSONRPC()
-    {
+    public String getASKFAST_JSONRPC() {
+
         return ASKFAST_JSONRPC;
     }
 
-    public void setASKFAST_JSONRPC( String aSKFAST_JSONRPC )
-    {
+    public void setASKFAST_JSONRPC(String aSKFAST_JSONRPC) {
+
         ASKFAST_JSONRPC = aSKFAST_JSONRPC;
     }
 
-    public String getASKFAST_KEYSERVER()
-    {
+    public String getASKFAST_KEYSERVER() {
+
         return ASKFAST_KEYSERVER;
     }
 
-    public void setASKFAST_KEYSERVER( String aSKFAST_KEYSERVER )
-    {
+    public void setASKFAST_KEYSERVER(String aSKFAST_KEYSERVER) {
+
         ASKFAST_KEYSERVER = aSKFAST_KEYSERVER;
     }
 }

@@ -24,12 +24,12 @@ public class DialogRequest {
      * specific senderName
      * 
      * @param addressMap
-     *            The key value pairs of <toAddress, recipientName>
+     *            The key value pairs of {toAddress, recipientName}
      * @param addressCcMap
-     *            The key value pairs of <ccAddress, recipientName>. Used in
+     *            The key value pairs of {ccAddress, recipientName}. Used in
      *            case of an email adapter only
      * @param addressBccMap
-     *            The key value pairs of <bccAddress, recipientName>. Used in
+     *            The key value pairs of {bccAddress, recipientName}. Used in
      *            case of an email adapter only
      * @param adapterType
      *            The type of communication opted for this outbound dialog. The
@@ -40,8 +40,9 @@ public class DialogRequest {
      *            if its set outside of this constructor.
      * @param adapterID
      *            The id identifying a particular mode of communication. These
-     *            values can be retried from {@linkplain https
-     *            ://portal.ask-fast.com} in the adapters section.
+     *            values can be retried from
+     *            <a href="https://portal.ask-fast.com">ASK-Fast Portal</a> in
+     *            the adapters section.
      * @param senderName
      *            A senderName can be attached for medium types: SMS, EMAIL. For
      *            SMS, the length should not exceed 11 charecters.
@@ -52,12 +53,13 @@ public class DialogRequest {
      *            This can be one of: <br>
      *            1. http(s) endpoint fetching a {@link Question} json as
      *            response. <br>
-     *            2. A standard text prefixed by keyword: text://<your message>.
+     *            2. A standard text prefixed by keyword: text://your message.
      *            This will be transformed to a
      *            {@link Question#QUESTION_TYPE_COMMENT} <br>
-     *            3. A unique dialogId as defined in the {@linkplain https
-     *            ://portal.ask-fast.com} or by method
-     *            {@link AskFastRestClient#createDialog(Dialog)} method
+     *            3. A unique dialogId as defined in the
+     *            <a href="https://portal.ask-fast.com">ASK-Fast Portal</a> or
+     *            by method {@link AskFastRestClient#createDialog(Dialog)}
+     *            method
      */
     public DialogRequest(Map<String, String> addressMap, Map<String, String> addressCcMap,
         Map<String, String> addressBccMap, AdapterType adapterType, String adapterID, String senderName,
@@ -89,10 +91,11 @@ public class DialogRequest {
      *            adapterID is passed, although this constructor ignores the
      *            adapterType if the adapterID is present. An error is returned
      *            if its set outside of this constructor.
-     * @param adapterID
+     * @param adapterId
      *            The id identifying a particular mode of communication. These
-     *            values can be retried from {@linkplain https
-     *            ://portal.ask-fast.com} in the adapters section.
+     *            values can be retried from
+     *            <a href="https://portal.ask-fast.com">ASK-Fast Portal</a> in
+     *            the adapters section.
      * @param senderName
      *            A senderName can be attached for medium types: SMS, EMAIL. For
      *            SMS, the length should not exceed 11 charecters.
@@ -103,12 +106,13 @@ public class DialogRequest {
      *            This can be one of: <br>
      *            1. http(s) endpoint fetching a {@link Question} json as
      *            response. <br>
-     *            2. A standard text prefixed by keyword: text://<your message>.
+     *            2. A standard text prefixed by keyword: text://your message.
      *            This will be transformed to a
      *            {@link Question#QUESTION_TYPE_COMMENT} <br>
-     *            3. A unique dialogId as defined in the {@linkplain https
-     *            ://portal.ask-fast.com} or by method
-     *            {@link AskFastRestClient#createDialog(Dialog)} method
+     *            3. A unique dialogId as defined in the
+     *            <a href="https://portal.ask-fast.com">ASK-Fast Portal</a> or
+     *            by method {@link AskFastRestClient#createDialog(Dialog)}
+     *            method
      */
     public DialogRequest(String address, AdapterType adapterType, String adapterId, String senderName, String subject,
         String url) {
@@ -226,7 +230,7 @@ public class DialogRequest {
 
     /**
      * Collates all the addresses in the address, addressList, addressMaps
-     * @return
+     * @return All the addresses as a map
      */
     @JsonIgnore
     public HashMap<String, String> getAllAddresses() {
@@ -254,8 +258,7 @@ public class DialogRequest {
 
     /**
      * Just validates the request payload
-     * 
-     * @return
+     * @return If this dialogRequest if formatted properly
      */
     @JsonIgnore
     public boolean isValidRequest() {

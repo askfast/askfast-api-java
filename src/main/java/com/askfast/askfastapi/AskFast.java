@@ -229,7 +229,7 @@ public class AskFast
     /**
      * Adds an answer corresponding to a question asked
      * 
-     * @param answerText
+     * @param answer
      *            Either a string value (TTS in case of a phonecall) or a url to
      *            an audio file, which explains this answer or statement
      * @param next
@@ -395,7 +395,7 @@ public class AskFast
      *            GET request on this URL has the question
      * @return Address and SessionKey, if the call is successful, if not the
      *         reason is given
-     * @throws Exception
+     * @throws Exception 403 Authorization Exceptions
      */
     @Deprecated
     public String outBoundCall(String fromAddress, String toAddress, String url) throws Exception {
@@ -421,11 +421,14 @@ public class AskFast
      *            address of the sender
      * @param toAddress
      *            address of the receiver
+     * @param subject
+     *            Subject is relevant to email conversations only
      * @param url
      *            GET request on this URL has the question
      * @return Address and SessionKey, if the call is successful, if not the
      *         reason is given
      * @throws Exception
+     *             403 Authorization Exceptions
      */
     public String outBoundCall(String fromAddress, String toAddress, String subject, String url) throws Exception {
 
@@ -444,13 +447,18 @@ public class AskFast
      *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
      *             <br>
      * @param fromAddress
-     * @param senderName
+     *            address of the sender
+     * @param senderName The alternative senderId
      * @param toAddress
+     *            address of the receiver
      * @param subject
+     *            Subject is relevant to email conversations only
      * @param url
+     *            GET request on this URL has the question
      * @return Address and SessionKey, if the call is successful, if not the
      *         reason is given
      * @throws Exception
+     *             403 Authorization Exceptions
      */
     public String outBoundCall(String fromAddress, String senderName, String toAddress, String subject, String url)
         throws Exception {
@@ -484,7 +492,7 @@ public class AskFast
      *            question url
      * @return Address and SessionKey, if the call is successful, if not the
      *         reason is given
-     * @throws Exception
+     * @throws Exception 403 Authorization Exceptions
      */
     public String outBoundCall(String fromAddress, String senderName, Collection<String> toAddressList, String subject,
         String url) throws Exception {
@@ -505,9 +513,11 @@ public class AskFast
      *             ,
      *             {@link AskFastRestClient#startEmailDialog(String, String, String, String)}
      *             , {@link AskFastRestClient#startPhoneDialog(String, String)},
-     *             {@link AskFastRestClient#startSMSDialog(String, String, String)} <br>
-     * overloaded method for any broadcast outboundcalls without a subject
-     * (Everything except an Email). Makes it backward compatible
+     *             {@link AskFastRestClient#startSMSDialog(String, String, String)}
+     *             <br>
+     *             overloaded method for any broadcast outboundcalls without a
+     *             subject (Everything except an Email). Makes it backward
+     *             compatible
      * 
      * @param fromAddress
      *            address of the sender
@@ -519,6 +529,7 @@ public class AskFast
      *            GET request on this URL has the question
      * @return result of this outBound
      * @throws Exception
+     *             403 Authorization Exceptions
      */
     public String outBoundCall( String fromAddress, String senderName, Map<String, String> toAddressNameMap, String url ) throws Exception {
         return outBoundCall( fromAddress, senderName, toAddressNameMap, null, url );
@@ -548,7 +559,7 @@ public class AskFast
      * @param url
      *            GET request on this URL has the question
      * @return result of this outBound
-     * @throws Exception
+     * @throws Exception 403 Authorization Exceptions
      */
     public String outBoundCall(String fromAddress, String senderName, Map<String, String> toAddressNameMap,
         String subject, String url) throws Exception {
@@ -575,12 +586,16 @@ public class AskFast
      *            name of the sender (userful for sending emails)
      * @param toAddressNameMap
      *            map containing all recipient address for a Broadcast call
+     * @param ccAddressNameMap
+     *            map containing all cc recipient address for a Broadcast call
+     * @param bccAddressNameMap
+     *            map containing all bcc recipient address for a Broadcast call
      * @param subject
      *            subject used in case this is an outbound email
      * @param url
      *            GET request on this URL has the question
      * @return result of this outBound
-     * @throws Exception
+     * @throws Exception 403 Authorization Exceptions
      */
     public String outBoundCall(String fromAddress, String senderName, Map<String, String> toAddressNameMap,
         Map<String, String> ccAddressNameMap, Map<String, String> bccAddressNameMap, String subject, String url)
@@ -669,7 +684,7 @@ public class AskFast
      * @deprecated
      * Recommended use {@link AskFastRestClient#getAccessToken()} instead
      * @return The accessToken by connecting to the ASK-Fast backend
-     * @throws Exception
+     * @throws Exception 403 Authorization Exceptions
      */
     public String obtainAccessToken() throws Exception {
 
@@ -691,7 +706,7 @@ public class AskFast
 
     /**
      * Set the accountId for this instance
-     * @param accountID
+     * @param accountID The accountId of user
      */
     public void setAccountID( String accountID ) {
         this.accountID = accountID;

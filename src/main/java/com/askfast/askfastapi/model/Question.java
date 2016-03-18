@@ -176,6 +176,14 @@ public class Question extends ModelBase{
         return null;
     }
 
+    /**
+     * Adds an event callback
+     * 
+     * @param eventType
+     *            Type of the event
+     * @param callbackURL
+     *            The callback to which {@link EventPost} is POSTed to
+     */
     public void addEvent_callbacks( EventType eventType, String callbackURL )
     {
         event_callbacks = event_callbacks != null ? event_callbacks : new ArrayList<EventCallback>();
@@ -189,10 +197,15 @@ public class Question extends ModelBase{
     }
 
     /**
-     * Adds a media property for a specific medium
-     * @param broadsoft
-     * @param usePreconnect
-     * @param string
+     * Adds some communication channel specific properties. E.g. TIMEOUT for
+     * phonecalls etc
+     * 
+     * @param medium
+     *            The type of the communication channel
+     * @param propertyKey
+     *            The type of the property added
+     * @param value
+     *            The value of the property added
      */
     public void addProperty(MediumType medium, MediaPropertyKey propertyKey, String value) {
         MediaProperty mediaProperty = new MediaProperty();

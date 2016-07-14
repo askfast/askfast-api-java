@@ -27,8 +27,8 @@ public interface AskFastRestService {
 
     // Adapter calls	
     @GET("/adapter")
-    public Set<Adapter> getAdapters(@Query("type") String type);
-
+    public Set<Adapter> getAdapters(@Query("type") String type, @Query("owned") boolean owned);
+ 
     // Adapter calls        
     @GET("/adapter/{adapterId}")
     public Adapter getAdapter(@Path("adapterId") String adapterId);

@@ -331,9 +331,20 @@ public class AskFastRestClient {
     public Set<Adapter> getAdapters(String type) {
 
         AskFastRestService service = getRestService();
-        return service.getAdapters(type);
+        return service.getAdapters(type,true);
     }
 
+    /**
+     * Returns adapters owned by your account and shared with 
+     * your account. 
+     * @param type
+     * @return
+     */
+    public Set<Adapter> getAllAdapters(String type) {
+
+        AskFastRestService service = getRestService();
+        return service.getAdapters(type,false);
+    }
     /**
      * Returns the corresponding adapter by id
      * 
